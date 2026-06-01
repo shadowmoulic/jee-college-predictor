@@ -8,6 +8,7 @@ import CollegeCard from "@/components/results/CollegeCard";
 import BranchModal from "@/components/results/BranchModal";
 import AICounselorPanel, { CollegeContext } from "@/components/ai/AICounselorPanel";
 import { useState, useMemo, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 
 interface Props {
   exam: string;
@@ -65,6 +66,7 @@ export default function ResultsView({
   const [aiPanelOpen, setAiPanelOpen] = useState(false);
   const [contextCollege, setContextCollege] = useState<CollegeContext | null>(null);
   const [isMobileScreen, setIsMobileScreen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const check = () => setIsMobileScreen(window.innerWidth <= 1024);
@@ -80,6 +82,20 @@ export default function ResultsView({
       branches: c.branches.map((b) => b.name)
     }));
   }, [colleges]);
+
+  // Save the latest context so the dedicated AI page can read it
+  useEffect(() => {
+    try {
+      if (resultsContext.length > 0) {
+        localStorage.setItem("nexus_ai_context", JSON.stringify({
+          filters,
+          resultsContext
+        }));
+      }
+    } catch (err) {
+      console.warn("Failed to save AI context to localStorage", err);
+    }
+  }, [filters, resultsContext]);
 
   // When a college is expanded, make it the AI context
   const handleToggleCollapse = useCallback(
@@ -221,14 +237,13 @@ export default function ResultsView({
           </button>
 
           <button
-            className={`${styles.editDetailsBtn} ${aiPanelOpen ? styles.askAIActive : styles.askAIBtn}`}
-            onClick={() => setAiPanelOpen((v) => !v)}
-            aria-pressed={aiPanelOpen}
+            className={`${styles.editDetailsBtn} ${styles.askAIBtn}`}
+            onClick={() => router.push('/ai')}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 18, height: 18 }}>
               <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
             </svg>
-            {aiPanelOpen ? "Close AI" : "Ask AI Counsellor"}
+            Ask AI Counsellor
           </button>
         </div>
       </div>
@@ -335,7 +350,7 @@ export default function ResultsView({
             <div className={styles.noResults}>
               <div className={styles.spinner}></div>
               <strong style={{ color: "var(--brand)", marginTop: "1rem" }}>
-                Analyzing JoSAA 2024 Admission Datasets...
+                Analyzing JoSAA 2026 Admission Datasets...
               </strong>
               <span>Applying rank algorithms and localized filters</span>
             </div>
@@ -363,45 +378,7 @@ export default function ResultsView({
             </div>
           )}
         </main>
-
-        {/* Desktop AI panel (sticky column) */}
-        {aiPanelOpen && !isMobileScreen && (
-          <div className={`${styles.aiPanelColumn} pt-2 pb-6 pr-6 pl-2`}>
-            <AICounselorPanel
-              rank={rank}
-              category={category}
-              exam={exam}
-              domicileState={domicileState}
-              gender={gender}
-              contextCollege={contextCollege}
-              resultsContext={resultsContext}
-              onClose={() => setAiPanelOpen(false)}
-            />
-          </div>
-        )}
       </div>
-
-      {/* Mobile AI bottom-sheet */}
-      {aiPanelOpen && isMobileScreen && (
-        <div
-          className={styles.aiMobileBackdrop}
-          onClick={() => setAiPanelOpen(false)}
-        >
-          <div onClick={(e) => e.stopPropagation()} style={{ width: "100%" }}>
-            <AICounselorPanel
-              rank={rank}
-              category={category}
-              exam={exam}
-              domicileState={domicileState}
-              gender={gender}
-              contextCollege={contextCollege}
-              resultsContext={resultsContext}
-              onClose={() => setAiPanelOpen(false)}
-              isMobile
-            />
-          </div>
-        </div>
-      )}
 
       {/* Branch Details Modal */}
       <BranchModal

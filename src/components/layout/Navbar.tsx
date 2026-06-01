@@ -11,6 +11,7 @@ export default function Navbar() {
       <div className={styles.navLinks}>
         <Link href="/">Tools</Link>
         <Link href="/colleges">Colleges</Link>
+        <Link href="/ai" style={{ color: "var(--brand)", fontWeight: 700 }}>Nexus AI ✨</Link>
         <a href="#">JEE Prep</a>
         <a href="#">About</a>
       </div>
