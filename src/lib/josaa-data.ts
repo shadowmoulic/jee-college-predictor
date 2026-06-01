@@ -38,7 +38,7 @@ function load2025RoundFiles(): JoSAARecord[] {
       const parsed = parse2025RoundCSV(raw, round);
       
       for (const r of parsed) {
-        const key = `${r.year}|${r.round}|${r.institute}|${r.program}|${r.quota}|${r.seatType}|${r.gender}`;
+        const key = `${r.year}|${r.round}|${r.institute}|${r.program}|${r.degree}|${r.quota}|${r.seatType}|${r.gender}`;
         recordsMap.set(key, r);
       }
       console.log(`[JoSAA] Loaded ${parsed.length} records from ${file}`);

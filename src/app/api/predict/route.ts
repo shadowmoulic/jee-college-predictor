@@ -15,14 +15,16 @@ import { get2025BranchCutoffs } from "@/lib/josaa-data";
 import { getPlacementForCollege } from "@/lib/placement-data";
 
 /**
- * Three-tier admission probability using both Opening and Closing rank.
+ * Three-tier admission probability using Round-1 Opening and Round-6 Closing rank.
  *
- * LOW    — rank > closingRank (worse than the 2025 cutoff; shown only within
- *          the 1.15× outer filter because seat expansion makes it a stretch)
- * HIGH   — rank ≤ openingRank (better than every student who got this seat
- *          in 2025 → virtually guaranteed)
- *          OR safety cushion ≥ 15 % of closingRank (comfortably within cutoff)
- * MEDIUM — between OR and CR with safety cushion < 15 % (inside but near edge)
+ * LOW    — rank > closingRank (outside the 2025 cutoff entirely)
+ * HIGH   — rank ≤ openingRank (better than Round-1 OR → virtually guaranteed)
+ *          OR in the top 60 % of the OR→CR window (safety cushion ≥ 40 %)
+ * MEDIUM — in the bottom 40 % of the OR→CR window (risky but still within cutoff)
+ *
+ * The 40 % threshold models admission probability roughly as:
+ *   prob ≈ 50 % + 50 % × safetyMargin
+ * so HIGH ≥ 70 % probability, MEDIUM ≥ 50 %, LOW < 50 %.
  */
 const getProbLabel = (
   rank: number,
@@ -31,10 +33,10 @@ const getProbLabel = (
 ): "high" | "medium" | "low" => {
   if (rank > closingRank) return "low";
   if (rank <= openingRank) return "high";
-  // Safety margin: fraction of the OR→CR window still below the user's rank
+  // Safety margin: fraction of the OR→CR window remaining below user's rank
   const window = closingRank - openingRank;
   const safetyMargin = window > 0 ? (closingRank - rank) / window : 1;
-  return safetyMargin >= 0.15 ? "high" : "medium";
+  return safetyMargin >= 0.40 ? "high" : "medium";
 };
 
 interface BranchWithProb extends Branch {
@@ -163,18 +165,24 @@ export async function GET(request: NextRequest) {
       if (quickFilter === "domicile" && instState !== domicileState) continue;
       if (stateSearch && !instState.toLowerCase().includes(stateSearch.toLowerCase())) continue;
 
-      // Filter records by rank for this institute
+      // Filter records by rank for this institute.
+      // Eligible: rank ≤ CR × 1.15 (15% buffer for LOW-tier display)
+      // Reach   : CR × 1.15 < rank ≤ CR × 1.5  (still plausible — show closest one as LOW)
+      // Impossible: rank > CR × 1.5             (never shown)
       const eligibleBranchesForInst = records.filter(r => rank <= r.closingRank * 1.15);
-      const ineligibleBranchesForInst = records.filter(r => rank > r.closingRank * 1.15);
+      const reachCandidates = records.filter(
+        r => rank > r.closingRank * 1.15 && rank <= r.closingRank * 1.5
+      );
 
       // Only show this college if they have at least one eligible branch
       if (eligibleBranchesForInst.length === 0) continue;
 
       let reachBranch: JoSAARecord | null = null;
-      if (ineligibleBranchesForInst.length > 0) {
-        // Find the ineligible branch with the highest closing rank (the "easiest" one they missed)
-        reachBranch = ineligibleBranchesForInst.reduce((prev, current) =>
-          prev.closingRank < current.closingRank ? prev : current
+      if (reachCandidates.length > 0) {
+        // Closest reach = ineligible branch with the HIGHEST closing rank
+        // (higher CR = more inclusive = fewest ranks away from user's rank)
+        reachBranch = reachCandidates.reduce((prev, current) =>
+          prev.closingRank > current.closingRank ? prev : current
         );
       }
 
