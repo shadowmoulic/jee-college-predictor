@@ -29,9 +29,13 @@ function load2025RoundFiles(): JoSAARecord[] {
   const recordsMap = new Map<string, JoSAARecord>();
 
   for (const file of roundFiles) {
+    const match = file.match(/round(\d+)/i);
+    const round = match ? parseInt(match[1], 10) : 0;
+    if (isNaN(round) || round === 0) continue;
+
     try {
       const raw = readFileSync(join(dataDir, file), "utf-8");
-      const parsed = parse2025RoundCSV(raw);
+      const parsed = parse2025RoundCSV(raw, round);
       
       for (const r of parsed) {
         const key = `${r.year}|${r.round}|${r.institute}|${r.program}|${r.quota}|${r.seatType}|${r.gender}`;

@@ -75,7 +75,7 @@ function normalizeGender(raw: string): JoSAARecord["gender"] {
  * @param csv    Raw CSV text
  * @param round  Round number (extracted from filename, e.g. 6 for "2025_round6.csv")
  */
-export function parse2025RoundCSV(csv: string): JoSAARecord[] {
+export function parse2025RoundCSV(csv: string, fileRound: number): JoSAARecord[] {
   const lines = csv.split(/\r?\n/).filter(Boolean);
   if (lines.length < 2) return [];
 
@@ -97,9 +97,12 @@ export function parse2025RoundCSV(csv: string): JoSAARecord[] {
     const gender = normalizeGender(genderRaw);
     const instType = inferInstType(institute);
 
-    const key = `${institute}|${program}|${quota}|${seatType}|${gender}`;
-    const round = (seenCounts.get(key) || 0) + 1;
-    seenCounts.set(key, round);
+    let round = fileRound;
+    if (instType === "IIT") {
+      const key = `${institute}|${program}|${quota}|${seatType}|${gender}`;
+      round = (seenCounts.get(key) || 0) + 1;
+      seenCounts.set(key, round);
+    }
 
     records.push({
       institute,
