@@ -57,8 +57,13 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const data = await getCollegeDetail(id);
   const name = data?.name ?? id.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
   return {
-    title: `${name} | JoSAA Cutoffs | mathongo`,
-    description: `View JoSAA ${data?.dataYear ?? 2024} opening and closing ranks for all programs at ${name}.`,
+    title: `${name} — JoSAA 2026 Cutoffs & Branch-wise Admission Data`,
+    description: `View JoSAA 2026 opening and closing ranks for all programs at ${name}. Check branch-wise cutoffs, seat types, quotas, and placement data.`,
+    keywords: [`${name} cutoff`, `${name} JoSAA`, `${name} admission rank`, "JoSAA 2026 cutoff"],
+    openGraph: {
+      title: `${name} — JoSAA 2026 Cutoffs | Nexus Predictor`,
+      description: `Branch-wise JoSAA 2026 cutoff ranks and admission data for ${name}.`,
+    },
   };
 }
 

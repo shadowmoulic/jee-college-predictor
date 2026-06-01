@@ -2,9 +2,22 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "All Colleges | JoSAA — IITs, NITs, IIITs | Nexus Predictor",
+  title: "All JoSAA Colleges 2026 — IITs, NITs, IIITs & GFTIs",
   description:
-    "Browse all IITs, NITs, IIITs participating in JoSAA with cutoff data, placement stats, and fees.",
+    "Browse all IITs, NITs, IIITs, and GFTIs participating in JoSAA 2026. View JoSAA cutoff ranks, placement stats, fees, and branch-wise admission data for every college.",
+  keywords: [
+    "JoSAA colleges list 2026",
+    "IIT NIT IIIT colleges",
+    "JoSAA participating institutes",
+    "JEE college list",
+    "NIT cutoff 2025",
+    "IIT cutoff 2025",
+  ],
+  openGraph: {
+    title: "All JoSAA Colleges 2026 — IITs, NITs, IIITs & GFTIs | Nexus Predictor",
+    description:
+      "Browse all JoSAA 2026 colleges with cutoff ranks, fees, and placement data.",
+  },
 };
 
 interface CollegeEntry {
