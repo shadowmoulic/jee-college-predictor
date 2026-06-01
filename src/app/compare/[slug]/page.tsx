@@ -5,6 +5,7 @@ import { getInstituteId } from "@/app/data";
 import { getPlacementForCollege } from "@/lib/placement-data";
 import { notFound } from "next/navigation";
 import CollegeCutoffTable from "@/components/college/CollegeCutoffTable";
+import CompareFAQs from "@/components/compare/CompareFAQs";
 
 export async function generateStaticParams() {
   const slugs = getPopularCompareSlugs();
@@ -191,6 +192,20 @@ export default async function CompareSlugPage({ params }: { params: Promise<{ sl
           <CollegeCutoffTable cutoffs={cutoffs2} typeColor="#ea580c" />
         </div>
 
+        <CompareFAQs 
+          c1Short={c1Short}
+          c2Short={c2Short}
+          c1Name={c1Name}
+          c2Name={c2Name}
+          fee1={c1Info.courseFee}
+          fee2={c2Info.courseFee}
+          avgPackage1={placement1?.avgPackage}
+          avgPackage2={placement2?.avgPackage}
+          highestPackage1={placement1?.highestPackage}
+          highestPackage2={placement2?.highestPackage}
+          placementRate1={placement1?.placementRate}
+          placementRate2={placement2?.placementRate}
+        />
       </main>
     </div>
   );
