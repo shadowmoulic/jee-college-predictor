@@ -10,8 +10,6 @@ export interface CollegeContext {
   name: string;
   shortName?: string;
   instituteType?: string;
-  avgPackage?: string;
-  placementRate?: string;
 }
 
 interface Props {
@@ -27,17 +25,17 @@ interface Props {
 }
 
 const GENERIC_SUGGESTIONS = [
-  "What is the best branch under my rank?",
-  "How does home state quota work?",
-  "Which IIT has the best CS placements?",
-  "How do JoSAA counselling rounds work?",
+  "Show my top options with a full table",
+  "I want CS/ECE — what's the best I can get?",
+  "I'm interested in core engineering, what should I pick?",
+  "How does home state quota change my options?",
 ];
 
 const COLLEGE_SUGGESTIONS = [
-  "Why is this branch a good choice?",
-  "Compare with IIT Madras",
-  "Show placement trends",
-  "What are alternative safer options?",
+  "Why is this the best choice for me?",
+  "What are safer alternatives to this branch?",
+  "What career paths does this branch open?",
+  "Is a dual degree worth it here?",
 ];
 
 // ── Inline markdown helpers ────────────────────────────────────────────────────

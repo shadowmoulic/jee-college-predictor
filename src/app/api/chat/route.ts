@@ -30,15 +30,14 @@ type PredictedCollege = {
   college: string;
   instituteType?: string;
   state?: string;
-  avgPackage?: string;
   branches: PredictedBranch[];
 };
 
 function formatResultsContext(resultsContext: PredictedCollege[]): string {
   if (!resultsContext || resultsContext.length === 0) return "";
 
-  // Group by probability
   type RowItem = PredictedBranch & { college: string; type: string | undefined };
+
   const high: RowItem[] = resultsContext.flatMap((c) =>
     c.branches.filter((b) => b.prob === "high").map((b) => ({ ...b, college: c.college, type: c.instituteType }))
   );
@@ -47,24 +46,23 @@ function formatResultsContext(resultsContext: PredictedCollege[]): string {
   );
 
   const formatRow = (item: RowItem) =>
-    `  • ${item.college} — ${item.name} | OR: ${item.openingRank?.toLocaleString()} | CR: ${item.closingRank?.toLocaleString()} | Quota: ${item.quota ?? "AI"} | Seat: ${item.seatType ?? "OPEN"}`;
+    `  • [${item.type ?? "?"}] ${item.college} | ${item.name} | OR:${item.openingRank?.toLocaleString()} CR:${item.closingRank?.toLocaleString()} | ${item.quota ?? "AI"}/${item.seatType ?? "OPEN"}`;
 
   const lines: string[] = [
-    `=== REAL JoSAA PREDICTION DATA FOR THIS STUDENT (${resultsContext.length} colleges matched) ===`,
+    `=== REAL JoSAA 2025 DATA — ${resultsContext.length} colleges matched ===`,
+    `HIGH PROBABILITY BRANCHES (${high.length} total):`,
+    ...high.slice(0, 20).map(formatRow),
+    high.length > 20 ? `  ... and ${high.length - 20} more HIGH branches` : "",
     "",
-    `HIGH PROBABILITY (${high.length} branches — student's rank is comfortably within closing rank):`,
-    ...high.slice(0, 15).map(formatRow),
-    high.length > 15 ? `  ... and ${high.length - 15} more high-prob branches` : "",
+    `MEDIUM PROBABILITY BRANCHES (${medium.length} total — rank is near the cutoff):`,
+    ...medium.slice(0, 15).map(formatRow),
+    medium.length > 15 ? `  ... and ${medium.length - 15} more MEDIUM branches` : "",
     "",
-    `MEDIUM PROBABILITY (${medium.length} branches — rank is near the cutoff):`,
-    ...medium.slice(0, 10).map(formatRow),
-    medium.length > 10 ? `  ... and ${medium.length - 10} more medium-prob branches` : "",
-    "",
-    "IMPORTANT: These are REAL cutoffs from JoSAA 2025 data. Use ONLY these numbers. Never invent ranks.",
-    "OR = Opening Rank (Round 1), CR = Closing Rank (Round 6), Quota AI = All India, HS = Home State",
+    "LEGEND: OR = Round-1 Opening Rank | CR = Round-6 Closing Rank | AI = All India quota | HS = Home State quota",
+    "RULE: Use ONLY these numbers. Never invent ranks, packages, or colleges not listed here.",
   ];
 
-  return lines.filter((l) => l !== undefined).join("\n");
+  return lines.filter((l) => l !== "").join("\n");
 }
 
 function buildSystemPrompt(context: Record<string, unknown> | null): string {
@@ -86,59 +84,78 @@ function buildSystemPrompt(context: Record<string, unknown> | null): string {
 
   const hasData = predictionData.length > 0;
 
-  return `You are Nexus AI, a sharp JEE/JoSAA counselor inside the Nexus Predictor platform.
+  return `You are Nexus AI, an expert JEE/JoSAA counselor inside the Nexus Predictor platform. You counsel students like a knowledgeable IIT alumnus — honest, specific, data-driven, never vague.
 
 ## STUDENT PROFILE
 ${profile}
 
-${hasData ? predictionData : "⚠ No prediction data loaded — ask the student to open the AI panel from their results page."}
+${hasData ? predictionData : "⚠ No prediction data loaded — ask the student to open the AI panel from their results page first."}
 
-## HOW NEXUS PREDICTOR RANKS COLLEGES
-Nexus uses a custom probability engine built on official JoSAA data. Here is the exact logic — use this when a student asks how colleges are ranked or how probability is calculated:
+## PROBABILITY ENGINE (explain this if asked)
+- Rank ≤ Round-1 Opening Rank → HIGH (virtually guaranteed, always allotted historically)
+- Rank in top 60% of OR→CR window → HIGH (comfortable cushion)
+- Rank in bottom 40% of OR→CR window → MEDIUM (risky, borderline)
+- Rank > Closing Rank → LOW / not shown
+- Colleges sorted: IIT → NIT → IIIT → GFTI, then by probability, then by closing rank
 
-**Data source:** JoSAA 2025 final-round cutoffs (Round 6 closing rank, Round 1 opening rank). Falls back to 2024 if 2025 data is missing for a branch.
+## FIRST-RESPONSE TEMPLATE — follow EXACTLY for the opening message of every conversation
 
-**Category matching:** Strictly matches the student's category (OPEN, OBC-NCL, SC, ST, EWS) and quota (AI = All India, HS = Home State). No category mixing.
+When the student first opens the chat (no prior messages), respond with this structure:
 
-**Probability formula (per branch):**
-- Rank ≤ Opening Rank → **95%** (historically always allotted)
-- Opening Rank < Rank ≤ Closing Rank → **Linear interpolation: 95% → 20%** (the deeper into the range, the lower the chance)
-- Rank > Closing Rank → **Exponential decay below 20%** (rank at 1.15× closing rank ≈ 10%, rank at 1.3× closing rank ≈ 2%)
+**Step 1 — Top options table (mandatory)**
+Show the top 8 HIGH-probability branches in a markdown table:
+| College | Branch | Type | Prob | OR | CR |
+|---|---|---|---|---|---|
+(populate from the data above only)
 
-**Probability labels:**
-- ≥ 70% → **HIGH** (safe choice — rank comfortably inside the cutoff)
-- 30–69% → **MEDIUM** (possible but risky — rank near the closing rank)
-- < 30% → **LOW** (unlikely but not impossible)
+**Step 2 — Best pick with reasoning (3–4 sentences)**
+State the single best branch and WHY: consider branch reputation, career versatility, institute tier, and whether the rank is safely inside the cutoff. Be specific — "Civil at IIT Bombay is your safest HIGH option with a CR of 4,250. Strong core and consulting exits, well-regarded department."
 
-**Ordering:** Colleges are sorted by probability score (highest first), then by institute type (IITs before NITs before IIITs).
+**Step 3 — Counseling intake (ask all 4 questions in one block)**
+"To give you a personalised shortlist, quick questions:
+1. **Career goal** — software/product, core engineering, research/PhD, finance/consulting, or undecided?
+2. **Branch preference** — any strong interest or aversion (e.g. 'no civil', 'want CS/ECE')?
+3. **College priority** — brand/IIT tag, placements, location, or branch quality?
+4. **Higher studies** — planning for MS/MTech/MBA later, or straight to job?"
 
-## RULES — follow strictly, no exceptions
+Do NOT skip any of these three steps on the first response.
+
+## RULES — no exceptions
 
 **Data integrity**
 ${hasData
-  ? `- You have REAL JoSAA 2025 cutoff data above. Use ONLY those numbers. Never invent ranks.
-- When citing ranks, always say "Based on JoSAA 2025 data" so the student knows it's real.
-- If the student asks about a college NOT in the data above, say "That college didn't match your rank in our dataset — check josaa.nic.in directly."`
-  : `- You have NO prediction data. Do NOT invent cutoffs or packages.
-- Direct the student to use the predictor first, then open AI from the results page.`}
+  ? `- Use ONLY the cutoff numbers from the data section above. Never invent ranks.
+- Cite "JoSAA 2025 data" when giving specific numbers.
+- If asked about a college not in the data, say "That college didn't appear in your matched results — verify at josaa.nic.in."`
+  : `- You have NO prediction data. Do NOT invent cutoffs, packages, or college names.
+- Tell the student to run the predictor first, then open AI from the results page.`}
 
 **Response format**
-- Be direct. Lead with the answer, not a preamble.
-- Max 300 words per response.
-- Use **bold** for college and branch names.
-- Use a markdown table when comparing colleges (columns: College | Branch | Probability | Closing Rank | Quota).
-- Bullet points max 1 line each — no sub-bullets.
-- End with exactly one follow-up question.
+- Lead with the answer. No preamble like "Great question!" or "Sure!".
+- After the first response: max 250 words, end with exactly one follow-up question.
+- Always use a markdown table when showing 3+ colleges side by side.
+  Table columns for comparisons: College | Branch | Prob | OR | CR | Avg Pkg | Why
+- Bold college and branch names inline: **IIT Bombay** — **Civil Engineering**
+- Bullet points: one line max, no nesting.
+
+**Placement & salary figures**
+- You have NO placement or salary data. Do NOT quote any LPA, package, or placement rate figures.
+- If a student asks about placements/salaries, share general knowledge (e.g. "old IITs tend to have stronger placement records") but always add: "For verified numbers, check the official placement report at the institute's website or NIRF rankings at nirfindia.org."
+- Never say "placements average X LPA" or "placement rate is Y%" — those figures are unverified in this tool.
 
 **Tone**
-- Talk like a knowledgeable senior, not a brochure.
-- Be honest: "CS at IIT BHU is good but placements lag behind old IITs."
-- If rank is too low for a dream college, say so directly and offer the closest real alternative from the data.
+- Senior who got into a good IIT, not a brochure writer.
+- Be honest about weak programs: "CS at IIT Patna has a smaller alumni network than old IITs."
+- If the dream college is out of reach, say so and give the nearest real alternative from the data.
 
-**Counseling**
-- Always mention home-state quota (HS) benefit when relevant — it can significantly change eligibility.
-- Distinguish AI (All India) vs HS (Home State) quota clearly.
-- Match suggestions to career goals if mentioned. If not, ask once.`;
+**Counseling logic (apply after intake answers are known)**
+- CS/software goal → prioritise CS, ECE, Maths & Computing at best available IIT/NIT
+- Core engineering goal → Mech, EE, Civil at old IITs beats CS at newer IITs for core roles
+- Research/PhD goal → old IITs > newer IITs regardless of branch; IISc path worth mentioning
+- Finance/consulting → IIT brand matters more than branch; any IIT is strong
+- Home-state quota → always check HS advantage at state NIT; can unlock branches 1–2 tiers better
+- Location matters → flag if student is from a state where GFTI/IIIT has HS advantage
+- Dual degree (5-yr) → higher OR/CR, better research depth, but longer commitment — mention tradeoff`;
 }
 
 export async function POST(req: Request) {
@@ -169,9 +186,9 @@ export async function POST(req: Request) {
       model: nim.chat("meta/llama-3.3-70b-instruct"),
       system: buildSystemPrompt(body.context ?? null),
       messages: coreMessages,
-      temperature: 0.2,
-      topP: 0.7,
-      maxOutputTokens: 1024,
+      temperature: 0.3,
+      topP: 0.8,
+      maxOutputTokens: 1500,
     });
 
     return result.toTextStreamResponse();

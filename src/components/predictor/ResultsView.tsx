@@ -80,7 +80,6 @@ export default function ResultsView({
       college: c.name,
       instituteType: c.instituteType,
       state: c.state,
-      avgPackage: c.avgPackage,
       branches: c.branches.map((b) => ({
         name: b.name,
         degree: b.degree,
@@ -119,10 +118,8 @@ export default function ResultsView({
           setContextCollege({
             id: college.id,
             name: college.name,
-            shortName: college.logo, // college.logo holds short name in some datasets; use name fallback
+            shortName: college.logo,
             instituteType: college.instituteType,
-            avgPackage: college.avgPackage,
-            placementRate: college.placementRate,
           });
         }
       }
@@ -140,8 +137,6 @@ export default function ResultsView({
           id: enriched.id,
           name: enriched.name,
           instituteType: enriched.instituteType,
-          avgPackage: enriched.avgPackage,
-          placementRate: enriched.placementRate,
         });
       }
     },

@@ -82,9 +82,9 @@ export default function BranchModal({ modalData, rank, onClose }: Props) {
         <div className={styles.modalHeader}>
           <div className={styles.modalHeaderInfo}>
             <div style={{ flex: 1, minWidth: 0, textAlign: "center" }}>
-              <div className={styles.modalChancesTitle}>JEE Advance Admission Chances</div>
-              <div className={styles.modalProbPillLargeWrapper}>
-                <span className={`${styles.probPillLarge} ${styles[branch.prob]}`}>
+              <div className={`${styles.modalChancesTitle} font-extrabold`}>JEE Advance Admission Chances</div>
+              <div className={`${styles.modalProbPillLargeWrapper} font-extrabold`}>
+                <span className={`${styles.probPillLarge}`}>
                   {branch.prob.toUpperCase()}
                 </span>
               </div>
@@ -99,14 +99,14 @@ export default function BranchModal({ modalData, rank, onClose }: Props) {
         </div>
 
         <div className={styles.modalBody}>
-          <div className={styles.modalRankRow}>
-            <div className={styles.modalRankCol}>
-              <div className={styles.modalRankLabel}>OPENING RANK</div>
+          <div className={`${styles.modalRankRow} flex gap-4`}>
+            <div className={styles.modalRankRow}>
+              <div className={`${styles.modalRankLabel}  font-extrabold`}>OPENING RANK</div>
               <div className={styles.modalRankValue}>{branch.opening.toLocaleString()}</div>
             </div>
             <div className={styles.modalRankDivider}></div>
-            <div className={styles.modalRankCol}>
-              <div className={styles.modalRankLabel}>CLOSING RANK</div>
+            <div className={styles.modalRankRow}>
+              <div className={`${styles.modalRankLabel}  font-extrabold`}>CLOSING RANK</div>
               <div className={styles.modalRankValue}>{branch.closing.toLocaleString()}</div>
             </div>
           </div>
@@ -127,14 +127,11 @@ export default function BranchModal({ modalData, rank, onClose }: Props) {
           <div className={styles.modalActions}>
             <button className={styles.placementBtn}>
               Check Placement Statistics
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
             </button>
           </div>
 
           {/* Historical rounds table */}
-          <div style={{ fontWeight: 800, fontSize: "1rem", marginBottom: "14px", marginTop: "1rem", color: "var(--text)" }}>
+          <div style={{ fontWeight: 800, fontSize: "1rem", marginBottom: "4px", marginTop: "2px", color: "var(--text)" }}>
             Round-wise Cutoffs
           </div>
           {historyLoading ? (
