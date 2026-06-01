@@ -158,3 +158,108 @@ export function getAvailableYears(): number[] {
   return [...yearSet].sort((a, b) => b - a);
 }
 
+/**
+ * Returns pre-defined popular comparison slugs (e.g. iit-bombay-vs-iit-delhi) 
+ * for programmatic SEO and sitemap generation.
+ */
+export function getPopularCompareSlugs(): string[] {
+  const allRecords = getJosaaData();
+  const iitNames = Array.from(new Set(allRecords.filter(r => r.instituteType === 'IIT').map(r => r.institute)));
+  const nitNames = Array.from(new Set(allRecords.filter(r => r.instituteType === 'NIT').map(r => r.institute)));
+  const iiitNames = Array.from(new Set(allRecords.filter(r => r.instituteType === 'IIIT').map(r => r.institute)));
+
+  const findByName = (list: string[], key: string) => list.find(n => n.toLowerCase().includes(key.toLowerCase()));
+
+  const topIits = [
+    findByName(iitNames, 'bombay'),
+    findByName(iitNames, 'delhi'),
+    findByName(iitNames, 'madras'),
+    findByName(iitNames, 'kanpur'),
+    findByName(iitNames, 'kharagpur'),
+    findByName(iitNames, 'roorkee'),
+    findByName(iitNames, 'guwahati'),
+    findByName(iitNames, 'hyderabad'),
+    findByName(iitNames, 'varanasi'), // IIT BHU
+    findByName(iitNames, 'indore'),
+    findByName(iitNames, 'gandhinagar'),
+    findByName(iitNames, 'ropar'),
+  ].filter(Boolean) as string[];
+
+  const topNits = [
+    findByName(nitNames, 'tiruchirappalli'),
+    findByName(nitNames, 'surathkal'),
+    findByName(nitNames, 'rourkela'),
+    findByName(nitNames, 'warangal'),
+    findByName(nitNames, 'calicut'),
+    findByName(nitNames, 'nagpur'),
+    findByName(nitNames, 'jaipur'),
+    findByName(nitNames, 'allahabad'),
+    findByName(nitNames, 'kurukshetra'),
+    findByName(nitNames, 'surat'),
+    findByName(nitNames, 'bhopal'),
+    findByName(nitNames, 'delhi'),
+  ].filter(Boolean) as string[];
+
+  const topIiits = [
+    findByName(iiitNames, 'allahabad'),
+    findByName(iiitNames, 'gwalior'),
+    findByName(iiitNames, 'jabalpur'),
+    findByName(iiitNames, 'kancheepuram'),
+    findByName(iiitNames, 'lucknow'),
+    findByName(iiitNames, 'pune'),
+  ].filter(Boolean) as string[];
+
+  // Helper to get institute id
+  const getInstituteId = (name: string): string => {
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
+  };
+
+  const slugs: string[] = [];
+
+  // 1. IIT vs IIT (Top 12) -> 66 combinations
+  const topIitIds = topIits.map(getInstituteId);
+  for (let i = 0; i < topIitIds.length; i++) {
+    for (let j = i + 1; j < topIitIds.length; j++) {
+      slugs.push(`${topIitIds[i]}-vs-${topIitIds[j]}`);
+    }
+  }
+
+  // 2. NIT vs NIT (Top 12) -> 66 combinations
+  const topNitIds = topNits.map(getInstituteId);
+  for (let i = 0; i < topNitIds.length; i++) {
+    for (let j = i + 1; j < topNitIds.length; j++) {
+      slugs.push(`${topNitIds[i]}-vs-${topNitIds[j]}`);
+    }
+  }
+
+  // 3. IIIT vs IIIT (Top 6) -> 15 combinations
+  const topIiitIds = topIiits.map(getInstituteId);
+  for (let i = 0; i < topIiitIds.length; i++) {
+    for (let j = i + 1; j < topIiitIds.length; j++) {
+      slugs.push(`${topIiitIds[i]}-vs-${topIiitIds[j]}`);
+    }
+  }
+
+  // 4. Top 6 IIT vs Top 6 NIT -> 36 combinations
+  for (let i = 0; i < Math.min(topIitIds.length, 6); i++) {
+    for (let j = 0; j < Math.min(topNitIds.length, 6); j++) {
+      slugs.push(`${topIitIds[i]}-vs-${topNitIds[j]}`);
+    }
+  }
+
+  // 5. Top 6 NIT vs Top 6 IIIT -> 36 combinations
+  for (let i = 0; i < Math.min(topNitIds.length, 6); i++) {
+    for (let j = 0; j < Math.min(topIiitIds.length, 6); j++) {
+      slugs.push(`${topNitIds[i]}-vs-${topIiitIds[j]}`);
+    }
+  }
+
+  return Array.from(new Set(slugs));
+}
+
+

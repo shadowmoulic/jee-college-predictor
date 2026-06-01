@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
-import { getJosaaData } from '@/lib/josaa-data';
-import { getInstituteId, TOP_5_IITS, TOP_10_IITS } from '@/app/data';
+import { getJosaaData, getPopularCompareSlugs } from '@/lib/josaa-data';
+import { getInstituteId } from '@/app/data';
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://jee-college-predicter.vercel.app';
 
@@ -26,40 +26,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // 3. Top Compare routes (Programmatic SEO)
-  const compareRoutes: MetadataRoute.Sitemap = [];
-  const topIitIds = Array.from(TOP_10_IITS).map(getInstituteId);
-  
-  // Generate combinations of Top 10 IITs against each other
-  for (let i = 0; i < topIitIds.length; i++) {
-    for (let j = i + 1; j < topIitIds.length; j++) {
-      compareRoutes.push({
-        url: `${BASE_URL}/compare/${topIitIds[i]}-vs-${topIitIds[j]}`,
-        lastModified: new Date(),
-        changeFrequency: 'monthly',
-        priority: 0.7,
-      });
-    }
-  }
-
-  // Generate some top NIT combinations (hardcoded top 5 for sitemap size)
-  const topNits = [
-    'National Institute of Technology Tiruchirappalli',
-    'National Institute of Technology Karnataka Surathkal',
-    'National Institute of Technology Rourkela',
-    'National Institute of Technology Warangal',
-    'Motilal Nehru National Institute of Technology Allahabad'
-  ];
-  const topNitIds = topNits.map(getInstituteId);
-  for (let i = 0; i < topNitIds.length; i++) {
-    for (let j = i + 1; j < topNitIds.length; j++) {
-      compareRoutes.push({
-        url: `${BASE_URL}/compare/${topNitIds[i]}-vs-${topNitIds[j]}`,
-        lastModified: new Date(),
-        changeFrequency: 'monthly',
-        priority: 0.7,
-      });
-    }
-  }
+  const compareSlugs = getPopularCompareSlugs();
+  const compareRoutes: MetadataRoute.Sitemap = compareSlugs.map(slug => ({
+    url: `${BASE_URL}/compare/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.7,
+  }));
 
   return [...staticRoutes, ...collegeRoutes, ...compareRoutes];
 }
+

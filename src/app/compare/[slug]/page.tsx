@@ -1,23 +1,14 @@
 import Link from "next/link";
 import { Metadata } from "next";
-import { getJosaaData } from "@/lib/josaa-data";
-import { getInstituteId, TOP_10_IITS } from "@/app/data";
+import { getJosaaData, getPopularCompareSlugs } from "@/lib/josaa-data";
+import { getInstituteId } from "@/app/data";
 import { getPlacementForCollege } from "@/lib/placement-data";
 import { notFound } from "next/navigation";
 import CollegeCutoffTable from "@/components/college/CollegeCutoffTable";
 
 export async function generateStaticParams() {
-  // Pre-generate top combinations for programmatic SEO indexing
-  const topIitNames = Array.from(TOP_10_IITS).slice(0, 8); // Top 8 IITs
-  const topIits = topIitNames.map(name => getInstituteId(name));
-  
-  const params = [];
-  for (let i = 0; i < topIits.length; i++) {
-    for (let j = i + 1; j < topIits.length; j++) {
-      params.push({ slug: `${topIits[i]}-vs-${topIits[j]}` });
-    }
-  }
-  return params;
+  const slugs = getPopularCompareSlugs();
+  return slugs.map(slug => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
