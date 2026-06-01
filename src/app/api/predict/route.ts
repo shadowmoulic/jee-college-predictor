@@ -11,7 +11,7 @@ import {
   isProgramCS,
   isProgramCore,
 } from "../../data";
-import { getLatestCutoffData } from "@/lib/josaa-data";
+import { get2025BranchCutoffs } from "@/lib/josaa-data";
 import { getPlacementForCollege } from "@/lib/placement-data";
 
 /**
@@ -31,7 +31,9 @@ const getProbLabel = (
 ): "high" | "medium" | "low" => {
   if (rank > closingRank) return "low";
   if (rank <= openingRank) return "high";
-  const safetyMargin = (closingRank - rank) / closingRank;
+  // Safety margin: fraction of the OR→CR window still below the user's rank
+  const window = closingRank - openingRank;
+  const safetyMargin = window > 0 ? (closingRank - rank) / window : 1;
   return safetyMargin >= 0.15 ? "high" : "medium";
 };
 
@@ -113,7 +115,7 @@ export async function GET(request: NextRequest) {
     };
 
     // ─── Load records — 2025 final round, deduplicated ────────────────────
-    const allRecords = getLatestCutoffData();
+    const allRecords = get2025BranchCutoffs();
 
     // Step 1: Filter records that match category/gender/quota/exam (ignore rank for now)
     const validRecords = allRecords.filter((r: JoSAARecord) => {
@@ -171,8 +173,8 @@ export async function GET(request: NextRequest) {
       let reachBranch: JoSAARecord | null = null;
       if (ineligibleBranchesForInst.length > 0) {
         // Find the ineligible branch with the highest closing rank (the "easiest" one they missed)
-        reachBranch = ineligibleBranchesForInst.reduce((prev, current) => 
-          (prev.closingRank > current.closingRank) ? prev : current
+        reachBranch = ineligibleBranchesForInst.reduce((prev, current) =>
+          prev.closingRank < current.closingRank ? prev : current
         );
       }
 
@@ -323,9 +325,7 @@ export async function GET(request: NextRequest) {
       colleges: filtered,
       totalBranchesCount,
       totalCollegesCount,
-      dataSource: allRecords.length > 0
-        ? `JoSAA ${allRecords[0].year} Round ${allRecords[0].round}`
-        : "JoSAA (sample data)",
+      dataSource: allRecords.length > 0 ? "JoSAA 2025 (R1 OR → R6 CR)" : "JoSAA (sample data)",
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Unknown error";

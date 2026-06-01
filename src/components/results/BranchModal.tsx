@@ -61,6 +61,17 @@ export default function BranchModal({ modalData, rank, onClose }: Props) {
   const displayYears: number[] = historyData?.years ?? [];
   const displayRounds: number[] = historyData?.rounds ?? [];
 
+  // Years where all rounds share the same closing rank — only show value in the last round
+  const finalOnlyYears = new Set<number>(
+    displayYears.filter((year) => {
+      const yearCells = displayRounds.map((r) => getCell(year, r)).filter(Boolean) as HistoryEntry[];
+      if (yearCells.length < 2) return false;
+      const first = yearCells[0].closing;
+      return yearCells.every((c) => c.closing === first);
+    })
+  );
+  const lastRound = displayRounds.length > 0 ? Math.max(...displayRounds) : null;
+
   return (
     <div
       className={`${styles.modalOverlay} ${styles.openModal}`}
@@ -152,9 +163,11 @@ export default function BranchModal({ modalData, rank, onClose }: Props) {
                       <td>{round}</td>
                       {displayYears.map((year) => {
                         const cell = getCell(year, round);
+                        const isFinalOnly = finalOnlyYears.has(year);
+                        const showValue = cell && (!isFinalOnly || round === lastRound);
                         return (
-                          <td key={year}>
-                            {cell ? cell.closing.toLocaleString() : "—"}
+                          <td key={year} style={isFinalOnly && round !== lastRound ? { color: "var(--text-muted, #aaa)" } : undefined}>
+                            {showValue ? cell.closing.toLocaleString() : "—"}
                           </td>
                         );
                       })}

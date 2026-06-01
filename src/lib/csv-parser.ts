@@ -80,7 +80,6 @@ export function parse2025RoundCSV(csv: string, fileRound: number): JoSAARecord[]
   if (lines.length < 2) return [];
 
   const records: JoSAARecord[] = [];
-  const seenCounts = new Map<string, number>();
 
   for (let i = 1; i < lines.length; i++) {
     const fields = parseCSVRow(lines[i]);
@@ -97,13 +96,6 @@ export function parse2025RoundCSV(csv: string, fileRound: number): JoSAARecord[]
     const gender = normalizeGender(genderRaw);
     const instType = inferInstType(institute);
 
-    let round = fileRound;
-    if (instType === "IIT") {
-      const key = `${institute}|${program}|${quota}|${seatType}|${gender}`;
-      round = (seenCounts.get(key) || 0) + 1;
-      seenCounts.set(key, round);
-    }
-
     records.push({
       institute,
       instituteShort: inferShortName(institute),
@@ -117,7 +109,7 @@ export function parse2025RoundCSV(csv: string, fileRound: number): JoSAARecord[]
       openingRank,
       closingRank,
       year: 2025,
-      round,
+      round: fileRound,
       courseFee: FEE_MAP[instType] ?? "1.5 Lakh",
     });
   }
