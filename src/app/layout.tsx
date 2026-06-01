@@ -39,10 +39,17 @@ export const metadata = {
     title: "JEE College Predictor 2026 — IITs, NITs, IIITs | Nexus Predictor",
     description:
       "Enter your JEE rank and instantly see your IIT, NIT, and IIIT admission chances. Free, accurate, and powered by official JoSAA cutoff data.",
-    images: [{ url: "/icon.svg", width: 32, height: 32, alt: "Nexus Predictor" }],
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "JEE College Predictor 2026 — IITs, NITs, IIITs | Nexus Predictor",
+      },
+    ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "JEE College Predictor 2026 | Nexus Predictor",
     description:
       "Free JEE rank-based college predictor. Check your IIT, NIT & IIIT admission chances using JoSAA 2025 data.",
