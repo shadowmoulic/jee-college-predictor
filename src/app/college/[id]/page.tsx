@@ -1,6 +1,10 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Navbar from "@/components/layout/Navbar";
+import { getJosaaData } from "@/lib/josaa-data";
+import { getInstituteId } from "@/app/data";
+import { getPlacementForCollege } from "@/lib/placement-data";
+import CollegeCutoffTable from "@/components/college/CollegeCutoffTable";
 
 interface CutoffRecord {
   program: string;
@@ -57,12 +61,15 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const data = await getCollegeDetail(id);
   const name = data?.name ?? id.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
   return {
-    title: `${name} — JoSAA 2026 Cutoffs & Branch-wise Admission Data`,
-    description: `View JoSAA 2026 opening and closing ranks for all programs at ${name}. Check branch-wise cutoffs, seat types, quotas, and placement data.`,
-    keywords: [`${name} cutoff`, `${name} JoSAA`, `${name} admission rank`, "JoSAA 2026 cutoff"],
+    title: `Is ${name} Worth It? Placements, Cutoffs & Fees (2026)`,
+    description: `Don't join ${name} without reading this. Discover branch-wise JoSAA 2026 cutoff ranks, hidden placement data, seat matrix, and total fees.`,
+    keywords: [`${name} cutoff`, `${name} JoSAA`, `${name} placements`, "JoSAA 2026 cutoff", "JEE Main", "JEE Advanced"],
     openGraph: {
-      title: `${name} — JoSAA 2026 Cutoffs | Nexus Predictor`,
-      description: `Branch-wise JoSAA 2026 cutoff ranks and admission data for ${name}.`,
+      title: `${name} 2026 Cutoffs & Placement Review`,
+      description: `Complete breakdown of JoSAA 2026 admission data and package statistics for ${name}.`,
+    },
+    alternates: {
+      canonical: `/college/${id}`,
     },
   };
 }
@@ -182,80 +189,7 @@ export default async function CollegeDetailPage({ params }: { params: Promise<{ 
           Opening &amp; Closing Ranks — {data.dataYear} Round {data.dataRound}
         </h2>
 
-        <div style={{
-          background: "#fff", border: "1px solid var(--border)", borderRadius: 20,
-          overflow: "hidden", boxShadow: "var(--shadow-sm)",
-        }}>
-          <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 700 }}>
-              <thead>
-                <tr style={{ background: "var(--table-head)", borderBottom: "2px solid var(--border)" }}>
-                  {["Program", "Degree", "Quota", "Seat Type", "Gender", "Opening", "Closing"].map((h) => (
-                    <th key={h} style={{
-                      padding: "14px 16px", textAlign: "left", fontSize: "0.78rem",
-                      fontWeight: 800, color: "var(--text)", whiteSpace: "nowrap",
-                      textTransform: "uppercase", letterSpacing: "0.04em",
-                    }}>
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {data.cutoffs.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} style={{ padding: "3rem", textAlign: "center", color: "var(--text-muted)" }}>
-                      No cutoff data available.
-                    </td>
-                  </tr>
-                ) : (
-                  data.cutoffs.map((r, i) => {
-                    const sc = SEAT_COLORS[r.seatType] ?? { bg: "var(--surface-3)", text: "var(--text-secondary)" };
-                    return (
-                      <tr key={i} style={{
-                        borderTop: "1px solid var(--border-light)",
-                        background: i % 2 === 0 ? "#fff" : "var(--surface-2)",
-                        transition: "background 0.15s",
-                      }}>
-                        <td style={{ padding: "13px 16px", fontWeight: 700, fontSize: "0.9rem", color: "var(--text)" }}>
-                          {r.program}
-                        </td>
-                        <td style={{ padding: "13px 16px", fontSize: "0.82rem", color: "var(--text-secondary)" }}>
-                          {r.degree}
-                        </td>
-                        <td style={{ padding: "13px 16px" }}>
-                          <span style={{
-                            background: "var(--brand-soft)", color: "var(--brand)",
-                            padding: "3px 8px", borderRadius: 6, fontSize: "0.75rem", fontWeight: 700,
-                          }}>
-                            {r.quota}
-                          </span>
-                        </td>
-                        <td style={{ padding: "13px 16px" }}>
-                          <span style={{
-                            background: sc.bg, color: sc.text,
-                            padding: "3px 8px", borderRadius: 6, fontSize: "0.75rem", fontWeight: 700,
-                          }}>
-                            {r.seatType}
-                          </span>
-                        </td>
-                        <td style={{ padding: "13px 16px", fontSize: "0.82rem", color: "var(--text-secondary)" }}>
-                          {r.gender === "Female-only" ? "♀ Female" : "All"}
-                        </td>
-                        <td style={{ padding: "13px 16px", fontWeight: 700, color: "var(--success)", fontSize: "0.92rem" }}>
-                          {r.openingRank.toLocaleString()}
-                        </td>
-                        <td style={{ padding: "13px 16px", fontWeight: 800, color: typeColor, fontSize: "0.95rem" }}>
-                          {r.closingRank.toLocaleString()}
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <CollegeCutoffTable cutoffs={data.cutoffs} typeColor={typeColor} />
 
         <div style={{ marginTop: "1.5rem", textAlign: "center" }}>
           <Link
