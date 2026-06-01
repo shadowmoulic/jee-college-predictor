@@ -172,8 +172,14 @@ export default function CollegeCard({ college, domicileState, collapsed, onToggl
                       {b.prob.toUpperCase()}
                     </span>
                     <div style={{ display: "flex", gap: "12px", marginLeft: "auto" }}>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>OR: <span style={{ color: "var(--text)" }}>{b.opening}</span></span>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>CR: <span style={{ color: "var(--text)" }}>{b.closing}</span></span>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--success)', fontWeight: 800, background: '#dcfce7', padding: '2px 8px', borderRadius: '6px' }}>
+                        <span style={{ fontSize: '0.7rem', fontWeight: 700, opacity: 0.85, marginRight: '3px' }}>OR</span> 
+                        {b.opening}
+                      </span>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--danger)', fontWeight: 800, background: '#fee2e2', padding: '2px 8px', borderRadius: '6px' }}>
+                        <span style={{ fontSize: '0.7rem', fontWeight: 700, opacity: 0.85, marginRight: '3px' }}>CR</span> 
+                        {b.closing}
+                      </span>
                     </div>
                   </div>
                   <div style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--text)', marginBottom: '4px', lineHeight: 1.3 }}>{b.name}</div>

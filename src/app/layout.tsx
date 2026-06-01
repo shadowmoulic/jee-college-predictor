@@ -14,6 +14,11 @@ export const metadata = {
   title: "JEE Advanced College Predictor 2026 (JoSAA) | Nexus Predictor",
   description:
     "Advanced AI-powered College Admission Predictor for JEE, NITs, and IIITs based on your JEE Advanced 2026 rank. Completely free, fast, and accurate — powered by official JoSAA data.",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
