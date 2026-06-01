@@ -1,10 +1,17 @@
-@import "tailwindcss/theme" layer(theme);
-@import "tailwindcss/utilities" layer(utilities);
+@import "tailwindcss";
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(16px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0)    scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
+
 .animate-slide-up {
   animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -16,7 +23,7 @@
   --brand-dark: #1040b0;
   --brand-light: #dbeafe;
   --brand-soft: #eff6ff;
-  --brand-glow: rgba(26,86,219,0.18);
+  --brand-glow: rgba(26, 86, 219, 0.18);
 
   /* ── Surfaces ───────────────────────────────── */
   --surface: #ffffff;
@@ -61,13 +68,13 @@
   --radius-xl: 28px;
 
   /* ── Shadows — narrative depth ────────────────── */
-  --shadow-xs: 0 1px 2px rgba(8,15,40,0.05);
-  --shadow-sm: 0 1px 3px rgba(8,15,40,0.07), 0 1px 2px rgba(8,15,40,0.04);
-  --shadow-md: 0 4px 16px rgba(8,15,40,0.08), 0 2px 6px rgba(8,15,40,0.04);
-  --shadow-lg: 0 12px 40px rgba(8,15,40,0.10), 0 4px 12px rgba(8,15,40,0.05);
-  --shadow-xl: 0 24px 64px rgba(8,15,40,0.12), 0 8px 24px rgba(8,15,40,0.06);
-  --shadow-brand: 0 6px 24px rgba(26,86,219,0.28);
-  --shadow-form: 0 32px 80px rgba(8,15,40,0.20);
+  --shadow-xs: 0 1px 2px rgba(8, 15, 40, 0.05);
+  --shadow-sm: 0 1px 3px rgba(8, 15, 40, 0.07), 0 1px 2px rgba(8, 15, 40, 0.04);
+  --shadow-md: 0 4px 16px rgba(8, 15, 40, 0.08), 0 2px 6px rgba(8, 15, 40, 0.04);
+  --shadow-lg: 0 12px 40px rgba(8, 15, 40, 0.10), 0 4px 12px rgba(8, 15, 40, 0.05);
+  --shadow-xl: 0 24px 64px rgba(8, 15, 40, 0.12), 0 8px 24px rgba(8, 15, 40, 0.06);
+  --shadow-brand: 0 6px 24px rgba(26, 86, 219, 0.28);
+  --shadow-form: 0 32px 80px rgba(8, 15, 40, 0.20);
 
   /* ── Type scale ───────────────────────────────── */
   --text-display: clamp(3.25rem, 6.5vw, 5.75rem);
@@ -80,10 +87,10 @@
   --text-2xs: 0.65rem;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 html {
@@ -105,6 +112,8 @@ a {
   text-decoration: none;
 }
 
-button, input, select {
+button,
+input,
+select {
   font-family: inherit;
 }

@@ -3,6 +3,7 @@
 import { useChat } from "@ai-sdk/react";
 import { TextStreamChatTransport } from "ai";
 import { useEffect, useMemo, useRef, useState } from "react";
+import styles from "./AICounselorPanel.module.css";
 
 export interface CollegeContext {
   id: string;
@@ -21,7 +22,6 @@ interface Props {
   gender: string;
   contextCollege: CollegeContext | null;
   onClose: () => void;
-  /** True when rendered as a mobile bottom-sheet overlay */
   isMobile?: boolean;
 }
 
@@ -32,24 +32,23 @@ const GENERIC_SUGGESTIONS = [
   "How do JoSAA counselling rounds work?",
 ];
 
-function getCollegeSuggestions(college: CollegeContext): string[] {
-  const name = college.shortName || college.name.replace("Indian Institute of Technology ", "IIT ");
-  return [
-    `Why is ${name} recommended for me?`,
-    `Compare ${name} with other top IITs`,
-    `What are the placement stats at ${name}?`,
-    `Which branch at ${name} suits my rank best?`,
-  ];
-}
+const COLLEGE_SUGGESTIONS = [
+  "Why is this branch a good choice?",
+  "Compare with IIT Madras",
+  "Show placement trends",
+  "What are alternative safer options?",
+];
 
-/** Render a single line of AI text, converting **bold** to <strong> safely */
+// ── Inline markdown helpers ────────────────────────────────────────────────────
+
 function InlineMd({ text }: { text: string }) {
-  const segments = text.split(/(\*\*.*?\*\*)/g);
   return (
     <>
-      {segments.map((seg, i) =>
+      {text.split(/(\*\*.*?\*\*)/g).map((seg, i) =>
         seg.startsWith("**") && seg.endsWith("**") ? (
-          <strong key={i}>{seg.slice(2, -2)}</strong>
+          <strong key={i} style={{ fontWeight: 600, color: "#1e293b" }}>
+            {seg.slice(2, -2)}
+          </strong>
         ) : (
           <span key={i}>{seg}</span>
         )
@@ -58,76 +57,229 @@ function InlineMd({ text }: { text: string }) {
   );
 }
 
-/** Render AI message text with bullet lists, numbered lists, and inline bold */
-function AIMessageBody({ text }: { text: string }) {
-  const lines = text.split("\n");
+function parseTableRow(line: string) {
+  return line.split("|").filter(Boolean).map((s) => s.trim());
+}
+
+function MarkdownTable({ lines }: { lines: string[] }) {
+  const headers = parseTableRow(lines[0]);
+  const rows = lines.slice(2).map(parseTableRow);
   return (
-    <div className="space-y-1.5 text-sm leading-relaxed">
-      {lines.map((line, i) => {
-        if (!line.trim()) return <div key={i} className="h-1" />;
-
-        // Heading: ## or #
-        if (/^#{1,3}\s/.test(line)) {
-          const content = line.replace(/^#{1,3}\s/, "");
-          return (
-            <p key={i} className="font-bold text-[var(--text)] mt-2">
-              <InlineMd text={content} />
-            </p>
-          );
-        }
-
-        // Bullet
-        if (/^[-•*]\s/.test(line)) {
-          return (
-            <div key={i} className="flex gap-2 items-start">
-              <div className="mt-[7px] w-1.5 h-1.5 rounded-full bg-[var(--brand)] flex-shrink-0" />
-              <span className="text-[var(--text)]">
-                <InlineMd text={line.replace(/^[-•*]\s/, "")} />
-              </span>
-            </div>
-          );
-        }
-
-        // Numbered list
-        const numMatch = line.match(/^(\d+)\.\s(.*)/);
-        if (numMatch) {
-          return (
-            <div key={i} className="flex gap-2 items-start">
-              <span className="text-[var(--brand)] font-bold text-xs mt-[3px] flex-shrink-0 w-4">
-                {numMatch[1]}.
-              </span>
-              <span className="text-[var(--text)]">
-                <InlineMd text={numMatch[2]} />
-              </span>
-            </div>
-          );
-        }
-
-        return (
-          <p key={i} className="text-[var(--text)]">
-            <InlineMd text={line} />
-          </p>
-        );
-      })}
+    <div className={styles.mdTableWrap}>
+      <table className={styles.mdTable}>
+        <thead>
+          <tr>
+            {headers.map((h, i) => (
+              <th key={i}><InlineMd text={h} /></th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, rIdx) => (
+            <tr key={rIdx}>
+              {row.map((cell, cIdx) => (
+                <td key={cIdx}><InlineMd text={cell} /></td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
 
+function AIMessageBody({ text }: { text: string }) {
+  const elements: React.ReactNode[] = [];
+  const lines = text.split("\n");
+  let i = 0;
+
+  while (i < lines.length) {
+    const line = lines[i];
+
+    if (!line.trim()) {
+      elements.push(<div key={i} className={styles.mdSpacer} />);
+      i++;
+      continue;
+    }
+
+    const isTableStart =
+      line.trim().startsWith("|") &&
+      lines[i + 1]?.trim().startsWith("|") &&
+      lines[i + 1].includes("---");
+
+    if (isTableStart) {
+      const tableLines: string[] = [];
+      while (i < lines.length && lines[i].trim().startsWith("|")) {
+        tableLines.push(lines[i++]);
+      }
+      elements.push(<MarkdownTable key={`table-${i}`} lines={tableLines} />);
+      continue;
+    }
+
+    const headingMatch = line.match(/^#{1,3}\s(.*)/);
+    if (headingMatch) {
+      elements.push(
+        <p key={i} className={styles.mdHeading}>
+          <InlineMd text={headingMatch[1]} />
+        </p>
+      );
+      i++;
+      continue;
+    }
+
+    const bulletMatch = line.match(/^[-•*]\s(.*)/);
+    if (bulletMatch) {
+      elements.push(
+        <div key={i} className={styles.mdBullet}>
+          <div className={styles.mdBulletDot} />
+          <span className={styles.mdBulletText}><InlineMd text={bulletMatch[1]} /></span>
+        </div>
+      );
+      i++;
+      continue;
+    }
+
+    const numberedMatch = line.match(/^(\d+)\.\s(.*)/);
+    if (numberedMatch) {
+      elements.push(
+        <div key={i} className={styles.mdNumbered}>
+          <span className={styles.mdNumberLabel}>{numberedMatch[1]}.</span>
+          <span className={styles.mdBulletText}><InlineMd text={numberedMatch[2]} /></span>
+        </div>
+      );
+      i++;
+      continue;
+    }
+
+    elements.push(
+      <p key={i} className={styles.mdParagraph}><InlineMd text={line} /></p>
+    );
+    i++;
+  }
+
+  return <div className={styles.mdBody}>{elements}</div>;
+}
+
+// ── Typing indicator ───────────────────────────────────────────────────────────
+
+function TypingIndicator() {
+  return (
+    <div className={styles.typingRow}>
+      <div className={styles.aiAvatar}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+        </svg>
+      </div>
+      <div className={styles.typingBubble}>
+        <span className={styles.typingDot} />
+        <span className={styles.typingDot} />
+        <span className={styles.typingDot} />
+      </div>
+    </div>
+  );
+}
+
+// ── Welcome state ──────────────────────────────────────────────────────────────
+
+interface WelcomeStateProps {
+  rank: string;
+  category: string;
+  examLabel: string;
+  domicileState: string;
+  contextCollege: CollegeContext | null;
+  suggestions: string[];
+  isLoading: boolean;
+  onSuggestion: (text: string) => void;
+}
+
+function WelcomeState({
+  rank, category, examLabel, domicileState,
+  contextCollege, suggestions, isLoading, onSuggestion,
+}: WelcomeStateProps) {
+  return (
+    <div className={styles.welcomeStack}>
+      {contextCollege ? (
+        <div className={styles.contextCard}>
+          <p className={styles.sectionLabel}>Current Context</p>
+          <p className={styles.contextCollegeName}>{contextCollege.name}</p>
+          <div className={styles.contextRow}>
+            <p className={styles.contextBranchLabel}>Selected Branch</p>
+            <span className={styles.highBadge}>HIGH</span>
+          </div>
+          <div className={styles.contextMeta}>
+            <p>Your rank: <strong style={{ color: "#334155" }}>{parseInt(rank).toLocaleString()}</strong> ({examLabel})</p>
+            <p>{domicileState}</p>
+          </div>
+        </div>
+      ) : (
+        <div className={styles.profileCard}>
+          <div className={styles.profileHeader}>
+            <div className={styles.profileIconWrap}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </div>
+            <p className={styles.profileHeaderLabel}>Your Profile</p>
+          </div>
+          <div className={styles.profileGrid}>
+            {[
+              { label: "Rank", value: parseInt(rank).toLocaleString() },
+              { label: "Category", value: category.split(" ")[0] },
+              { label: "Exam", value: examLabel },
+              { label: "State", value: domicileState.length > 12 ? domicileState.slice(0, 11) + "…" : domicileState },
+            ].map(({ label, value }) => (
+              <div key={label} className={styles.profileCell}>
+                <div className={styles.profileCellLabel}>{label}</div>
+                <div className={styles.profileCellValue}>{value}</div>
+              </div>
+            ))}
+          </div>
+          <div className={styles.infoTip}>
+            <span className={styles.infoTipIcon}>
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </span>
+            <p className={styles.infoTipText}>
+              Expand a college card to get context-aware suggestions about that specific college.
+            </p>
+          </div>
+        </div>
+      )}
+
+      <div>
+        <p className={styles.suggestionsLabel}>
+          {contextCollege ? "Suggested Questions" : "Try asking"}
+        </p>
+        <div className={styles.suggestionsList}>
+          {suggestions.map((s) => (
+            <button
+              key={s}
+              onClick={() => onSuggestion(s)}
+              disabled={isLoading}
+              className={styles.suggestionBtn}
+            >
+              <span className={styles.suggestionBtnText}>{s}</span>
+              <span className={styles.suggestionArrow}>→</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Main component ─────────────────────────────────────────────────────────────
+
 export default function AICounselorPanel({
-  rank,
-  category,
-  exam,
-  domicileState,
-  gender,
-  contextCollege,
-  onClose,
-  isMobile = false,
+  rank, category, exam, domicileState, gender,
+  contextCollege, onClose, isMobile = false,
 }: Props) {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Keep context accessible in the send-request closure without recreating transport
   const ctxRef = useRef({ rank, category, exam, domicileState, gender, contextCollege });
   useEffect(() => {
     ctxRef.current = { rank, category, exam, domicileState, gender, contextCollege };
@@ -146,230 +298,140 @@ export default function AICounselorPanel({
     []
   );
 
-  const { messages, sendMessage, status, error } = useChat({ transport });
+  const { messages, sendMessage, status, error, setMessages, regenerate } = useChat({ transport });
   const isLoading = status === "streaming" || status === "submitted";
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const timer = setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+    return () => clearTimeout(timer);
   }, [messages]);
 
-  // Auto-focus input when panel opens
   useEffect(() => {
-    const t = setTimeout(() => inputRef.current?.focus(), 200);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => inputRef.current?.focus(), 200);
+    return () => clearTimeout(timer);
   }, []);
 
-  const suggestions = contextCollege
-    ? getCollegeSuggestions(contextCollege)
-    : GENERIC_SUGGESTIONS;
+  const suggestions = contextCollege ? COLLEGE_SUGGESTIONS : GENERIC_SUGGESTIONS;
+  const examLabel = exam === "JEE Advanced" ? "Advanced" : "Mains";
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const text = input.trim();
-    if (!text || isLoading) return;
+  async function send(text: string) {
+    if (!text.trim() || isLoading) return;
     setInput("");
     await sendMessage({ text });
-  };
+  }
 
-  const handleSuggestion = async (prompt: string) => {
+  function handleNewChat() {
     if (isLoading) return;
-    await sendMessage({ text: prompt });
-  };
+    setMessages([]);
+    setInput("");
+    inputRef.current?.focus();
+  }
 
-  const panelBase = isMobile
-    ? "fixed bottom-0 left-0 right-0 z-[1001] bg-white rounded-t-[28px] flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.15)] animate-slide-up overflow-hidden"
-    : "h-full bg-white rounded-2xl border border-[var(--border)] shadow-[var(--shadow-md)] flex flex-col overflow-hidden";
-
-  const panelStyle = isMobile ? { height: "86vh" } : {};
+  function handleRegenerate() {
+    if (isLoading || messages.length === 0) return;
+    regenerate();
+  }
 
   return (
-    <div className={panelBase} style={panelStyle}>
-      {/* Mobile drag handle */}
+    <div className={isMobile ? styles.panelMobile : styles.panelDesktop}>
       {isMobile && (
-        <div className="flex justify-center pt-3 pb-1 flex-shrink-0">
-          <div className="w-10 h-1 rounded-full bg-gray-200" />
+        <div className={styles.mobileHandleWrap}>
+          <div className={styles.mobileHandle} />
         </div>
       )}
 
-      {/* ── Header ── */}
-      <div className="flex items-center gap-3 px-4 py-3 border-b border-[var(--border)] flex-shrink-0 bg-white">
-        <div className="w-9 h-9 rounded-xl bg-[var(--brand)] flex items-center justify-center flex-shrink-0 shadow-sm">
-          <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+      {/* Header */}
+      <div className={styles.header}>
+        <div className={styles.headerAvatar}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.792 0-5.484-.228-8.065-.659-1.717-.293-2.3-2.379-1.067-3.61L5 14.5" />
           </svg>
         </div>
-        <div className="flex-1 min-w-0">
-          <p className="font-bold text-sm text-[var(--text)] leading-tight">AI Counsellor</p>
+
+        <div className={styles.headerInfo}>
+          <h2 className={styles.headerTitle}>Nexus AI</h2>
           {contextCollege ? (
-            <p className="text-xs text-[var(--brand)] font-semibold truncate">
-              {contextCollege.shortName || contextCollege.name}
-            </p>
+            <div className={styles.contextBadge}>
+              <p className={styles.contextBadgeText}>
+                {contextCollege.shortName ?? contextCollege.name}
+              </p>
+            </div>
           ) : (
-            <p className="text-xs text-[var(--text-muted)]">JEE &amp; JoSAA expert</p>
+            <div className={styles.onlineRow}>
+              <span className={styles.onlineDot} />
+              <p className={styles.onlineLabel}>Online &amp; Ready</p>
+            </div>
           )}
         </div>
-        {contextCollege?.instituteType && (
-          <span className="text-[10px] font-bold bg-[var(--brand-soft)] text-[var(--brand)] px-2 py-0.5 rounded-full flex-shrink-0 uppercase tracking-wide">
-            {contextCollege.instituteType}
-          </span>
-        )}
-        <button
-          onClick={onClose}
-          aria-label="Close AI panel"
-          className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:bg-[var(--surface-3)] transition-colors flex-shrink-0"
-        >
-          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+
+        <button onClick={onClose} aria-label="Close AI panel" className={styles.closeBtn}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <line x1="18" y1="6" x2="6" y2="18" />
             <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         </button>
       </div>
 
-      {/* ── Messages / Welcome state ── */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 min-h-0">
+      {/* Messages */}
+      <div className={styles.messagesArea}>
         {messages.length === 0 ? (
-          /* Welcome */
-          <div className="space-y-4">
-            {/* Profile snapshot */}
-            <div className="bg-[var(--surface-3)] rounded-2xl p-4 border border-[var(--border-light)]">
-              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2.5">
-                Your Profile
-              </p>
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { label: "Rank", value: parseInt(rank).toLocaleString() },
-                  { label: "Category", value: category.split(" ")[0] },
-                  { label: "Exam", value: exam === "JEE Advanced" ? "Advanced" : "Mains" },
-                  { label: "State", value: domicileState.length > 12 ? domicileState.slice(0, 11) + "…" : domicileState },
-                ].map(({ label, value }) => (
-                  <div key={label} className="bg-white rounded-xl p-2.5 border border-[var(--border-light)]">
-                    <div className="text-[10px] text-[var(--text-muted)] font-semibold uppercase tracking-wide mb-0.5">
-                      {label}
-                    </div>
-                    <div className="font-bold text-sm text-[var(--text)] truncate">{value}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Context college card */}
-            {contextCollege ? (
-              <div className="bg-[var(--brand-soft)] border border-[var(--brand-light)] rounded-2xl p-3.5">
-                <p className="text-[10px] font-bold text-[var(--brand)] uppercase tracking-wider mb-1">
-                  Currently Viewing
-                </p>
-                <p className="font-bold text-sm text-[var(--text)]">{contextCollege.name}</p>
-                {(contextCollege.avgPackage || contextCollege.placementRate) && (
-                  <div className="flex gap-2 mt-2">
-                    {contextCollege.avgPackage && (
-                      <span className="text-[10px] font-bold bg-white text-[var(--text-secondary)] px-2 py-0.5 rounded-full border border-[var(--border)]">
-                        Avg {contextCollege.avgPackage}
-                      </span>
-                    )}
-                    {contextCollege.placementRate && (
-                      <span className="text-[10px] font-bold bg-white text-[var(--text-secondary)] px-2 py-0.5 rounded-full border border-[var(--border)]">
-                        {contextCollege.placementRate} placed
-                      </span>
-                    )}
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="flex items-start gap-2.5 bg-amber-50 border border-amber-100 rounded-2xl p-3.5">
-                <svg className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="8" x2="12" y2="12" />
-                  <line x1="12" y1="16" x2="12.01" y2="16" />
-                </svg>
-                <p className="text-xs text-amber-800">
-                  Expand a college card to get context-aware suggestions about that specific college.
-                </p>
-              </div>
-            )}
-
-            {/* Suggested prompts */}
-            <div>
-              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2.5">
-                {contextCollege ? "Suggested Questions" : "Try asking"}
-              </p>
-              <div className="flex flex-col gap-2">
-                {suggestions.map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => handleSuggestion(s)}
-                    disabled={isLoading}
-                    className="text-left text-sm px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-white hover:bg-[var(--brand-soft)] hover:border-[var(--brand)] text-[var(--text-secondary)] hover:text-[var(--brand)] transition-all duration-150 font-medium disabled:opacity-50 group"
-                  >
-                    <span className="text-[var(--brand)] mr-2 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
+          <WelcomeState
+            rank={rank}
+            category={category}
+            examLabel={examLabel}
+            domicileState={domicileState}
+            contextCollege={contextCollege}
+            suggestions={suggestions}
+            isLoading={isLoading}
+            onSuggestion={send}
+          />
         ) : (
-          /* Conversation */
           <>
             {messages.map((m) => {
-              const textContent = m.parts
+              const text = m.parts
                 .filter((p) => p.type === "text")
                 .map((p) => (p as { type: "text"; text: string }).text)
                 .join("");
-              if (!textContent) return null;
+              if (!text) return null;
 
               if (m.role === "user") {
                 return (
-                  <div key={m.id} className="flex justify-end">
-                    <div className="max-w-[82%] px-3.5 py-2.5 rounded-2xl rounded-br-md bg-[var(--brand)] text-white text-sm leading-relaxed">
-                      {textContent}
-                    </div>
+                  <div key={m.id} className={styles.userRow}>
+                    <div className={styles.userBubble}>{text}</div>
                   </div>
                 );
               }
 
               return (
-                <div key={m.id} className="flex justify-start gap-2.5">
-                  <div className="w-6 h-6 rounded-lg bg-[var(--brand-soft)] border border-[var(--brand-light)] flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-[9px] font-black text-[var(--brand)] tracking-tight">AI</span>
+                <div key={m.id} className={styles.aiRow}>
+                  <div className={styles.aiAvatar}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+                    </svg>
                   </div>
-                  <div className="flex-1 min-w-0 bg-white border border-[var(--border)] rounded-2xl rounded-bl-md px-3.5 py-3 shadow-sm">
-                    <AIMessageBody text={textContent} />
+                  <div className={styles.aiBubble}>
+                    <AIMessageBody text={text} />
                   </div>
                 </div>
               );
             })}
 
-            {/* Typing indicator */}
-            {isLoading && (
-              <div className="flex justify-start gap-2.5">
-                <div className="w-6 h-6 rounded-lg bg-[var(--brand-soft)] border border-[var(--brand-light)] flex items-center justify-center flex-shrink-0">
-                  <span className="text-[9px] font-black text-[var(--brand)] tracking-tight">AI</span>
-                </div>
-                <div className="bg-white border border-[var(--border)] rounded-2xl rounded-bl-md px-3.5 py-3 flex gap-1 items-center shadow-sm">
-                  <span className="w-1.5 h-1.5 bg-[var(--text-muted)] rounded-full animate-bounce [animation-delay:0ms]" />
-                  <span className="w-1.5 h-1.5 bg-[var(--text-muted)] rounded-full animate-bounce [animation-delay:150ms]" />
-                  <span className="w-1.5 h-1.5 bg-[var(--text-muted)] rounded-full animate-bounce [animation-delay:300ms]" />
-                </div>
-              </div>
-            )}
+            {isLoading && <TypingIndicator />}
 
             {error && (
-              <div className="bg-red-50 border border-red-100 rounded-xl px-3 py-2 text-xs text-red-600 text-center">
-                Something went wrong. Please try again.
-              </div>
+              <div className={styles.errorBox}>Something went wrong. Please try again.</div>
             )}
           </>
         )}
 
-        {/* Quick suggestion chips after first exchange */}
         {messages.length >= 2 && messages.length <= 4 && !isLoading && (
-          <div className="flex gap-2 flex-wrap pt-1">
+          <div className={styles.quickChipsRow}>
             {suggestions.slice(0, 2).map((s) => (
               <button
                 key={s}
-                onClick={() => handleSuggestion(s)}
+                onClick={() => send(s)}
                 disabled={isLoading}
-                className="text-xs px-2.5 py-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-3)] text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] hover:border-[var(--brand)] hover:text-[var(--brand)] transition-all whitespace-nowrap disabled:opacity-50"
+                className={styles.quickChip}
               >
                 {s}
               </button>
@@ -380,32 +442,65 @@ export default function AICounselorPanel({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* ── Input ── */}
-      <form
-        onSubmit={handleSubmit}
-        className="flex items-center gap-2 px-3 py-3 border-t border-[var(--border)] flex-shrink-0 bg-white"
-      >
-        <input
-          ref={inputRef}
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask about colleges, cutoffs…"
-          disabled={isLoading}
-          aria-label="Ask AI counsellor"
-          className="flex-1 h-10 px-3 bg-[var(--surface-3)] rounded-xl text-sm text-[var(--text)] outline-none border-2 border-transparent focus:border-[var(--brand)] focus:bg-white transition-all duration-150 disabled:opacity-50"
-        />
-        <button
-          type="submit"
-          disabled={isLoading || !input.trim()}
-          aria-label="Send message"
-          className="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center bg-[var(--brand)] text-white disabled:opacity-40 hover:opacity-90 active:scale-95 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)]"
+      {/* Input area */}
+      <div className={styles.inputArea}>
+        <form
+          onSubmit={(e) => { e.preventDefault(); send(input); }}
+          className={styles.inputForm}
         >
-          <svg className="w-4 h-4 rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <line x1="12" y1="19" x2="12" y2="5" />
-            <polyline points="5 12 12 5 19 12" />
-          </svg>
-        </button>
-      </form>
+          <input
+            ref={inputRef}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Ask anything..."
+            disabled={isLoading}
+            aria-label="Ask AI counsellor"
+            className={styles.textInput}
+          />
+          <div className={styles.inputToolbar}>
+            <div className={styles.inputActions}>
+              <button
+                type="button"
+                onClick={handleNewChat}
+                disabled={isLoading || messages.length === 0}
+                className={styles.iconBtn}
+                title="Start new chat"
+                aria-label="Start new chat"
+              >
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                onClick={handleRegenerate}
+                disabled={isLoading || messages.length === 0}
+                className={styles.iconBtn}
+                title="Regenerate response"
+                aria-label="Regenerate response"
+              >
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </button>
+            </div>
+            <button
+              type="submit"
+              disabled={isLoading || !input.trim()}
+              aria-label="Send message"
+              className={styles.sendBtn}
+            >
+              {isLoading ? (
+                <div className={styles.spinner} />
+              ) : (
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                </svg>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

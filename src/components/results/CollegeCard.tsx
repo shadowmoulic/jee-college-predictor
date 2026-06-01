@@ -151,9 +151,15 @@ export default function CollegeCard({ college, domicileState, collapsed, onToggl
               </div>
             </div>
             
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '12px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-              <div><strong>{highCount}</strong> High Prob Branches</div>
-              <div>Avg: <strong>{college.avgPackage || "N/A"}</strong></div>
+            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '12px', fontSize: '0.8rem', flexWrap: 'wrap' }}>
+              <div style={{ background: "var(--high-bg)", color: "var(--high-text)", padding: "4px 10px", borderRadius: "6px", fontWeight: 700 }}>
+                {highCount} High Prob Branches
+              </div>
+              {college.avgPackage && (
+                <div style={{ background: "var(--surface-2)", color: "var(--text-secondary)", padding: "4px 10px", borderRadius: "6px", fontWeight: 700 }}>
+                  Avg: <span style={{ color: "var(--text)" }}>{college.avgPackage}</span>
+                </div>
+              )}
             </div>
           </div>
           
@@ -161,15 +167,19 @@ export default function CollegeCard({ college, domicileState, collapsed, onToggl
             <div className={styles.accordionBody}>
               {college.branches.map((b, idx) => (
                 <div className={styles.mobileBranchCard} key={idx} onClick={() => onBranchClick(college as unknown as College, b)}>
-                  <div className={styles.mobileBranchTop}>
-                    <span className={`${styles.probPill} ${styles[b.prob]}`}>{b.prob.toUpperCase()}</span>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>OR: {b.opening}</span>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>CR: {b.closing}</span>
+                  <div className={styles.mobileBranchTop} style={{ display: "flex", alignItems: "center", marginBottom: "10px" }}>
+                    <span className={`${styles.probPill} ${styles[b.prob]}`} style={{ padding: "4px 10px", fontSize: "0.75rem", borderRadius: "12px", letterSpacing: "0.5px" }}>
+                      {b.prob.toUpperCase()}
+                    </span>
+                    <div style={{ display: "flex", gap: "12px", marginLeft: "auto" }}>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>OR: <span style={{ color: "var(--text)" }}>{b.opening}</span></span>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>CR: <span style={{ color: "var(--text)" }}>{b.closing}</span></span>
+                    </div>
                   </div>
-                  <div className={styles.branchName}>{b.name}</div>
-                  <div className={styles.branchDegree}>{b.degree.replace(/^\d+\s+Years?,\s*/i, "")}</div>
+                  <div style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--text)', marginBottom: '4px', lineHeight: 1.3 }}>{b.name}</div>
+                  <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 500 }}>{b.degree.replace(/^\d+\s+Years?,\s*/i, "")}</div>
                   
-                  <div style={{ marginTop: '12px', textAlign: 'center', fontSize: '0.85rem', color: 'var(--brand)', fontWeight: 700 }}>
+                  <div style={{ marginTop: '16px', padding: "8px", borderRadius: "8px", background: "var(--brand-soft)", textAlign: 'center', fontSize: '0.85rem', color: 'var(--brand)', fontWeight: 700, transition: "background 0.2s" }}>
                     View Round-wise Details →
                   </div>
                 </div>

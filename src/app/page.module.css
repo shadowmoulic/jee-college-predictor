@@ -1875,6 +1875,10 @@
   }
 }
 
+.mobileViewOnly {
+  display: none;
+}
+
 @media (max-width: 900px) {
   .desktopViewOnly {
     display: none !important;
@@ -2074,7 +2078,7 @@
 .aiPanelColumn {
   position: sticky;
   top: 90px;
-  height: calc(100vh - 120px);
+  height: calc(100vh - 180px); /* Leave ample space at the bottom for WhatsApp icon */
   align-self: start;
   overflow: hidden;
 }

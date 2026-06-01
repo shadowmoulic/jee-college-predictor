@@ -1,11 +1,15 @@
-import { google } from "@ai-sdk/google";
+import { createOpenAI } from "@ai-sdk/openai";
 import { streamText } from "ai";
 
-// Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
 const MAX_MESSAGES = 50;
 const MAX_CONTENT_LENGTH = 4000;
+
+const nim = createOpenAI({
+  baseURL: "https://integrate.api.nvidia.com/v1",
+  apiKey: process.env.NVIDIA_NIM_API_KEY ?? "",
+});
 
 function isValidMessages(value: unknown): value is { role: string; content: string }[] {
   if (!Array.isArray(value) || value.length === 0 || value.length > MAX_MESSAGES) return false;
@@ -33,12 +37,15 @@ export async function POST(req: Request) {
     }
 
     const result = streamText({
-      model: google("gemini-1.5-flash"),
+      model: nim.chat("meta/llama-3.3-70b-instruct"),
       system: `You are an expert academic counselor for JEE Advanced and JoSAA counseling.
-      You are part of the 'Nexus Predictor' platform.
-      Help students understand their admission chances, college details, and answer their queries
-      about various IITs, NITs, and IIITs in India. Be supportive, concise, and informative.`,
+You are part of the 'Nexus Predictor' platform.
+Help students understand their admission chances, college details, and answer their queries
+about various IITs, NITs, and IIITs in India. Be supportive, concise, and informative.`,
       messages: body.messages,
+      temperature: 0.2,
+      topP: 0.7,
+      maxOutputTokens: 1024,
     });
 
     return result.toTextStreamResponse();

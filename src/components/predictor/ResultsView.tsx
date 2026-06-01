@@ -309,8 +309,7 @@ export default function ResultsView({
           {/* BITSAT Promo */}
           <div className={styles.bitsatBanner}>
             <div className={styles.bitsatBannerText}>
-              Appearing for <strong>BITSAT</strong>? Join the{" "}
-              <strong>Most Relevant Test Series</strong> for BITSAT 2026
+              Join our Whatsapp group for free JEE mentorship !!!! Limited seats
             </div>
             <button className={styles.bitsatBannerBtn}>Join Now</button>
           </div>
@@ -359,7 +358,7 @@ export default function ResultsView({
 
         {/* Desktop AI panel (sticky column) */}
         {aiPanelOpen && !isMobileScreen && (
-          <div className={styles.aiPanelColumn}>
+          <div className={`${styles.aiPanelColumn} pt-2 pb-6 pr-6 pl-2`}>
             <AICounselorPanel
               rank={rank}
               category={category}

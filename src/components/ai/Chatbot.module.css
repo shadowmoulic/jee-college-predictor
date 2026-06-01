@@ -1,0 +1,248 @@
+/* ── Floating trigger button ── */
+.trigger {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  color: #fff;
+  z-index: 50;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(26,86,219,0.28);
+  transition: transform 0.2s;
+}
+.trigger:hover { transform:translateY(-4px); }
+.trigger:active { transform:translateY(0); }
+.trigger:focus { outline:none; }
+.trigger svg { width:20px; height:20px; }
+
+/* ── Chat window ── */
+.window {
+  position: fixed;
+  bottom: 96px;
+  right: 24px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid #dde3ef;
+  width: 360px;
+  max-width: calc(100vw - 3rem);
+  height: 520px;
+  box-shadow: 0 24px 64px rgba(8,15,40,0.12), 0 8px 24px rgba(8,15,40,0.06);
+  animation: slideUp 0.25s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes slideUp {
+  from { opacity:0; transform:translateY(16px) scale(0.97); }
+  to   { opacity:1; transform:translateY(0)    scale(1);    }
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #dde3ef;
+  background: #fff;
+  flex-shrink: 0;
+}
+.headerIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #1a56db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 6px 24px rgba(26,86,219,0.28);
+}
+.headerIcon svg { width:16px; height:16px; color:#fff; }
+.headerInfo { flex:1; min-width:0; }
+.headerName {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: #0b1530;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+.headerStatus { display:flex; align-items:center; gap:6px; margin-top:2px; }
+.statusDot { width:6px; height:6px; border-radius:50%; background:#10b981; flex-shrink:0; }
+.statusText { font-size:0.75rem; color:#7b849a; }
+.closeBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7b849a;
+  background: none;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.closeBtn:hover { background:#f1f5f9; }
+.closeBtn svg { width:16px; height:16px; }
+
+/* ── Messages scroll area ── */
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Empty state ── */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 0 16px 24px;
+  gap: 12px;
+  text-align: center;
+}
+.emptyIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.emptyIcon svg { width:20px; height:20px; color:#1a56db; }
+.emptyTitle { font-weight:700; font-size:0.875rem; color:#0b1530; letter-spacing:-0.02em; }
+.emptySubtitle { font-size:0.75rem; color:#7b849a; line-height:1.6; max-width:220px; }
+
+/* ── User message ── */
+.userRow { display:flex; justify-content:flex-end; }
+.userBubble {
+  max-width: 80%;
+  padding: 12px 16px;
+  border-radius: 16px 16px 4px 16px;
+  background: #1a56db;
+  color: #fff;
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+/* ── AI message ── */
+.aiRow { display:flex; justify-content:flex-start; align-items:flex-start; gap:10px; }
+.aiAvatarSmall {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.aiAvatarSmall span { font-size:10px; font-weight:900; color:#1a56db; letter-spacing:-0.02em; }
+.aiBubble {
+  flex: 1;
+  min-width: 0;
+  background: #f1f5f9;
+  border: 1px solid #dde3ef;
+  border-radius: 16px 16px 16px 4px;
+  padding: 12px 16px;
+  font-size: 0.875rem;
+  color: #0b1530;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+/* ── Loading dots ── */
+.loadingRow { display:flex; justify-content:flex-start; align-items:center; gap:10px; }
+.loadingBubble {
+  background: #f1f5f9;
+  border: 1px solid #dde3ef;
+  border-radius: 16px 16px 16px 4px;
+  padding: 12px 16px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.dot { width:8px; height:8px; background:#7b849a; border-radius:50%; animation:bounce 1s infinite; }
+.dot:nth-child(2) { animation-delay:0.15s; }
+.dot:nth-child(3) { animation-delay:0.30s; }
+@keyframes bounce {
+  0%,100% { transform:translateY(0); }
+  50%      { transform:translateY(-4px); }
+}
+
+/* ── Error ── */
+.errorBox {
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 0.75rem;
+  color: #dc2626;
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* ── Input bar ── */
+.inputForm {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-top: 1px solid #dde3ef;
+  background: #fff;
+  flex-shrink: 0;
+}
+.textInput {
+  flex: 1;
+  height: 44px;
+  padding: 0 16px;
+  background: #f1f5f9;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  color: #0b1530;
+  outline: none;
+  border: 2px solid transparent;
+  transition: border-color 0.15s, background 0.15s;
+}
+.textInput::placeholder { color:#a8b0c2; }
+.textInput:focus { border-color:#1a56db; background:#fff; }
+.textInput:disabled { opacity:0.5; }
+.sendBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1a56db;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.sendBtn:hover { opacity:0.9; }
+.sendBtn:active { transform:scale(0.95); }
+.sendBtn:disabled { opacity:0.4; cursor:default; }
+.sendBtn:focus { outline:none; }
+.sendBtn svg { width:16px; height:16px; transform:rotate(90deg); }
