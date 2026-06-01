@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import styles from "@/app/page.module.css";
+import styles from "./Navbar.module.css";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,10 +31,14 @@ export default function Navbar() {
         >
           Join our Group
         </a>
-        <button className={styles.hamburger} onClick={() => setIsOpen(!isOpen)}>
-          <span className={isOpen ? styles.barOpen1 : styles.bar}></span>
-          <span className={isOpen ? styles.barOpen2 : styles.bar}></span>
-          <span className={isOpen ? styles.barOpen3 : styles.bar}></span>
+        <button 
+          className={`${styles.hamburger} ${isOpen ? styles.hamburgerOpen : ""}`} 
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label="Toggle menu"
+        >
+          <span className={styles.bar}></span>
+          <span className={styles.bar}></span>
+          <span className={styles.bar}></span>
         </button>
       </div>
 

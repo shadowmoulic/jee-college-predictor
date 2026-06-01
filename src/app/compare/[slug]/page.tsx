@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Metadata } from "next";
-import Navbar from "@/components/layout/Navbar";
 import { getJosaaData } from "@/lib/josaa-data";
 import { getInstituteId, TOP_10_IITS } from "@/app/data";
 import { getPlacementForCollege } from "@/lib/placement-data";
@@ -105,7 +104,6 @@ export default async function CompareSlugPage({ params }: { params: Promise<{ sl
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--surface-2)" }}>
-      <Navbar />
 
       <div style={{
         background: "linear-gradient(135deg, #0f2b7a 0%, #1a56db 50%, #2563eb 100%)",

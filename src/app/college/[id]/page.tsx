@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import Navbar from "@/components/layout/Navbar";
 import { getJosaaData } from "@/lib/josaa-data";
 import { getInstituteId } from "@/app/data";
 import { getPlacementForCollege } from "@/lib/placement-data";
@@ -97,7 +96,6 @@ export default async function CollegeDetailPage({ params }: { params: Promise<{ 
   if (!data) {
     return (
       <div style={{ minHeight: "100vh", background: "var(--surface-2)" }}>
-        <Navbar />
         <main style={{ maxWidth: 900, margin: "0 auto", padding: "4rem 1.5rem", textAlign: "center" }}>
           <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>📊</div>
           <h1 style={{ fontWeight: 800, fontSize: "1.5rem", marginBottom: "0.5rem", color: "var(--text)" }}>
@@ -122,7 +120,6 @@ export default async function CollegeDetailPage({ params }: { params: Promise<{ 
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--surface-2)" }}>
-      <Navbar />
 
       {/* Hero */}
       <div style={{

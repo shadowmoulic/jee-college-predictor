@@ -70,6 +70,9 @@ export const metadata = {
     shortcut: "/icon.svg",
     apple: "/icon.svg",
   },
+  verification: {
+    google: "sR7IQBlhR4qcwJpub9cbUsb1N9ZN7PC9OlbRFwpW4FM",
+  },
 };
 
 export default function RootLayout({

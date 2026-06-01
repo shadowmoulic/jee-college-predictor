@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import Navbar from "@/components/layout/Navbar";
 import CompareSelector from "@/components/compare/CompareSelector";
 import { getJosaaData } from "@/lib/josaa-data";
 import { getInstituteId, TOP_10_IITS } from "@/app/data";
@@ -53,7 +52,6 @@ export default function ComparePage() {
           box-shadow: var(--shadow-md) !important;
         }
       `}</style>
-      <Navbar />
       
       <div style={{
         background: "linear-gradient(135deg, #0f2b7a 0%, #1a56db 50%, #2563eb 100%)",
