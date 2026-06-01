@@ -78,8 +78,18 @@ export default function ResultsView({
   const resultsContext = useMemo(() => {
     return colleges.map((c) => ({
       college: c.name,
+      instituteType: c.instituteType,
       state: c.state,
-      branches: c.branches.map((b) => b.name)
+      avgPackage: c.avgPackage,
+      branches: c.branches.map((b) => ({
+        name: b.name,
+        degree: b.degree,
+        prob: b.prob,
+        openingRank: b.opening,
+        closingRank: b.closing,
+        quota: b.quota,
+        seatType: b.seatType,
+      })),
     }));
   }, [colleges]);
 
@@ -88,14 +98,14 @@ export default function ResultsView({
     try {
       if (resultsContext.length > 0) {
         localStorage.setItem("nexus_ai_context", JSON.stringify({
-          filters,
-          resultsContext
+          filters: { rank, category, exam, domicileState, gender },
+          resultsContext,
         }));
       }
     } catch (err) {
       console.warn("Failed to save AI context to localStorage", err);
     }
-  }, [filters, resultsContext]);
+  }, [rank, category, exam, domicileState, gender, resultsContext]);
 
   // When a college is expanded, make it the AI context
   const handleToggleCollapse = useCallback(

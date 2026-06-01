@@ -2,7 +2,6 @@ import { createOpenAI } from "@ai-sdk/openai";
 import { streamText } from "ai";
 
 export const maxDuration = 30;
-
 const MAX_MESSAGES = 50;
 
 const nim = createOpenAI({
@@ -17,53 +16,110 @@ function isValidMessages(value: unknown): boolean {
   );
 }
 
+type PredictedBranch = {
+  name: string;
+  degree?: string;
+  prob: "high" | "medium" | "low";
+  openingRank: number;
+  closingRank: number;
+  quota?: string;
+  seatType?: string;
+};
+
+type PredictedCollege = {
+  college: string;
+  instituteType?: string;
+  state?: string;
+  avgPackage?: string;
+  branches: PredictedBranch[];
+};
+
+function formatResultsContext(resultsContext: PredictedCollege[]): string {
+  if (!resultsContext || resultsContext.length === 0) return "";
+
+  // Group by probability
+  type RowItem = PredictedBranch & { college: string; type: string | undefined };
+  const high: RowItem[] = resultsContext.flatMap((c) =>
+    c.branches.filter((b) => b.prob === "high").map((b) => ({ ...b, college: c.college, type: c.instituteType }))
+  );
+  const medium: RowItem[] = resultsContext.flatMap((c) =>
+    c.branches.filter((b) => b.prob === "medium").map((b) => ({ ...b, college: c.college, type: c.instituteType }))
+  );
+
+  const formatRow = (item: RowItem) =>
+    `  • ${item.college} — ${item.name} | OR: ${item.openingRank?.toLocaleString()} | CR: ${item.closingRank?.toLocaleString()} | Quota: ${item.quota ?? "AI"} | Seat: ${item.seatType ?? "OPEN"}`;
+
+  const lines: string[] = [
+    `=== REAL JoSAA PREDICTION DATA FOR THIS STUDENT (${resultsContext.length} colleges matched) ===`,
+    "",
+    `HIGH PROBABILITY (${high.length} branches — student's rank is comfortably within closing rank):`,
+    ...high.slice(0, 15).map(formatRow),
+    high.length > 15 ? `  ... and ${high.length - 15} more high-prob branches` : "",
+    "",
+    `MEDIUM PROBABILITY (${medium.length} branches — rank is near the cutoff):`,
+    ...medium.slice(0, 10).map(formatRow),
+    medium.length > 10 ? `  ... and ${medium.length - 10} more medium-prob branches` : "",
+    "",
+    "IMPORTANT: These are REAL cutoffs from JoSAA 2025 data. Use ONLY these numbers. Never invent ranks.",
+    "OR = Opening Rank (Round 1), CR = Closing Rank (Round 6), Quota AI = All India, HS = Home State",
+  ];
+
+  return lines.filter((l) => l !== undefined).join("\n");
+}
+
 function buildSystemPrompt(context: Record<string, unknown> | null): string {
   const profile = context
     ? [
-        `- Rank: ${context.rank} (${context.exam})`,
-        `- Category: ${context.category}`,
-        `- Home state: ${context.domicileState}`,
-        `- Gender: ${context.gender}`,
-        context.contextCollege ? `- Currently viewing: ${(context.contextCollege as any).name}` : null,
+        `Rank: ${context.rank} (${context.exam})`,
+        `Category: ${context.category}`,
+        `Home state: ${context.domicileState}`,
+        `Gender: ${context.gender}`,
+        context.contextCollege ? `Currently viewing: ${(context.contextCollege as any).name}` : null,
       ]
         .filter(Boolean)
-        .join("\n")
-    : "Not provided — ask the student for rank, exam, and category before giving specific predictions.";
+        .join(" | ")
+    : "Not provided";
 
-  return `You are Nexus AI, a sharp and concise JEE/JoSAA counselor built into the Nexus Predictor platform.
+  const predictionData = context?.resultsContext
+    ? formatResultsContext(context.resultsContext as PredictedCollege[])
+    : "";
+
+  const hasData = predictionData.length > 0;
+
+  return `You are Nexus AI, a sharp JEE/JoSAA counselor inside the Nexus Predictor platform.
 
 ## STUDENT PROFILE
 ${profile}
 
-## STRICT RULES — follow every rule, no exceptions
+${hasData ? predictionData : "⚠ No prediction data loaded — ask the student to open the AI panel from their results page."}
 
-**No hallucination**
-- NEVER invent cutoff ranks, placement packages, fees, or branch availability.
-- If you don't know a specific number, say "Check josaa.nic.in for exact cutoffs" instead of guessing.
-- Only mention colleges and branches you are confident are real and offered by that institution.
+## RULES — follow strictly, no exceptions
+
+**Data integrity**
+${hasData
+  ? `- You have REAL JoSAA 2025 cutoff data above. Use ONLY those numbers. Never invent ranks.
+- When citing ranks, always say "Based on JoSAA 2025 data" so the student knows it's real.
+- If the student asks about a college NOT in the data above, say "That college didn't match your rank in our dataset — check josaa.nic.in directly."`
+  : `- You have NO prediction data. Do NOT invent cutoffs or packages.
+- Direct the student to use the predictor first, then open AI from the results page.`}
 
 **Response format**
-- Be direct. Start with the answer, not a preamble.
-- Max 250 words for general questions. Max 400 words for "suggest colleges" type questions.
-- Use **bold** for college/branch names.
-- Use a markdown table when comparing 3+ options (columns: College | Branch | Why | Approx. Rank Needed).
-- Use short bullet points for pros/cons — 1 line each, no sub-bullets.
-- NEVER use numbered lists inside numbered lists.
-- End with one focused follow-up question to narrow down the student's preferences.
+- Be direct. Lead with the answer, not a preamble.
+- Max 300 words per response.
+- Use **bold** for college and branch names.
+- Use a markdown table when comparing colleges (columns: College | Branch | Probability | Closing Rank | Quota).
+- Bullet points max 1 line each — no sub-bullets.
+- End with exactly one follow-up question.
 
 **Tone**
 - Talk like a knowledgeable senior, not a brochure.
-- Be honest about trade-offs ("CS at IIT BHU is good but academic pressure is very high").
-- If the student's rank is too low for their dream college, say so clearly and redirect.
+- Be honest: "CS at IIT BHU is good but placements lag behind old IITs."
+- If rank is too low for a dream college, say so directly and offer the closest real alternative from the data.
 
-**Counseling focus**
-- Always factor in home-state quota benefit when relevant.
-- Distinguish JEE Main vs JEE Advanced colleges clearly.
-- Based on this complete profile (ask for missing details if necessary), suggest the top 5 branch+college combinations.
-For each, explain:
-1. Why it suits THIS student specifically (not just rank)
-2. Academic quality, research opportunities, or campus culture (CRITICAL: DO NOT mention placement stats, average packages, or salary numbers as the data is unreliable)
-3. Any drawback they should know about`;
+**Counseling**
+- Always mention home-state quota (HS) benefit when relevant — it can significantly change eligibility.
+- Distinguish AI (All India) vs HS (Home State) quota clearly.
+- Match suggestions to career goals if mentioned. If not, ask once.`;
 }
 
 export async function POST(req: Request) {
@@ -85,10 +141,7 @@ export async function POST(req: Request) {
           typeof m.content === "string"
             ? m.content
             : Array.isArray(m.parts)
-            ? m.parts
-                .filter((p: any) => p.type === "text")
-                .map((p: any) => p.text)
-                .join("")
+            ? m.parts.filter((p: any) => p.type === "text").map((p: any) => p.text).join("")
             : "",
       }))
       .filter((m) => m.content.length > 0);
