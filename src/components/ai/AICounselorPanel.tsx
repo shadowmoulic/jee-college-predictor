@@ -309,6 +309,7 @@ export default function AICounselorPanel({
 
   const transport = useMemo(
     () =>
+      /* eslint-disable-next-line react-hooks/refs */
       new TextStreamChatTransport({
         api: "/api/chat",
         prepareSendMessagesRequest: async ({ messages }) => ({

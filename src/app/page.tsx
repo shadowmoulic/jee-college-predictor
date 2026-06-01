@@ -219,7 +219,7 @@ export default function Home() {
             <h3 style={{ fontSize: "1.25rem", fontWeight: 800, marginBottom: "10px", color: "var(--text)" }}>Pro Tip!</h3>
             <p style={{ color: "var(--text-secondary)", marginBottom: "20px", lineHeight: 1.5 }}>
               Check out the new <strong>Nexus AI</strong> page from the navbar for personalized admission counseling. <br/><br/>
-              Also, don't forget to join our{" "}
+              Also, don&apos;t forget to join our{" "}
               <a 
                 href="https://chat.whatsapp.com/JuENcC26gOTDVIgdyMiG6X" 
                 target="_blank" 

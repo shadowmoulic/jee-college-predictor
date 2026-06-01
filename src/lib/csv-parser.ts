@@ -75,19 +75,18 @@ function normalizeGender(raw: string): JoSAARecord["gender"] {
  * @param csv    Raw CSV text
  * @param round  Round number (extracted from filename, e.g. 6 for "2025_round6.csv")
  */
-export function parse2025RoundCSV(csv: string, round: number): JoSAARecord[] {
+export function parse2025RoundCSV(csv: string): JoSAARecord[] {
   const lines = csv.split(/\r?\n/).filter(Boolean);
   if (lines.length < 2) return [];
 
   const records: JoSAARecord[] = [];
+  const seenCounts = new Map<string, number>();
 
   for (let i = 1; i < lines.length; i++) {
     const fields = parseCSVRow(lines[i]);
     if (fields.length < 7) continue;
 
     const [institute, programCell, quota, seatType, genderRaw, openStr, closeStr] = fields;
-    // Skip blank rows or repeated header rows (exact match only — do NOT check
-    // for the word 'institute' because IIT/NIT names contain it!)
     if (!institute || institute === "Institute" || institute === "Institute Name") continue;
 
     const openingRank = parseInt(openStr.replace(/,/g, ""), 10);
@@ -97,6 +96,10 @@ export function parse2025RoundCSV(csv: string, round: number): JoSAARecord[] {
     const { program, degree } = splitProgramCell(programCell);
     const gender = normalizeGender(genderRaw);
     const instType = inferInstType(institute);
+
+    const key = `${institute}|${program}|${quota}|${seatType}|${gender}`;
+    const round = (seenCounts.get(key) || 0) + 1;
+    seenCounts.set(key, round);
 
     records.push({
       institute,

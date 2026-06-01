@@ -26,24 +26,24 @@ function load2025RoundFiles(): JoSAARecord[] {
     .filter((f) => /^2025_round\d+.*\.csv$/i.test(f))
     .sort(); // sort so round1 < round2 < ... < round6
 
-  const records: JoSAARecord[] = [];
-  for (const file of roundFiles) {
-    // Extract round number from filename e.g. "2025_round6.csv" → 6
-    const match = file.match(/round(\d+)/i);
-    const round = match ? parseInt(match[1], 10) : 0;
-    if (isNaN(round) || round === 0) continue;
+  const recordsMap = new Map<string, JoSAARecord>();
 
+  for (const file of roundFiles) {
     try {
       const raw = readFileSync(join(dataDir, file), "utf-8");
-      const parsed = parse2025RoundCSV(raw, round);
-      Array.prototype.push.apply(records, parsed); // avoid stack overflow
-      console.log(`[JoSAA] Loaded ${parsed.length} records from ${file} (round ${round})`);
+      const parsed = parse2025RoundCSV(raw);
+      
+      for (const r of parsed) {
+        const key = `${r.year}|${r.round}|${r.institute}|${r.program}|${r.quota}|${r.seatType}|${r.gender}`;
+        recordsMap.set(key, r);
+      }
+      console.log(`[JoSAA] Loaded ${parsed.length} records from ${file}`);
     } catch (err) {
       console.warn(`[JoSAA] Failed to load ${file}:`, err);
     }
   }
 
-  return records;
+  return Array.from(recordsMap.values());
 }
 
 export function getJosaaData(): JoSAARecord[] {
