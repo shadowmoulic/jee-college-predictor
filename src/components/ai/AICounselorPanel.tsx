@@ -23,6 +23,7 @@ interface Props {
   contextCollege: CollegeContext | null;
   onClose: () => void;
   isMobile?: boolean;
+  resultsContext?: any;
 }
 
 const GENERIC_SUGGESTIONS = [
@@ -42,17 +43,31 @@ const COLLEGE_SUGGESTIONS = [
 // ── Inline markdown helpers ────────────────────────────────────────────────────
 
 function InlineMd({ text }: { text: string }) {
+  // First split by bold **text**
+  const boldParts = text.split(/(\*\*.*?\*\*)/g);
   return (
     <>
-      {text.split(/(\*\*.*?\*\*)/g).map((seg, i) =>
-        seg.startsWith("**") && seg.endsWith("**") ? (
-          <strong key={i} style={{ fontWeight: 600, color: "#1e293b" }}>
-            {seg.slice(2, -2)}
-          </strong>
-        ) : (
-          <span key={i}>{seg}</span>
-        )
-      )}
+      {boldParts.map((bSeg, i) => {
+        if (bSeg.startsWith("**") && bSeg.endsWith("**")) {
+          return (
+            <strong key={i} style={{ fontWeight: 600, color: "#1e293b" }}>
+              {bSeg.slice(2, -2)}
+            </strong>
+          );
+        }
+        // Then split remaining segments by italic *text*
+        const italicParts = bSeg.split(/(\*[^*\s].*?[^*\s]\*|\*[^*\s]\*)/g);
+        return (
+          <span key={i}>
+            {italicParts.map((iSeg, j) => {
+              if (iSeg.startsWith("*") && iSeg.endsWith("*") && !iSeg.startsWith("**")) {
+                return <em key={j} style={{ fontStyle: "italic" }}>{iSeg.slice(1, -1)}</em>;
+              }
+              return <span key={j}>{iSeg}</span>;
+            })}
+          </span>
+        );
+      })}
     </>
   );
 }
@@ -116,7 +131,7 @@ function AIMessageBody({ text }: { text: string }) {
       continue;
     }
 
-    const headingMatch = line.match(/^#{1,3}\s(.*)/);
+    const headingMatch = line.match(/^\s*#{1,3}\s+(.*)/);
     if (headingMatch) {
       elements.push(
         <p key={i} className={styles.mdHeading}>
@@ -127,7 +142,7 @@ function AIMessageBody({ text }: { text: string }) {
       continue;
     }
 
-    const bulletMatch = line.match(/^[-•*]\s(.*)/);
+    const bulletMatch = line.match(/^\s*[-•*]\s+(.*)/);
     if (bulletMatch) {
       elements.push(
         <div key={i} className={styles.mdBullet}>
@@ -139,7 +154,7 @@ function AIMessageBody({ text }: { text: string }) {
       continue;
     }
 
-    const numberedMatch = line.match(/^(\d+)\.\s(.*)/);
+    const numberedMatch = line.match(/^\s*(\d+)\.\s+(.*)/);
     if (numberedMatch) {
       elements.push(
         <div key={i} className={styles.mdNumbered}>
@@ -274,16 +289,23 @@ function WelcomeState({
 
 export default function AICounselorPanel({
   rank, category, exam, domicileState, gender,
-  contextCollege, onClose, isMobile = false,
+  contextCollege,
+  onClose,
+  isMobile = false,
+  resultsContext,
 }: Props) {
   const [input, setInput] = useState("");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const ctxRef = useRef({ rank, category, exam, domicileState, gender, contextCollege });
+  const ctxRef = useRef({ rank, category, exam, domicileState, gender, contextCollege, resultsContext });
+  
+  const contextCollegeStr = JSON.stringify(contextCollege);
+  const resultsContextStr = JSON.stringify(resultsContext);
+
   useEffect(() => {
-    ctxRef.current = { rank, category, exam, domicileState, gender, contextCollege };
-  }, [rank, category, exam, domicileState, gender, contextCollege]);
+    ctxRef.current = { rank, category, exam, domicileState, gender, contextCollege, resultsContext };
+  }, [rank, category, exam, domicileState, gender, contextCollegeStr, resultsContextStr]);
 
   const transport = useMemo(
     () =>
@@ -302,7 +324,14 @@ export default function AICounselorPanel({
   const isLoading = status === "streaming" || status === "submitted";
 
   useEffect(() => {
-    const timer = setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+    const timer = setTimeout(() => {
+      if (messagesContainerRef.current) {
+        messagesContainerRef.current.scrollTo({
+          top: messagesContainerRef.current.scrollHeight,
+          behavior: "smooth",
+        });
+      }
+    }, 100);
     return () => clearTimeout(timer);
   }, [messages]);
 
@@ -373,7 +402,7 @@ export default function AICounselorPanel({
       </div>
 
       {/* Messages */}
-      <div className={styles.messagesArea}>
+      <div className={styles.messagesArea} ref={messagesContainerRef}>
         {messages.length === 0 ? (
           <WelcomeState
             rank={rank}
@@ -388,10 +417,12 @@ export default function AICounselorPanel({
         ) : (
           <>
             {messages.map((m) => {
-              const text = m.parts
-                .filter((p) => p.type === "text")
-                .map((p) => (p as { type: "text"; text: string }).text)
-                .join("");
+              const text = Array.isArray(m.parts) && m.parts.length > 0
+                ? m.parts
+                    .filter((p) => p.type === "text")
+                    .map((p) => (p as { type: "text"; text: string }).text)
+                    .join("")
+                : (m as unknown as { content?: string }).content ?? "";
               if (!text) return null;
 
               if (m.role === "user") {
@@ -439,7 +470,6 @@ export default function AICounselorPanel({
           </div>
         )}
 
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Input area */}

@@ -1322,16 +1322,13 @@
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  background: linear-gradient(135deg, var(--brand-soft), #dbeafe);
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 0.78rem;
-  font-weight: 900;
-  color: var(--brand);
-  border: 1px solid var(--brand-light);
-  letter-spacing: -0.02em;
+  border: 1px solid var(--border-light);
+  overflow: hidden;
 }
 
 .collegeNameText {
@@ -2058,13 +2055,13 @@
 
 /* When AI panel is open, extend the results body to 3 columns */
 .resultsBodyWithAI {
-  grid-template-columns: 300px 1fr 380px;
-  max-width: 1600px;
+  grid-template-columns: 300px 1fr 450px;
+  max-width: 1700px;
 }
 
 @media (max-width: 1280px) {
   .resultsBodyWithAI {
-    grid-template-columns: 300px 1fr 340px;
+    grid-template-columns: 300px 1fr 380px;
   }
 }
 

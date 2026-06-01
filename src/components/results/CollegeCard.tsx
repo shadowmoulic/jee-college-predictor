@@ -40,9 +40,9 @@ export default function CollegeCard({ college, domicileState, collapsed, onToggl
                     <td rowSpan={college.branches.length} className={styles.collegeCellSpan}>
                       <div className={styles.collegeSpanContent}>
                         <div className={styles.collegeNameHeader}>
-                          {college.logo && (
-                            <div className={styles.collegeLogoSmall}>{college.logo}</div>
-                          )}
+                          <div className={styles.collegeLogoSmall}>
+                            <img src="/college.png" alt="college logo" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+                          </div>
                           <div className={styles.collegeNameText}>{college.name}</div>
                         </div>
                         
@@ -135,9 +135,9 @@ export default function CollegeCard({ college, domicileState, collapsed, onToggl
         <div className={styles.accordionCard}>
           <div className={styles.accordionHeader} onClick={onToggle}>
             <div className={styles.accordionTitleRow}>
-              {college.logo && (
-                <div className={styles.collegeLogoSmall}>{college.logo}</div>
-              )}
+              <div className={styles.collegeLogoSmall}>
+                <img src="/college.png" alt="college logo" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+              </div>
               <div style={{ flex: 1 }}>
                 <div className={styles.collegeNameText}>{college.name}</div>
                 <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginTop: 4 }}>

@@ -7,7 +7,7 @@ import FiltersPanel from "@/components/results/FiltersPanel";
 import CollegeCard from "@/components/results/CollegeCard";
 import BranchModal from "@/components/results/BranchModal";
 import AICounselorPanel, { CollegeContext } from "@/components/ai/AICounselorPanel";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 
 interface Props {
   exam: string;
@@ -72,6 +72,15 @@ export default function ResultsView({
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
   }, []);
+
+  const resultsContext = useMemo(() => {
+    return colleges.slice(0, 10).map((c) => ({
+      college: c.name,
+      state: c.state,
+      avgPackage: c.avgPackage,
+      branches: c.branches.slice(0, 5).map((b) => b.name)
+    }));
+  }, [colleges]);
 
   // When a college is expanded, make it the AI context
   const handleToggleCollapse = useCallback(
@@ -366,6 +375,7 @@ export default function ResultsView({
               domicileState={domicileState}
               gender={gender}
               contextCollege={contextCollege}
+              resultsContext={resultsContext}
               onClose={() => setAiPanelOpen(false)}
             />
           </div>
@@ -386,6 +396,7 @@ export default function ResultsView({
               domicileState={domicileState}
               gender={gender}
               contextCollege={contextCollege}
+              resultsContext={resultsContext}
               onClose={() => setAiPanelOpen(false)}
               isMobile
             />
