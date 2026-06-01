@@ -31,7 +31,10 @@ export const metadata = {
   ],
   authors: [{ name: "Nexus Predictor" }],
   creator: "Nexus Predictor",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://nexuspredictor.in"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL || 
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://jee-college-predicter.vercel.app")
+  ),
   openGraph: {
     type: "website",
     locale: "en_IN",
