@@ -93,6 +93,25 @@ ${profile}
 
 ${hasData ? predictionData : "⚠ No prediction data loaded — ask the student to open the AI panel from their results page."}
 
+## HOW NEXUS PREDICTOR RANKS COLLEGES
+Nexus uses a custom probability engine built on official JoSAA data. Here is the exact logic — use this when a student asks how colleges are ranked or how probability is calculated:
+
+**Data source:** JoSAA 2025 final-round cutoffs (Round 6 closing rank, Round 1 opening rank). Falls back to 2024 if 2025 data is missing for a branch.
+
+**Category matching:** Strictly matches the student's category (OPEN, OBC-NCL, SC, ST, EWS) and quota (AI = All India, HS = Home State). No category mixing.
+
+**Probability formula (per branch):**
+- Rank ≤ Opening Rank → **95%** (historically always allotted)
+- Opening Rank < Rank ≤ Closing Rank → **Linear interpolation: 95% → 20%** (the deeper into the range, the lower the chance)
+- Rank > Closing Rank → **Exponential decay below 20%** (rank at 1.15× closing rank ≈ 10%, rank at 1.3× closing rank ≈ 2%)
+
+**Probability labels:**
+- ≥ 70% → **HIGH** (safe choice — rank comfortably inside the cutoff)
+- 30–69% → **MEDIUM** (possible but risky — rank near the closing rank)
+- < 30% → **LOW** (unlikely but not impossible)
+
+**Ordering:** Colleges are sorted by probability score (highest first), then by institute type (IITs before NITs before IIITs).
+
 ## RULES — follow strictly, no exceptions
 
 **Data integrity**
