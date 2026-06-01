@@ -103,12 +103,14 @@ export default function CollegeCard({ college, domicileState, collapsed, onToggl
                   <td className={styles.centerCell} data-label="Avg Package">{college.avgPackage || "-"}</td>
                   
                   <td className={styles.centerCell} data-label="Placement">
-                    {college.placementRate || "N/A"}
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{width: 14, height: 14, marginLeft: 4, verticalAlign: "middle", color: "var(--text-muted)"}}>
-                      <circle cx="12" cy="12" r="10" />
-                      <line x1="12" y1="16" x2="12" y2="12" />
-                      <line x1="12" y1="8" x2="12.01" y2="8" />
-                    </svg>
+                    <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                      <span>{college.placementRate || "N/A"}</span>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{width: 14, height: 14, marginLeft: 4, color: "var(--text-muted)"}}>
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="16" x2="12" y2="12" />
+                        <line x1="12" y1="8" x2="12.01" y2="8" />
+                      </svg>
+                    </div>
                   </td>
                   
                   <td className={styles.centerCell} data-label="Probability">
@@ -155,11 +157,6 @@ export default function CollegeCard({ college, domicileState, collapsed, onToggl
               <div style={{ background: "var(--high-bg)", color: "var(--high-text)", padding: "4px 10px", borderRadius: "6px", fontWeight: 700 }}>
                 {highCount} High Prob Branches
               </div>
-              {college.avgPackage && (
-                <div style={{ background: "var(--surface-2)", color: "var(--text-secondary)", padding: "4px 10px", borderRadius: "6px", fontWeight: 700 }}>
-                  Avg: <span style={{ color: "var(--text)" }}>{college.avgPackage}</span>
-                </div>
-              )}
             </div>
           </div>
           

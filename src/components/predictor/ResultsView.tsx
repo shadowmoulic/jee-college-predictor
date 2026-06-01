@@ -74,11 +74,10 @@ export default function ResultsView({
   }, []);
 
   const resultsContext = useMemo(() => {
-    return colleges.slice(0, 10).map((c) => ({
+    return colleges.map((c) => ({
       college: c.name,
       state: c.state,
-      avgPackage: c.avgPackage,
-      branches: c.branches.slice(0, 5).map((b) => b.name)
+      branches: c.branches.map((b) => b.name)
     }));
   }, [colleges]);
 
