@@ -1,0 +1,89 @@
+Institute,Program,Category,Seat Type,Opening Rank,Closing Rank,Year,Round
+Indian Institute of Technology Bombay,Computer Science and Engineering,OPEN,Gender-Neutral,2,66,2025,5
+Indian Institute of Technology Bombay,Electrical Engineering,OPEN,Gender-Neutral,68,275,2025,5
+Indian Institute of Technology Bombay,Mechanical Engineering,OPEN,Gender-Neutral,340,744,2025,5
+Indian Institute of Technology Bombay,Chemical Engineering,OPEN,Gender-Neutral,820,1423,2025,5
+Indian Institute of Technology Delhi,Computer Science and Engineering,OPEN,Gender-Neutral,4,98,2025,5
+Indian Institute of Technology Delhi,Electrical Engineering,OPEN,Gender-Neutral,105,310,2025,5
+Indian Institute of Technology Delhi,Mechanical Engineering,OPEN,Gender-Neutral,380,820,2025,5
+Indian Institute of Technology Delhi,Civil Engineering,OPEN,Gender-Neutral,910,1650,2025,5
+Indian Institute of Technology Madras,Computer Science and Engineering,OPEN,Gender-Neutral,12,120,2025,5
+Indian Institute of Technology Madras,Electrical Engineering,OPEN,Gender-Neutral,130,380,2025,5
+Indian Institute of Technology Madras,Mechanical Engineering,OPEN,Gender-Neutral,450,980,2025,5
+Indian Institute of Technology Madras,Aerospace Engineering,OPEN,Gender-Neutral,1050,1800,2025,5
+Indian Institute of Technology Kanpur,Computer Science and Engineering,OPEN,Gender-Neutral,22,180,2025,5
+Indian Institute of Technology Kanpur,Electrical Engineering,OPEN,Gender-Neutral,200,520,2025,5
+Indian Institute of Technology Kanpur,Mechanical Engineering,OPEN,Gender-Neutral,610,1220,2025,5
+Indian Institute of Technology Kanpur,Civil Engineering,OPEN,Gender-Neutral,1310,2100,2025,5
+Indian Institute of Technology Kharagpur,Computer Science and Engineering,OPEN,Gender-Neutral,35,220,2025,5
+Indian Institute of Technology Kharagpur,Electronics and Electrical Communication Engineering,OPEN,Gender-Neutral,240,600,2025,5
+Indian Institute of Technology Kharagpur,Mechanical Engineering,OPEN,Gender-Neutral,720,1400,2025,5
+Indian Institute of Technology Kharagpur,Civil Engineering,OPEN,Gender-Neutral,1500,2450,2025,5
+Indian Institute of Technology Roorkee,Computer Science and Engineering,OPEN,Gender-Neutral,55,380,2025,5
+Indian Institute of Technology Roorkee,Electrical Engineering,OPEN,Gender-Neutral,400,860,2025,5
+Indian Institute of Technology Roorkee,Mechanical Engineering,OPEN,Gender-Neutral,940,1750,2025,5
+Indian Institute of Technology Guwahati,Computer Science and Engineering,OPEN,Gender-Neutral,140,640,2025,5
+Indian Institute of Technology Guwahati,Electrical Engineering,OPEN,Gender-Neutral,700,1380,2025,5
+Indian Institute of Technology Guwahati,Mechanical Engineering,OPEN,Gender-Neutral,1500,2600,2025,5
+Indian Institute of Technology Hyderabad,Computer Science and Engineering,OPEN,Gender-Neutral,200,820,2025,5
+Indian Institute of Technology Hyderabad,Electrical Engineering,OPEN,Gender-Neutral,900,1700,2025,5
+Indian Institute of Technology Hyderabad,Mechanical Engineering,OPEN,Gender-Neutral,1800,3100,2025,5
+Indian Institute of Technology Indore,Computer Science and Engineering,OPEN,Gender-Neutral,420,1200,2025,5
+Indian Institute of Technology Indore,Electrical Engineering,OPEN,Gender-Neutral,1350,2400,2025,5
+Indian Institute of Technology BHU Varanasi,Computer Science and Engineering,OPEN,Gender-Neutral,520,1450,2025,5
+Indian Institute of Technology BHU Varanasi,Electrical Engineering,OPEN,Gender-Neutral,1550,2700,2025,5
+Indian Institute of Technology BHU Varanasi,Mechanical Engineering,OPEN,Gender-Neutral,2800,4200,2025,5
+Indian Institute of Technology Jodhpur,Computer Science and Engineering,OPEN,Gender-Neutral,900,2100,2025,5
+Indian Institute of Technology Jodhpur,Electrical Engineering,OPEN,Gender-Neutral,2200,3600,2025,5
+Indian Institute of Technology Mandi,Computer Science and Engineering,OPEN,Gender-Neutral,1100,2800,2025,5
+Indian Institute of Technology Patna,Computer Science and Engineering,OPEN,Gender-Neutral,1300,3100,2025,5
+Indian Institute of Technology Patna,Electrical Engineering,OPEN,Gender-Neutral,3300,5100,2025,5
+Indian Institute of Technology Ropar,Computer Science and Engineering,OPEN,Gender-Neutral,1500,3400,2025,5
+Indian Institute of Technology Gandhinagar,Computer Science and Engineering,OPEN,Gender-Neutral,1400,3200,2025,5
+Indian Institute of Technology Tirupati,Computer Science and Engineering,OPEN,Gender-Neutral,2000,4500,2025,5
+Indian Institute of Technology (ISM) Dhanbad,Computer Science and Engineering,OPEN,Gender-Neutral,2100,4800,2025,5
+Indian Institute of Technology (ISM) Dhanbad,Mining Engineering,OPEN,Gender-Neutral,7200,10500,2025,5
+National Institute of Technology Trichy,Computer Science and Engineering,OPEN,OS,410,1850,2025,5
+National Institute of Technology Trichy,Electronics and Communication Engineering,OPEN,OS,1900,3200,2025,5
+National Institute of Technology Trichy,Electrical Engineering,OPEN,OS,3400,5400,2025,5
+National Institute of Technology Trichy,Mechanical Engineering,OPEN,OS,5600,8200,2025,5
+National Institute of Technology Warangal,Computer Science and Engineering,OPEN,OS,550,2200,2025,5
+National Institute of Technology Warangal,Electronics and Communication Engineering,OPEN,OS,2300,3800,2025,5
+National Institute of Technology Warangal,Electrical Engineering,OPEN,OS,3900,6000,2025,5
+National Institute of Technology Surathkal,Computer Science and Engineering,OPEN,OS,700,2600,2025,5
+National Institute of Technology Surathkal,Electronics and Communication Engineering,OPEN,OS,2700,4400,2025,5
+National Institute of Technology Calicut,Computer Science and Engineering,OPEN,OS,800,3000,2025,5
+National Institute of Technology Calicut,Electronics and Communication Engineering,OPEN,OS,3100,4800,2025,5
+National Institute of Technology Rourkela,Computer Science and Engineering,OPEN,OS,1000,3400,2025,5
+National Institute of Technology Rourkela,Electronics and Communication Engineering,OPEN,OS,3500,5500,2025,5
+Malaviya National Institute of Technology Jaipur,Computer Science and Engineering,OPEN,OS,1100,3600,2025,5
+Malaviya National Institute of Technology Jaipur,Electronics and Communication Engineering,OPEN,OS,3700,5800,2025,5
+Visvesvaraya National Institute of Technology Nagpur,Computer Science and Engineering,OPEN,OS,1200,3900,2025,5
+Visvesvaraya National Institute of Technology Nagpur,Electronics and Communication Engineering,OPEN,OS,4000,6200,2025,5
+National Institute of Technology Durgapur,Computer Science and Engineering,OPEN,OS,1400,4200,2025,5
+National Institute of Technology Silchar,Computer Science and Engineering,OPEN,OS,1600,4800,2025,5
+National Institute of Technology Agartala,Computer Science and Engineering,OPEN,OS,2000,6000,2025,5
+Indian Institute of Technology Bombay,Computer Science and Engineering,OBC-NCL,Gender-Neutral,1,22,2025,5
+Indian Institute of Technology Bombay,Electrical Engineering,OBC-NCL,Gender-Neutral,25,110,2025,5
+Indian Institute of Technology Bombay,Mechanical Engineering,OBC-NCL,Gender-Neutral,130,340,2025,5
+Indian Institute of Technology Delhi,Computer Science and Engineering,OBC-NCL,Gender-Neutral,2,38,2025,5
+Indian Institute of Technology Delhi,Electrical Engineering,OBC-NCL,Gender-Neutral,42,135,2025,5
+Indian Institute of Technology Delhi,Mechanical Engineering,OBC-NCL,Gender-Neutral,155,420,2025,5
+Indian Institute of Technology Madras,Computer Science and Engineering,OBC-NCL,Gender-Neutral,5,58,2025,5
+Indian Institute of Technology Kanpur,Computer Science and Engineering,OBC-NCL,Gender-Neutral,8,80,2025,5
+Indian Institute of Technology Roorkee,Computer Science and Engineering,OBC-NCL,Gender-Neutral,20,160,2025,5
+Indian Institute of Technology Guwahati,Computer Science and Engineering,OBC-NCL,Gender-Neutral,60,280,2025,5
+Indian Institute of Technology Hyderabad,Computer Science and Engineering,OBC-NCL,Gender-Neutral,90,380,2025,5
+Indian Institute of Technology Indore,Computer Science and Engineering,OBC-NCL,Gender-Neutral,150,520,2025,5
+Indian Institute of Technology BHU Varanasi,Computer Science and Engineering,OBC-NCL,Gender-Neutral,200,640,2025,5
+National Institute of Technology Trichy,Computer Science and Engineering,OBC-NCL,OS,180,820,2025,5
+National Institute of Technology Warangal,Computer Science and Engineering,OBC-NCL,OS,220,960,2025,5
+National Institute of Technology Surathkal,Computer Science and Engineering,OBC-NCL,OS,280,1100,2025,5
+Indian Institute of Technology Bombay,Computer Science and Engineering,OPEN,Female-only,20,280,2025,5
+Indian Institute of Technology Delhi,Computer Science and Engineering,OPEN,Female-only,38,350,2025,5
+Indian Institute of Technology Madras,Computer Science and Engineering,OPEN,Female-only,45,420,2025,5
+Indian Institute of Technology Kanpur,Computer Science and Engineering,OPEN,Female-only,65,510,2025,5
+Indian Institute of Technology Roorkee,Computer Science and Engineering,OPEN,Female-only,110,680,2025,5
+Indian Institute of Technology Bombay,Electrical Engineering,OPEN,Female-only,220,820,2025,5
+Indian Institute of Technology Delhi,Electrical Engineering,OPEN,Female-only,280,940,2025,5
+Indian Institute of Technology Madras,Electrical Engineering,OPEN,Female-only,320,1100,2025,5

@@ -1,0 +1,42 @@
+{
+  "name": "jee-college-predicter",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "scrape": "npx tsx scripts/scrape-josaa.ts",
+    "scrape:2025": "JOSAA_YEARS=2025 JOSAA_CURRENT_YEAR=2025 npx tsx scripts/scrape-josaa.ts",
+    "scrape:all-rounds": "SCRAPE_ALL_ROUNDS=true npx tsx scripts/scrape-josaa.ts",
+    "fetch-placement": "npx tsx scripts/fetch-placement-fees.ts",
+    "fetch-placement:skip-nirf": "SKIP_NIRF=true npx tsx scripts/fetch-placement-fees.ts"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "^3.0.80",
+    "@ai-sdk/openai": "^3.0.67",
+    "@ai-sdk/react": "^3.0.195",
+    "@tailwindcss/postcss": "^4.3.0",
+    "ai": "^6.0.193",
+    "next": "16.2.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.1",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.5.0",
+    "axios": "^1.16.1",
+    "cheerio": "^1.2.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.6",
+    "playwright": "^1.60.0",
+    "postcss": "^8.5.15",
+    "tailwindcss": "^4.3.0",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3"
+  }
+}
