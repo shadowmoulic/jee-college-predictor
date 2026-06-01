@@ -87,6 +87,13 @@ export default async function CollegesPage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--surface-2)" }}>
+      <style>{`
+        .college-card-hover:hover {
+          transform: translateY(-3px) !important;
+          box-shadow: var(--shadow-md) !important;
+          border-color: var(--hover-border) !important;
+        }
+      `}</style>
       {/* Page hero */}
       <div style={{
         background: "linear-gradient(135deg, #0f2b7a 0%, #1a56db 50%, #2563eb 100%)",
@@ -153,26 +160,17 @@ export default async function CollegesPage() {
                     href={`/college/${college.id}`}
                     style={{ textDecoration: "none", color: "inherit" }}
                   >
-                    <div style={{
-                      background: "#fff", border: "1px solid var(--border)",
-                      borderRadius: 16, padding: "1.25rem 1.5rem",
-                      boxShadow: "var(--shadow-sm)",
-                      transition: "all 0.2s ease",
-                      cursor: "pointer", height: "100%",
-                      display: "flex", flexDirection: "column", gap: "0.75rem",
-                    }}
-                    onMouseEnter={(e) => {
-                      const el = e.currentTarget as HTMLDivElement;
-                      el.style.transform = "translateY(-3px)";
-                      el.style.boxShadow = "var(--shadow-md)";
-                      el.style.borderColor = acc.border + "66";
-                    }}
-                    onMouseLeave={(e) => {
-                      const el = e.currentTarget as HTMLDivElement;
-                      el.style.transform = "translateY(0)";
-                      el.style.boxShadow = "var(--shadow-sm)";
-                      el.style.borderColor = "var(--border)";
-                    }}
+                    <div 
+                      className="college-card-hover"
+                      style={{
+                        background: "#fff", border: "1px solid var(--border)",
+                        borderRadius: 16, padding: "1.25rem 1.5rem",
+                        boxShadow: "var(--shadow-sm)",
+                        transition: "all 0.2s ease",
+                        cursor: "pointer", height: "100%",
+                        display: "flex", flexDirection: "column", gap: "0.75rem",
+                        "--hover-border": `${acc.border}66`
+                      } as React.CSSProperties}
                     >
                       {/* Top row: badge + name + tag */}
                       <div style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start" }}>
