@@ -1734,17 +1734,172 @@
   color: var(--text);
 }
 
+/* --- High Visual Hierarchy Styles for BranchModal --- */
+.modalChancesTitle {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.modalProbPillLargeWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+  margin-bottom: 2px;
+}
+
+.probPillLarge {
+  font-size: 0.95rem !important;
+  padding: 8px 24px !important;
+  border-radius: 100px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  transition: transform 0.2s ease;
+}
+
+.probPillLarge:hover {
+  transform: scale(1.03);
+}
+
+.modalRankRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--surface-2);
+  border: 1px solid var(--border-light);
+  border-radius: 18px;
+  padding: 1rem 1.75rem;
+  margin-bottom: 1.5rem;
+  gap: 1.5rem;
+}
+
+.modalRankItem {
+  flex: 1;
+  text-align: center;
+}
+
+.modalRankLabel {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.modalRankValue {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+.modalRankDivider {
+  width: 1px;
+  height: 40px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+.modalCourseInfo {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: 18px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-xs);
+  text-align: left;
+}
+
+.modalBranchNameLarge {
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1.4;
+  color: var(--ink);
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+
+.modalCollegeNameMedium {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.modalDegreeTags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.modalDegreeTags span:not(.dotSeparator) {
+  background: var(--surface-3);
+  padding: 4px 10px;
+  border-radius: 8px;
+  color: var(--text-secondary);
+}
+
+.dotSeparator {
+  display: none;
+}
+
+.modalActions {
+  margin-bottom: 1.5rem;
+}
+
+.placementBtn {
+  width: 100%;
+  padding: 12px 20px;
+  background: var(--brand);
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(26, 86, 219, 0.15);
+}
+
+.placementBtn:hover {
+  background: var(--brand-dark);
+  box-shadow: 0 6px 20px rgba(26, 86, 219, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Scrollable Table in Mobile Mode */
 .roundsTableWrap {
   border: 1px solid var(--border);
   border-radius: 16px;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   box-shadow: var(--shadow-sm);
+  -webkit-overflow-scrolling: touch;
+  background: var(--surface);
 }
 
 .roundsTable {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.9rem;
+  min-width: 580px; /* Ensure columns don't compress on mobile */
 }
 
 .roundsTable th {

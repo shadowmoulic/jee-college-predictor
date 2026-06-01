@@ -72,6 +72,8 @@ export default function BranchModal({ modalData, rank, onClose }: Props) {
   );
   const lastRound = displayRounds.length > 0 ? Math.max(...displayRounds) : null;
 
+  const probClass = styles[branch.prob.toLowerCase()];
+
   return (
     <div
       className={`${styles.modalOverlay} ${styles.openModal}`}
@@ -82,10 +84,10 @@ export default function BranchModal({ modalData, rank, onClose }: Props) {
         <div className={styles.modalHeader}>
           <div className={styles.modalHeaderInfo}>
             <div style={{ flex: 1, minWidth: 0, textAlign: "center" }}>
-              <div className={`${styles.modalChancesTitle} font-extrabold`}>JEE Advance Admission Chances</div>
-              <div className={`${styles.modalProbPillLargeWrapper} font-extrabold`}>
-                <span className={`${styles.probPillLarge}`}>
-                  {branch.prob.toUpperCase()}
+              <div className={styles.modalChancesTitle}>JEE ADVANCED ADMISSION CHANCES</div>
+              <div className={styles.modalProbPillLargeWrapper}>
+                <span className={`${styles.probPillLarge} ${styles.probPill} ${probClass}`}>
+                  {branch.prob.toUpperCase()} CHANCE
                 </span>
               </div>
             </div>
@@ -99,14 +101,14 @@ export default function BranchModal({ modalData, rank, onClose }: Props) {
         </div>
 
         <div className={styles.modalBody}>
-          <div className={`${styles.modalRankRow} flex gap-4`}>
-            <div className={styles.modalRankRow}>
-              <div className={`${styles.modalRankLabel}  font-extrabold`}>OPENING RANK</div>
+          <div className={styles.modalRankRow}>
+            <div className={styles.modalRankItem}>
+              <div className={styles.modalRankLabel}>OPENING RANK</div>
               <div className={styles.modalRankValue}>{branch.opening.toLocaleString()}</div>
             </div>
             <div className={styles.modalRankDivider}></div>
-            <div className={styles.modalRankRow}>
-              <div className={`${styles.modalRankLabel}  font-extrabold`}>CLOSING RANK</div>
+            <div className={styles.modalRankItem}>
+              <div className={styles.modalRankLabel}>CLOSING RANK</div>
               <div className={styles.modalRankValue}>{branch.closing.toLocaleString()}</div>
             </div>
           </div>
@@ -123,12 +125,7 @@ export default function BranchModal({ modalData, rank, onClose }: Props) {
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className={styles.modalActions}>
-            <button className={styles.placementBtn}>
-              Check Placement Statistics
-            </button>
-          </div>
+
 
           {/* Historical rounds table */}
           <div style={{ fontWeight: 800, fontSize: "1rem", marginBottom: "4px", marginTop: "2px", color: "var(--text)" }}>

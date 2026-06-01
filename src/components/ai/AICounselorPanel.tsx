@@ -237,10 +237,10 @@ function WelcomeState({
           </div>
           <div className={styles.profileGrid}>
             {[
-              { label: "Rank", value: parseInt(rank).toLocaleString() },
-              { label: "Category", value: category.split(" ")[0] },
+              { label: "Rank", value: rank && rank !== "0" ? parseInt(rank).toLocaleString() : "Not Provided" },
+              { label: "Category", value: category ? category.split(" ")[0] : "General" },
               { label: "Exam", value: examLabel },
-              { label: "State", value: domicileState.length > 12 ? domicileState.slice(0, 11) + "…" : domicileState },
+              { label: "State", value: domicileState && domicileState !== "Unknown" ? (domicileState.length > 12 ? domicileState.slice(0, 11) + "…" : domicileState) : "Not Set" },
             ].map(({ label, value }) => (
               <div key={label} className={styles.profileCell}>
                 <div className={styles.profileCellLabel}>{label}</div>
