@@ -27,7 +27,7 @@ const SEAT_COLORS: Record<string, { bg: string; text: string }> = {
 
 export default function CollegeCutoffTable({ cutoffs, typeColor }: Props) {
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("All");
+  const [category, setCategory] = useState("OPEN");
   const [quota, setQuota] = useState("All");
   const [gender, setGender] = useState("All");
 
