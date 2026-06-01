@@ -5,6 +5,7 @@ import styles from "./page.module.css";
 import HeroSection from "@/components/predictor/HeroSection";
 import PredictorForm from "@/components/predictor/PredictorForm";
 import ResultsView from "@/components/predictor/ResultsView";
+import FAQSection from "@/components/predictor/FAQSection";
 import { CollegeWithFilteredBranches, PredictorFormValues, FilterState } from "@/types/predictor";
 
 export default function Home() {
@@ -166,16 +167,19 @@ export default function Home() {
     <div className={styles.container}>
       {!isSubmitted ? (
         /* ─── FORM VIEW ─── */
-        <div className={styles.heroSection}>
-          <div className={styles.heroInner}>
-            <HeroSection />
-            <PredictorForm
-              values={formValues}
-              onChange={handleFormChange}
-              onSubmit={handleFormSubmit}
-            />
+        <>
+          <div className={styles.heroSection}>
+            <div className={styles.heroInner}>
+              <HeroSection />
+              <PredictorForm
+                values={formValues}
+                onChange={handleFormChange}
+                onSubmit={handleFormSubmit}
+              />
+            </div>
           </div>
-        </div>
+          <FAQSection />
+        </>
       ) : (
         /* ─── RESULTS VIEW ─── */
         <ResultsView
@@ -203,15 +207,28 @@ export default function Home() {
           onEditDetails={handleEditDetails}
         />
       )}
-      {/* The AI & WhatsApp Aleart Popup */}
+      {/* The AI & WhatsApp Alert Popup */}
       {showSearchAlert && (
         <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.5)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <div style={{ background: "var(--surface)", padding: "30px", borderRadius: "16px", maxWidth: "450px", textAlign: "center", boxShadow: "0 20px 40px rgba(0,0,0,0.2)" }}>
-            <div style={{ fontSize: "2rem", marginBottom: "15px" }}>✨</div>
+            <div style={{ marginBottom: "15px" }}>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="2" style={{ margin: "0 auto" }}>
+                <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+            </div>
             <h3 style={{ fontSize: "1.25rem", fontWeight: 800, marginBottom: "10px", color: "var(--text)" }}>Pro Tip!</h3>
             <p style={{ color: "var(--text-secondary)", marginBottom: "20px", lineHeight: 1.5 }}>
-              Check out the new <strong>Nexus AI ✨</strong> page from the navbar for personalized admission counseling. <br/><br/>
-              Also, don't forget to join our <strong>WhatsApp Group</strong> for free mentorship!
+              Check out the new <strong>Nexus AI</strong> page from the navbar for personalized admission counseling. <br/><br/>
+              Also, don't forget to join our{" "}
+              <a 
+                href="https://chat.whatsapp.com/JuENcC26gOTDVIgdyMiG6X" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                style={{ color: "var(--brand)", textDecoration: "underline", fontWeight: 700 }}
+              >
+                WhatsApp Group
+              </a>{" "}
+              for free mentorship!
             </p>
             <button 
               onClick={() => setShowSearchAlert(false)}

@@ -319,7 +319,7 @@ export default function ResultsView({
             <div className={styles.notesTitle}>Important Notes:</div>
             <ul className={styles.notesList}>
               <li>
-                Closing Ranks are based on <strong>JoSAA 2024 — Round 6</strong>{" "}
+                Closing Ranks are based on <strong>JoSAA 2025 — Round 6</strong>{" "}
                 (Opening Ranks from Round 1)
               </li>
               <li>
@@ -342,9 +342,17 @@ export default function ResultsView({
           {/* BITSAT Promo */}
           <div className={styles.bitsatBanner}>
             <div className={styles.bitsatBannerText}>
-              Join our Whatsapp group for free JEE mentorship !!!! Limited seats
+              Join our WhatsApp group for free JEE mentorship! Limited seats
             </div>
-            <button className={styles.bitsatBannerBtn}>Join Now</button>
+            <a
+              href="https://chat.whatsapp.com/JuENcC26gOTDVIgdyMiG6X"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.bitsatBannerBtn}
+              style={{ textDecoration: "none" }}
+            >
+              Join Now
+            </a>
           </div>
 
           {/* Error */}

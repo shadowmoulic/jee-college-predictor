@@ -4,8 +4,8 @@ export default function HeroSection() {
   return (
     <div className={styles.heroLeft}>
       <div className={styles.heroBadge}>
-        <span className={styles.badgeHighlight}>New</span>
-        <span className={styles.badgeText}>Powered by Nexus Predictor AI</span>
+        <span className={styles.badgeHighlight}>2025 Data</span>
+        <span className={styles.badgeText}>Based on latest 2025 JoSAA cutoffs like none other</span>
       </div>
       <h1>JEE Advanced College Predictor 2026 (JoSAA)</h1>
       <p className={styles.heroSub}>
@@ -15,7 +15,7 @@ export default function HeroSection() {
       <div className={styles.featuresList}>
         {[
           "Completely FREE to use",
-          "Based on official JoSAA 2024 data — IITs, NITs & IIITs",
+          "Based on official JoSAA 2025 data — IITs, NITs & IIITs",
           "Get details like placement ratios, packages, campus videos",
         ].map((feature) => (
           <div className={styles.featureItem} key={feature}>

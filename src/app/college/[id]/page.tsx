@@ -4,6 +4,7 @@ import { getJosaaData } from "@/lib/josaa-data";
 import { getInstituteId } from "@/app/data";
 import { getPlacementForCollege } from "@/lib/placement-data";
 import CollegeCutoffTable from "@/components/college/CollegeCutoffTable";
+import CollegeFAQs from "@/components/college/CollegeFAQs";
 
 interface CutoffRecord {
   program: string;
@@ -97,7 +98,11 @@ export default async function CollegeDetailPage({ params }: { params: Promise<{ 
     return (
       <div style={{ minHeight: "100vh", background: "var(--surface-2)" }}>
         <main style={{ maxWidth: 900, margin: "0 auto", padding: "4rem 1.5rem", textAlign: "center" }}>
-          <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>📊</div>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: "1rem" }}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2">
+              <path d="M18 20V10M12 20V4M6 20v-6"/>
+            </svg>
+          </div>
           <h1 style={{ fontWeight: 800, fontSize: "1.5rem", marginBottom: "0.5rem", color: "var(--text)" }}>
             College not found
           </h1>
@@ -188,7 +193,19 @@ export default async function CollegeDetailPage({ params }: { params: Promise<{ 
 
         <CollegeCutoffTable cutoffs={data.cutoffs} typeColor={typeColor} />
 
-        <div style={{ marginTop: "1.5rem", textAlign: "center" }}>
+        <CollegeFAQs
+          name={data.name}
+          shortName={data.shortName || data.name}
+          state={data.state}
+          instituteType={data.instituteType}
+          annualFee={placement?.annualFee}
+          avgPackage={placement?.avgPackage}
+          medianPackage={placement?.medianPackage}
+          highestPackage={placement?.highestPackage}
+          placementRate={placement?.placementRate}
+        />
+
+        <div style={{ marginTop: "2rem", textAlign: "center" }}>
           <Link
             href="/"
             style={{

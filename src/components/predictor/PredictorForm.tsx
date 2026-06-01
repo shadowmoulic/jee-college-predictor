@@ -51,7 +51,7 @@ export default function PredictorForm({ values, onChange, onSubmit }: Props) {
       <div className={styles.completionWrap}>
         <div className={styles.completionHeader}>
           <span className={styles.completionLabel}>
-            {pct === 100 ? "🎯 All set — ready to predict!" : nextStep ? `Next: ${nextStep}` : "Almost there!"}
+            {pct === 100 ? "All set — ready to predict!" : nextStep ? `Next: ${nextStep}` : "Almost there!"}
           </span>
           <span className={styles.completionCount}>{doneCount}/{total}</span>
         </div>

@@ -72,7 +72,7 @@ export default function ComparePage() {
 
         <div style={{ marginTop: "4rem" }}>
           <h2 style={{ fontSize: "1.5rem", fontWeight: 800, marginBottom: "1.5rem", color: "var(--text)", textAlign: "center" }}>
-            🔥 Popular Comparisons
+            Popular Comparisons
           </h2>
           <div style={{
             display: "grid",

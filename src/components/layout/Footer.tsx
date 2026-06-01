@@ -1,17 +1,120 @@
+"use client";
+
 import Link from "next/link";
+import styles from "./Footer.module.css";
 
 export default function Footer() {
   return (
-    <footer className="bg-white border-t border-[var(--border)] py-5 px-6 text-center text-sm text-[var(--text-secondary)]">
-      <p>
-        &copy; {new Date().getFullYear()} Nexus Predictor. Predictions are based on historical JoSAA data and do not guarantee admission.{" "}
-        <Link
-          href="/terms"
-          className="text-[var(--brand)] font-semibold underline hover:opacity-80 transition-opacity"
-        >
-          Terms &amp; Conditions
-        </Link>
-      </p>
+    <footer className={styles.footer}>
+      <div className={styles.container}>
+        <div className={styles.grid}>
+          {/* Brand Column */}
+          <div className={styles.brandCol}>
+            <Link href="/" className={styles.logo}>
+              <div className={styles.logoMark}>N</div>
+              <span className={styles.logoText}>Nexus Predictor</span>
+            </Link>
+            <p className={styles.desc}>
+              Empowering Indian engineering aspirants with high-quality, data-driven college prediction systems. Instantly analyze your admission chances for IITs, NITs, and IIITs.
+            </p>
+            <div className={styles.socials}>
+              {/* WhatsApp Icon */}
+              <a
+                href="https://chat.whatsapp.com/JuENcC26gOTDVIgdyMiG6X"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.socialBtn}
+                title="Join WhatsApp Group"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c0-5.445 4.439-9.884 9.896-9.884 2.64 0 5.122 1.027 6.988 2.895 1.865 1.867 2.893 4.35 2.893 6.994-.001 5.45-4.441 9.888-9.893 9.888m8.413-18.297A11.815 11.815 0 0012.05.004C5.462.004.103 5.36.101 11.948c0 2.102.548 4.156 1.591 5.965L0 24l6.236-1.636a11.854 11.854 0 005.814 1.513h.005c6.588 0 11.948-5.356 11.95-11.948a11.82 11.82 0 00-3.541-8.448" />
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          {/* Quick Links Column */}
+          <div>
+            <h4 className={styles.title}>Predictor Tools</h4>
+            <ul className={styles.list}>
+              <li>
+                <Link href="/" className={styles.link}>
+                  JEE College Predictor
+                </Link>
+              </li>
+              <li>
+                <Link href="/colleges" className={styles.link}>
+                  Colleges Directory
+                </Link>
+              </li>
+              <li>
+                <Link href="/compare" className={styles.link}>
+                  Compare Colleges
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* AI Column */}
+          <div>
+            <h4 className={styles.title}>AI Counselling</h4>
+            <ul className={styles.list}>
+              <li>
+                <Link href="/ai" className={styles.link}>
+                  Nexus AI Counselor
+                </Link>
+              </li>
+              <li>
+                <a
+                  href="https://chat.whatsapp.com/JuENcC26gOTDVIgdyMiG6X"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.link}
+                >
+                  WhatsApp Support
+                </a>
+              </li>
+              <li>
+                <Link href="/terms" className={styles.link}>
+                  About Predictions
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Legal Column */}
+          <div>
+            <h4 className={styles.title}>Legal</h4>
+            <ul className={styles.list}>
+              <li>
+                <Link href="/terms" className={styles.link}>
+                  Terms &amp; Conditions
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className={styles.link}>
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className={styles.link}>
+                  Disclaimer
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom Section */}
+        <div className={styles.bottom}>
+          <span className={styles.copy}>
+            &copy; {new Date().getFullYear()} Nexus Predictor. All rights reserved.
+          </span>
+          <div className={styles.disclaimer}>
+            Disclaimer: Predictions generated by Nexus Predictor are based on historical JoSAA/CSAB cutoff datasets (2020-2025). These estimates are indicative and do not guarantee final admission or seat allotment. Aspirants should use this tool as a reference during the counseling process.
+          </div>
+        </div>
+      </div>
     </footer>
   );
 }

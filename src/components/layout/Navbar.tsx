@@ -19,7 +19,7 @@ export default function Navbar() {
         <Link href="/">Tools</Link>
         <Link href="/colleges">Colleges</Link>
         <Link href="/compare">Compare</Link>
-        <Link href="/ai" style={{ color: "var(--brand)", fontWeight: 700 }}>Nexus AI ✨</Link>
+        <Link href="/ai" style={{ color: "var(--brand)", fontWeight: 700 }}>Nexus AI</Link>
       </div>
 
       <div className={styles.navActions}>
@@ -47,7 +47,7 @@ export default function Navbar() {
         <Link href="/" onClick={() => setIsOpen(false)}>Tools</Link>
         <Link href="/colleges" onClick={() => setIsOpen(false)}>Colleges</Link>
         <Link href="/compare" onClick={() => setIsOpen(false)}>Compare</Link>
-        <Link href="/ai" onClick={() => setIsOpen(false)} style={{ color: "var(--brand)", fontWeight: 700 }}>Nexus AI ✨</Link>
+        <Link href="/ai" onClick={() => setIsOpen(false)} style={{ color: "var(--brand)", fontWeight: 700 }}>Nexus AI</Link>
         <a 
           href="https://chat.whatsapp.com/JuENcC26gOTDVIgdyMiG6X" 
           target="_blank" 
