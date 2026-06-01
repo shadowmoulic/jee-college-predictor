@@ -6,7 +6,7 @@ import styles from "@/app/page.module.css";
 export default function WhatsAppPod() {
   return (
     <Link
-      href="https://wa.me/919876543210" // Using a placeholder since user didn't specify
+      href={process.env.NEXT_PUBLIC_WHATSAPP_GROUP || "https://chat.whatsapp.com/JuENcC26gOTDVIgdyMiG6X"}
       target="_blank"
       rel="noopener noreferrer"
       className={styles.whatsappPod}
