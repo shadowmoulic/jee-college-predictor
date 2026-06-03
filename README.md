@@ -1,4 +1,4 @@
-# JEE College Predictor 2026 — mathongo
+# JEE College Predictor 2026 
 
 A full-stack Next.js application that predicts college admission chances for JEE Advanced and JEE Main aspirants using official JoSAA cutoff data, real placement statistics, and multi-year trend analysis.
 
