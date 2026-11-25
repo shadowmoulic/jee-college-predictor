@@ -43,7 +43,10 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const origin = req.headers.get("origin");
-  if (origin !== req.nextUrl.origin) return reply({ error: "Invalid request origin." }, 403);
+  const host = req.headers.get("host");
+  if (!origin || !host || (origin !== `https://${host}` && origin !== `http://${host}`)) {
+    return reply({ error: "Invalid request origin." }, 403);
+  }
   if (!config()) return reply({ error: "Private shortlists are unavailable." }, 503);
   const form = await req.json().catch(() => null);
   const action = form?.action;
@@ -75,7 +78,7 @@ export async function POST(req: NextRequest) {
       if (!session.access_token) return reply({ message: "Check your email to confirm the account, then sign in." });
       const response = reply({ signedIn: true });
       response.cookies.set(cookie, session.access_token, {
-        httpOnly: true, secure: req.nextUrl.protocol === "https:", sameSite: "lax", path: "/",
+        httpOnly: true, secure: origin.startsWith("https://"), sameSite: "lax", path: "/",
         maxAge: Number(session.expires_in) || 3600,
       });
       return response;

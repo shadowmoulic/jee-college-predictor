@@ -26,12 +26,12 @@ export default function Navbar() {
 
       <div className={styles.navActions}>
         <a 
-          href="https://chat.whatsapp.com/JuENcC26gOTDVIgdyMiG6X" 
+          href="https://tinyurl.com/SayakCall"
           target="_blank" 
           rel="noopener noreferrer" 
           className={styles.joinBtn}
         >
-          Join our Group
+          Book a call
         </a>
         <button 
           className={`${styles.hamburger} ${isOpen ? styles.hamburgerOpen : ""}`} 
@@ -53,13 +53,13 @@ export default function Navbar() {
         <Link href="/mentorship" onClick={() => setIsOpen(false)}>1:1 Counselling</Link>
         <Link href="/ai" onClick={() => setIsOpen(false)} style={{ color: "var(--brand)", fontWeight: 700 }}>AI Counsellor</Link>
         <a 
-          href="https://chat.whatsapp.com/JuENcC26gOTDVIgdyMiG6X" 
+          href="https://tinyurl.com/SayakCall"
           target="_blank" 
           rel="noopener noreferrer"
           className={styles.mobileJoinBtn}
           onClick={() => setIsOpen(false)}
         >
-          Join our Group
+          Book a call
         </a>
       </div>
     </nav>

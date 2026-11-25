@@ -5,7 +5,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import ChapterwiseBanner from "@/components/layout/ChapterwiseBanner";
 import Navbar from "@/components/layout/Navbar";
-import WhatsAppPod from "@/components/layout/WhatsAppPod";
+import BookCallButton from "@/components/layout/BookCallButton";
 import Footer from "@/components/layout/Footer";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -60,7 +60,7 @@ export default function RootLayout({
         <ChapterwiseBanner />
         {children}
         <Footer />
-        <WhatsAppPod />
+        <BookCallButton />
       </body>
     </html>
   );
