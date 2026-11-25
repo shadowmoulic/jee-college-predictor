@@ -1,5 +1,6 @@
 "use client";
 
+import { FaqJsonLd } from "@/components/seo/JsonLd";
 import { useState } from "react";
 import styles from "../predictor/FAQSection.module.css";
 
@@ -41,39 +42,21 @@ export default function CompareFAQs({
   const faqItems = [
     {
       question: `Which is better for placements: ${c1Short} or ${c2Short}?`,
-      answer: `${c1Short} reports an average salary package of ${avgPackage1 || "N/A"} with the highest package reaching ${highestPackage1 || "N/A"}${placementRate1 ? ` and a placement rate of ${placementRate1}` : ""}. In comparison, ${c2Short} has an average package of ${avgPackage2 || "N/A"} and a highest package of ${highestPackage2 || "N/A"}${placementRate2 ? ` with a placement rate of ${placementRate2}` : ""}. Both are premium institutions, but branch-specific packages may vary.`,
+      answer: `${c1Short} reports an average salary package of ${avgPackage1 || "N/A"} with the highest package reaching ${highestPackage1 || "N/A"}${placementRate1 ? ` and a placement rate of ${placementRate1}` : ""}. In comparison, ${c2Short} has an average package of ${avgPackage2 || "N/A"} and a highest package of ${highestPackage2 || "N/A"}${placementRate2 ? ` with a placement rate of ${placementRate2}` : ""}. Check the reporting year and compare the same placement metric. Branch-level outcomes can differ from institute-wide figures.`,
     },
     {
       question: `How do the B.Tech fees compare between ${c1Short} and ${c2Short}?`,
-      answer: `The annual course fee at ${c1Short} is approximately ₹${fee1 || "N/A"}/year. Meanwhile, the course fee at ${c2Short} is about ₹${fee2 || "N/A"}/year. Total cost of attendance may vary depending on hostel facilities, mess options, and local living expenses at each campus.`,
+      answer: `${c1Short}: ${fee1 ? `₹${fee1} per year` : "annual fee unavailable"}. ${c2Short}: ${fee2 ? `₹${fee2} per year` : "annual fee unavailable"}. Total cost of attendance may vary depending on hostel facilities, mess options, and local living expenses at each campus.`,
     },
     {
       question: `Which institute has tougher JoSAA cutoff ranks: ${c1Short} or ${c2Short}?`,
-      answer: `Cutoff ranks are branch and category dependent. For elite branches like Computer Science & Engineering (CSE), both institutions have extremely high cutoff ranks (low closing ranks). You can compare their branch-wise opening and closing ranks side-by-side in the tables above to see which institute has higher demand for your preferred engineering branch.`,
+      answer: `The lower numerical closing rank indicates the more selective option for a matching program, year, round, quota, seat category and gender pool. Use the cutoff tables to compare those settings for your preferred branch.`,
     },
   ];
 
-  // FAQ Schema (JSON-LD)
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": faqItems.map((item) => ({
-      "@type": "Question",
-      "name": item.question,
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": item.answer,
-      },
-    })),
-  };
-
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-
+      <FaqJsonLd items={faqItems} />
       <section className={styles.faqSection} style={{ borderTop: "1px solid var(--border)", background: "var(--surface)", borderRadius: "20px", padding: "3rem 2rem", marginTop: "3rem", boxShadow: "var(--shadow-sm)" }}>
         <div style={{ marginBottom: "2rem" }}>
           <span className={styles.badge}>FAQs</span>

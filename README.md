@@ -144,12 +144,12 @@ data/placement_fees.json  →  (missing)  →  fields omitted from API response
 |---|---|---|
 | `NVIDIA_NIM_API_KEY` | For AI chat | NVIDIA NIM API key for the `/api/ai-chat` endpoint |
 | `NVIDIA_NIM_MODEL` | Optional | Defaults to `meta/llama-3.3-70b-instruct` |
-| `NEXT_PUBLIC_BASE_URL` | Production | Absolute URL used by server components to call internal API routes |
+| `NEXT_PUBLIC_APP_URL` | Production | Public production origin used for canonical URLs, the sitemap, and structured data |
 
 Create a `.env.local` for local overrides:
 
 ```env
-NEXT_PUBLIC_BASE_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 NVIDIA_NIM_API_KEY=your_key_here
 ```
 
@@ -157,7 +157,7 @@ NVIDIA_NIM_API_KEY=your_key_here
 
 ## API Reference
 
-All routes are under `/api/`. Server components call them using the absolute URL from `NEXT_PUBLIC_BASE_URL` (or `http://localhost:3001` as fallback).
+API endpoints are under `/api/`. College detail pages and their API endpoint read the same local JoSAA and placement data.
 
 ### `GET /api/predict`
 

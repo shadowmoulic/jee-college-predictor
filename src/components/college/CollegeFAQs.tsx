@@ -1,13 +1,12 @@
 "use client";
 
+import { FaqJsonLd } from "@/components/seo/JsonLd";
 import { useState } from "react";
 import styles from "../predictor/FAQSection.module.css";
 
 interface CollegeFAQsProps {
   name: string;
   shortName: string;
-  state: string;
-  instituteType: string;
   annualFee?: string;
   avgPackage?: string;
   medianPackage?: string;
@@ -18,8 +17,6 @@ interface CollegeFAQsProps {
 export default function CollegeFAQs({
   name,
   shortName,
-  state,
-  instituteType,
   annualFee,
   avgPackage,
   medianPackage,
@@ -35,15 +32,15 @@ export default function CollegeFAQs({
   const faqItems = [
     {
       question: `What are the average and highest placement packages at ${shortName}?`,
-      answer: `Placements at ${name} are highly competitive. The average salary package is ${avgPackage || "not officially disclosed"}, and the median package is ${medianPackage || "N/A"}. The highest salary package recorded is ${highestPackage || "N/A"}${placementRate ? `, with an overall placement rate of approximately ${placementRate}` : ""}.`,
+      answer: `The reported average salary package at ${name} is ${avgPackage || "not officially disclosed"}, and the median package is ${medianPackage || "N/A"}. The highest salary package recorded is ${highestPackage || "N/A"}${placementRate ? `, with an overall placement rate of approximately ${placementRate}` : ""}.`,
     },
     {
       question: `What is the annual B.Tech course fee at ${shortName}?`,
-      answer: `${name} has an annual academic course fee of approximately ₹${annualFee || "not specified"}/year. Please note that this fee does not include hostel charges, mess fees, or refundable deposits. Tuition fee waivers or concessions are applicable for SC, ST, and economically weaker section (EWS) candidates as per Government of India guidelines.`,
+      answer: `${annualFee ? `The listed annual fee at ${name} is ₹${annualFee}.` : `Annual fee data for ${name} is unavailable here.`} Check the institute’s fee schedule for current tuition, hostel and mess charges, and eligibility for waivers.`,
     },
     {
       question: `How are the JoSAA cutoff ranks determined for ${shortName}?`,
-      answer: `The JoSAA opening and closing ranks for ${name} are determined round-by-round based on candidate choices, rank distributions, and seat-type matrices. Highly sought-after programs like Computer Science & Engineering (CSE) close at much higher ranks compared to core or dual-degree branches.`,
+      answer: `The JoSAA opening and closing ranks for ${name} are determined round-by-round based on candidate choices, rank distributions, and seat-type matrices. Compare the same round, quota, seat category and gender pool when reading opening and closing ranks.`,
     },
     {
       question: `How can I predict my chances of getting into ${shortName}?`,
@@ -51,45 +48,9 @@ export default function CollegeFAQs({
     },
   ];
 
-  // Structured Data (JSON-LD)
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": faqItems.map((item) => ({
-      "@type": "Question",
-      "name": item.question,
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": item.answer,
-      },
-    })),
-  };
-
-  const collegeSchema = {
-    "@context": "https://schema.org",
-    "@type": "EducationalOrganization",
-    "@id": `https://nexuspredictor.in/college/${shortName.toLowerCase().replace(/\s+/g, "-")}`,
-    "name": name,
-    "alternateName": shortName,
-    "address": {
-      "@type": "PostalAddress",
-      "addressRegion": state,
-      "addressCountry": "India",
-    },
-  };
-
   return (
     <>
-      {/* Schema Script Insertion */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(collegeSchema) }}
-      />
-
+      <FaqJsonLd items={faqItems} />
       <section className={styles.faqSection} style={{ borderTop: "1px solid var(--border)", background: "var(--surface)", borderRadius: "20px", padding: "3rem 2rem", marginTop: "3rem", boxShadow: "var(--shadow-sm)" }}>
         <div style={{ marginBottom: "2rem" }}>
           <span className={styles.badge}>FAQs</span>

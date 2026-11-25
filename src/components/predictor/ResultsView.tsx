@@ -368,7 +368,7 @@ export default function ResultsView({
             <div className={styles.noResults}>
               <div className={styles.spinner}></div>
               <strong style={{ color: "var(--brand)", marginTop: "1rem" }}>
-                Analyzing JoSAA 2026 Admission Datasets...
+                Analyzing historical JoSAA cutoffs...
               </strong>
               <span>Applying rank algorithms and localized filters</span>
             </div>

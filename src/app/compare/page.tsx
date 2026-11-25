@@ -1,15 +1,17 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
+import { siteUrl } from "@/lib/site";
 import CompareSelector from "@/components/compare/CompareSelector";
 import { getJosaaData } from "@/lib/josaa-data";
 import { getInstituteId, TOP_10_IITS } from "@/app/data";
 
 export const metadata: Metadata = {
-  title: "Compare IITs & NITs: Which College is Actually Better? (2026) | JEE College Predicter",
-  description: "Compare JoSAA 2026 cutoffs, placement packages, and fees side-by-side. See which engineering college comes out on top for your rank.",
-  keywords: ["JEE college predicter", "compare IITs", "IIT vs NIT", "compare engineering colleges", "JoSAA compare", "college versus"],
+  title: "Compare JoSAA Colleges by Cutoffs, Fees & Placements",
+  description: "Compare historical JoSAA cutoff ranks and available placement and fee figures for two engineering colleges.",
   openGraph: {
-    title: "College Face-off: Compare Placements & Cutoffs",
+    url: "/compare",
+    title: "Compare JoSAA Colleges by Cutoffs, Fees & Placements",
     description: "Side-by-side comparison of IITs, NITs, and IIITs.",
   },
   alternates: {
@@ -46,6 +48,12 @@ export default function ComparePage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--surface-2)" }}>
+      <Breadcrumbs items={[["Home", "/"], ["All Comparisons", "/compare"]]} />
+      <JsonLd data={{
+        "@type": "CollectionPage",
+        url: siteUrl("/compare"),
+        name: "Compare JoSAA Colleges",
+      }} />
       <style>{`
         .compare-card-hover:hover {
           transform: translateY(-3px) !important;

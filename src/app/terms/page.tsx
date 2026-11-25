@@ -2,6 +2,7 @@ import Link from "next/link";
 import styles from "@/app/page.module.css"; // Reuse general styles if necessary
 
 export const metadata = {
+  alternates: { canonical: "/terms" },
   title: "Terms and Conditions | Nexus Predictor",
   description: "Terms and conditions for using Nexus Predictor.",
 };

@@ -1,77 +1,22 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getJosaaData } from "@/lib/josaa-data";
-import { getInstituteId } from "@/app/data";
-import { getPlacementForCollege } from "@/lib/placement-data";
 import CollegeCutoffTable from "@/components/college/CollegeCutoffTable";
 import CollegeFAQs from "@/components/college/CollegeFAQs";
 
-interface CutoffRecord {
-  program: string;
-  degree: string;
-  quota: string;
-  seatType: string;
-  gender: string;
-  openingRank: number;
-  closingRank: number;
-}
-
-interface PlacementInfo {
-  courseFee: string;
-  annualFee: string;
-  medianPackage: string;
-  avgPackage: string;
-  highestPackage: string;
-  placementRate: string;
-  totalOffers: number;
-  dataYear: number;
-}
-
-interface CollegeDetail {
-  id: string;
-  name: string;
-  shortName: string;
-  state: string;
-  instituteType: string;
-  courseFee: string;
-  cutoffs: CutoffRecord[];
-  placement: PlacementInfo | null;
-  dataYear: number;
-  dataRound: number;
-  totalPrograms: number;
-}
-
-async function getCollegeDetail(id: string): Promise<CollegeDetail | null> {
-  try {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL ||
-      (process.env.NODE_ENV === "production"
-        ? "https://your-app.vercel.app"
-        : "http://localhost:3001");
-    const res = await fetch(`${baseUrl}/api/colleges/${id}`, { cache: "no-store" });
-    if (!res.ok) return null;
-    return res.json();
-  } catch {
-    return null;
-  }
-}
+import { notFound } from "next/navigation";
+import { getCollegeDetail } from "@/lib/college-detail";
+import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
+import { collegeEntity, siteUrl } from "@/lib/site";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  const data = await getCollegeDetail(id);
-  const name = data?.name ?? id.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-  return {
-    title: `Is ${name} Worth It? Placements, Cutoffs & Fees (2026)`,
-    description: `Don't join ${name} without reading this. Discover branch-wise JoSAA 2026 cutoff ranks, hidden placement data, seat matrix, and total fees.`,
-    keywords: [`${name} cutoff`, `${name} JoSAA`, `${name} placements`, "JoSAA 2026 cutoff", "JEE Main", "JEE Advanced"],
-    openGraph: {
-      title: `${name} 2026 Cutoffs & Placement Review`,
-      description: `Complete breakdown of JoSAA 2026 admission data and package statistics for ${name}.`,
-    },
-    alternates: {
-      canonical: `/college/${id}`,
-    },
-  };
+  const data = getCollegeDetail(id);
+  if (!data) notFound();
+
+  const title = `${data.name} JoSAA ${data.dataYear} Cutoffs, Fees & Placements`;
+  const description = `See ${data.name} opening and closing ranks for JoSAA ${data.dataYear} round ${data.dataRound}, plus available fees and placement figures.`;
+  const canonical = `/college/${id}`;
+  return { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical } };
 }
 
 const TYPE_COLOR: Record<string, string> = {
@@ -92,39 +37,25 @@ const SEAT_COLORS: Record<string, { bg: string; text: string }> = {
 
 export default async function CollegeDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const data = await getCollegeDetail(id);
+  const data = getCollegeDetail(id);
 
-  if (!data) {
-    return (
-      <div style={{ minHeight: "100vh", background: "var(--surface-2)" }}>
-        <main style={{ maxWidth: 900, margin: "0 auto", padding: "4rem 1.5rem", textAlign: "center" }}>
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: "1rem" }}>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2">
-              <path d="M18 20V10M12 20V4M6 20v-6"/>
-            </svg>
-          </div>
-          <h1 style={{ fontWeight: 800, fontSize: "1.5rem", marginBottom: "0.5rem", color: "var(--text)" }}>
-            College not found
-          </h1>
-          <p style={{ color: "var(--text-secondary)", marginBottom: "2rem" }}>
-            This college may not be in our database yet.
-          </p>
-          <Link
-            href="/colleges"
-            style={{ color: "var(--brand)", fontWeight: 700, textDecoration: "underline" }}
-          >
-            ← Browse all colleges
-          </Link>
-        </main>
-      </div>
-    );
-  }
+  if (!data) notFound();
 
   const { placement } = data;
+  const path = `/college/${id}`;
   const typeColor = TYPE_COLOR[data.instituteType] ?? "var(--brand)";
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--surface-2)" }}>
+
+      <JsonLd data={{
+        "@type": "WebPage",
+        "@id": siteUrl(path) + "#webpage",
+        url: siteUrl(path),
+        name: `${data.name} JoSAA Cutoffs, Fees & Placements`,
+        mainEntity: collegeEntity(id, data.name, data.shortName, data.state),
+      }} />
+      <Breadcrumbs items={[["Home", "/"], ["All Colleges", "/colleges"], [data.name, path]]} />
 
       {/* Hero */}
       <div style={{
@@ -196,8 +127,6 @@ export default async function CollegeDetailPage({ params }: { params: Promise<{ 
         <CollegeFAQs
           name={data.name}
           shortName={data.shortName || data.name}
-          state={data.state}
-          instituteType={data.instituteType}
           annualFee={placement?.annualFee}
           avgPackage={placement?.avgPackage}
           medianPackage={placement?.medianPackage}

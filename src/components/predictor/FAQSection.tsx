@@ -1,5 +1,6 @@
 "use client";
 
+import { FaqJsonLd } from "@/components/seo/JsonLd";
 import { useState } from "react";
 import styles from "./FAQSection.module.css";
 
@@ -10,28 +11,24 @@ interface FAQItem {
 
 const FAQ_ITEMS: FAQItem[] = [
   {
-    question: "What is the JEE Advanced College Predictor 2026?",
-    answer: "The JEE Advanced College Predictor is a data-driven planning tool for Indian engineering aspirants. It analyzes your JEE rank to predict your admission chances at premium Indian Institutes of Technology (IITs), National Institutes of Technology (NITs), Indian Institutes of Information Technology (IIITs), and Government Funded Technical Institutes (GFTIs) based on historical JoSAA cutoff trends.",
+    question: "Which JEE exam should I select?",
+    answer: "Select JEE Advanced to check IIT options. Select JEE Main to check NIT, IIIT and other JoSAA options in the predictor.",
   },
   {
-    question: "How accurate are the JoSAA college predictions?",
-    answer: "Our engine uses official, authenticated JoSAA 2025 closing and opening ranks across all rounds. While this gives a highly reliable projection, the exact cutoffs for 2026 will vary depending on candidate preferences, changes in seat matrices, and individual category lists.",
+    question: "How does the JEE College Predictor estimate admission chances?",
+    answer: "The predictor compares your rank with JoSAA 2025 opening and closing ranks from the latest available round for a matching program and seat pool. It uses 2024 data when 2025 data is unavailable for that match. Actual allotments depend on the current round, seat availability and candidate choices.",
   },
   {
-    question: "Which rank should I enter: Category Rank or CRL?",
-    answer: "If you belong to a reserved category (OBC-NCL, SC, ST, EWS, or PwD) and want to check reserved seat options, you must enter your Category Rank. Our predictor is designed to automatically map your category rank to the corresponding reserved seat cutoff data. If you want to check open seats, enter your Common Rank List (CRL) rank.",
+    question: "Should I enter my category rank or CRL?",
+    answer: "Enter your Common Rank List (CRL) rank for OPEN seats. Select the applicable reserved category and enter its category rank to check reserved seats.",
   },
   {
-    question: "How does the Home State Domicile option impact my results?",
-    answer: "For NITs and GFTIs, 50% of the seats are reserved under the Home State (HS) quota for students who completed their Class 12th in that state. The other 50% fall under the Other State (OS) quota. Entering your correct Class 12th Domicile State allows the tool to accurately apply home state quotas, which frequently have much lower cutoff ranks.",
+    question: "Which state should I enter for the Home State quota?",
+    answer: "Use the state or union territory that applies to your JoSAA State Code of Eligibility. It is usually where you first appeared for the qualifying Class 12 exam. The state affects results for institutes with state-based quotas. Check JoSAA’s official rules for exceptions.",
   },
   {
-    question: "Is this predictor free to use?",
-    answer: "Yes, our JoSAA College Predictor is 100% free with no hidden charges. Our mission is to democratize high-quality, analytical tools for Indian students during the stressful counseling phase.",
-  },
-  {
-    question: "Can I get personalized guidance from an AI counselor?",
-    answer: "Yes, absolutely! We feature an integrated Nexus AI Counselor. After running your rank prediction, you can click 'Ask AI Counsellor' or access 'Nexus AI' from the navbar to ask specific questions about branch comparisons, placement statistics, fees, and state-wise quotas.",
+    question: "Is the JEE College Predictor free?",
+    answer: "Yes. You can use the rank-based college predictor for free.",
   },
 ];
 
@@ -44,6 +41,7 @@ export default function FAQSection() {
 
   return (
     <section className={styles.faqSection} id="faqs">
+      <FaqJsonLd items={FAQ_ITEMS} />
       <div className={styles.container}>
         <div className={styles.header}>
           <span className={styles.badge}>FAQ</span>

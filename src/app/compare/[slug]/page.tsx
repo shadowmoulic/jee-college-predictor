@@ -1,7 +1,10 @@
 import Link from "next/link";
+import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
+import { collegeEntity, siteUrl } from "@/lib/site";
 import { Metadata } from "next";
 import { getJosaaData, getPopularCompareSlugs } from "@/lib/josaa-data";
 import { getInstituteId } from "@/app/data";
+import { getLatestCutoffs } from "@/lib/college-detail";
 import { getPlacementForCollege } from "@/lib/placement-data";
 import { notFound } from "next/navigation";
 import CollegeCutoffTable from "@/components/college/CollegeCutoffTable";
@@ -29,37 +32,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const name2 = c2Record.instituteShort || c2Record.institute.replace("Indian Institute of Technology", "IIT");
 
   return {
-    title: `${name1} vs ${name2} (2026): Placements, Fees & Cutoffs Compared! | JEE College Predicter`,
-    description: `Deciding between ${name1} and ${name2}? Compare their JoSAA 2026 opening & closing ranks, average packages, placement rates, and total fees side-by-side.`,
-    keywords: ["JEE college predicter", `${name1} vs ${name2}`, `compare ${name1}`, `compare ${name2}`, "JoSAA compare", "IIT placements"],
+    title: `${name1} vs ${name2}: Cutoffs, Fees & Placements`,
+    description: `Compare historical JoSAA opening and closing ranks and available placement and fee figures for ${name1} and ${name2}.`,
     openGraph: {
-      title: `${name1} vs ${name2}: Ultimate Comparison`,
+      url: `/compare/${slug}`,
+      title: `${name1} vs ${name2}: Cutoffs, Fees & Placements`,
       description: `Side-by-side analysis of ${name1} and ${name2} for JEE aspirants.`,
     },
     alternates: {
       canonical: `/compare/${slug}`,
     }
   };
-}
-
-// Reuse the extraction logic from college detail page
-function extractLatestCutoffs(records: any[]) {
-  if (records.length === 0) return [];
-  const latestYear = records.reduce((max, r) => (r.year > max ? r.year : max), 0);
-  const inYear = records.filter(r => r.year === latestYear);
-  const latestRound = inYear.reduce((max, r) => (r.round > max ? r.round : max), 0);
-  return inYear
-    .filter(r => r.round === latestRound)
-    .sort((a, b) => a.closingRank - b.closingRank)
-    .map((r) => ({
-      program: r.program,
-      degree: r.degree,
-      quota: r.quota,
-      seatType: r.seatType,
-      gender: r.gender,
-      openingRank: r.openingRank,
-      closingRank: r.closingRank,
-    }));
 }
 
 export default async function CompareSlugPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -86,8 +69,8 @@ export default async function CompareSlugPage({ params }: { params: Promise<{ sl
   const placement1 = getPlacementForCollege(c1Info.institute);
   const placement2 = getPlacementForCollege(c2Info.institute);
 
-  const cutoffs1 = extractLatestCutoffs(records1);
-  const cutoffs2 = extractLatestCutoffs(records2);
+  const { cutoffs: cutoffs1, dataYear: year1, dataRound: round1 } = getLatestCutoffs(records1);
+  const { cutoffs: cutoffs2, dataYear: year2, dataRound: round2 } = getLatestCutoffs(records2);
 
   const c1Name = c1Info.institute;
   const c2Name = c2Info.institute;
@@ -96,6 +79,13 @@ export default async function CompareSlugPage({ params }: { params: Promise<{ sl
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--surface-2)" }}>
+      <Breadcrumbs items={[["Home", "/"], ["All Comparisons", "/compare"], [`${c1Short} vs ${c2Short}`, `/compare/${slug}`]]} />
+      <JsonLd data={{
+        "@type": "WebPage",
+        url: siteUrl(`/compare/${slug}`),
+        name: `${c1Short} vs ${c2Short}`,
+        about: [collegeEntity(id1, c1Name, c1Short), collegeEntity(id2, c2Name, c2Short)],
+      }} />
 
       <div style={{
         background: "linear-gradient(135deg, #0f2b7a 0%, #1a56db 50%, #2563eb 100%)",
@@ -182,12 +172,12 @@ export default async function CompareSlugPage({ params }: { params: Promise<{ sl
         </div>
 
         {/* Detailed Cutoffs */}
-        <h2 style={{ fontSize: "1.25rem", fontWeight: 800, marginBottom: "1rem", color: "var(--text)" }}>{c1Short} Cutoffs</h2>
+        <h2 style={{ fontSize: "1.25rem", fontWeight: 800, marginBottom: "1rem", color: "var(--text)" }}>{c1Short} JoSAA {year1} Cutoffs (Round {round1})</h2>
         <div style={{ marginBottom: "3rem" }}>
           <CollegeCutoffTable cutoffs={cutoffs1} typeColor="#2563eb" />
         </div>
 
-        <h2 style={{ fontSize: "1.25rem", fontWeight: 800, marginBottom: "1rem", color: "var(--text)" }}>{c2Short} Cutoffs</h2>
+        <h2 style={{ fontSize: "1.25rem", fontWeight: 800, marginBottom: "1rem", color: "var(--text)" }}>{c2Short} JoSAA {year2} Cutoffs (Round {round2})</h2>
         <div style={{ marginBottom: "3rem" }}>
           <CollegeCutoffTable cutoffs={cutoffs2} typeColor="#ea580c" />
         </div>

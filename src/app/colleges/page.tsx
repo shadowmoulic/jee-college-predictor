@@ -1,27 +1,20 @@
 import Link from "next/link";
+import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
+import { collegeEntity, siteUrl } from "@/lib/site";
 import type { Metadata } from "next";
 import { getJosaaData } from "@/lib/josaa-data";
 import { getPlacementForCollege } from "@/lib/placement-data";
 import { getInstituteId, TOP_5_IITS, TOP_10_IITS } from "../data";
 
 export const metadata: Metadata = {
-  title: "JoSAA Participating Institutes 2026: Cutoffs, Placements & Hidden Gems",
+  title: "JoSAA College Directory: Cutoffs, Fees & Placements",
   description:
-    "Discover the best IITs, NITs, IIITs, and GFTIs. Compare official JoSAA cutoffs, placement packages, course fees, and uncover hidden gems for your rank.",
-  keywords: [
-    "JEE college predicter",
-    "JEE college predicter 2026",
-    "JoSAA colleges list 2026",
-    "IIT NIT IIIT colleges",
-    "JoSAA participating institutes",
-    "JEE college list",
-    "NIT cutoff 2025",
-    "IIT cutoff 2025",
-  ],
+    "Browse IITs, NITs, IIITs and GFTIs in our JoSAA data. Find historical opening and closing ranks and available fee and placement figures.",
   openGraph: {
-    title: "JoSAA Participating Institutes 2026: Cutoffs & Placements",
+    url: "/colleges",
+    title: "JoSAA College Directory: Cutoffs & Placements",
     description:
-      "Compare all JoSAA 2026 colleges. Discover the highest packages, lowest fees, and accurate cutoff data.",
+      "Browse historical JoSAA cutoffs and available placement and fee figures.",
   },
   alternates: {
     canonical: "/colleges",
@@ -126,6 +119,20 @@ export default async function CollegesPage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--surface-2)" }}>
+      <Breadcrumbs items={[["Home", "/"], ["All Colleges", "/colleges"]]} />
+      <JsonLd data={{
+        "@type": "CollectionPage",
+        url: siteUrl("/colleges"),
+        name: "JoSAA College Directory",
+        mainEntity: {
+          "@type": "ItemList",
+          itemListElement: sections.flatMap(type => groups[type]).map((college, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            item: collegeEntity(college.id, college.name, college.shortName, college.state),
+          })),
+        },
+      }} />
       <style>{`
         .college-card-hover:hover {
           transform: translateY(-3px) !important;

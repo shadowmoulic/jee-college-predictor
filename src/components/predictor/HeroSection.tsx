@@ -5,18 +5,20 @@ export default function HeroSection() {
     <div className={styles.heroLeft}>
       <div className={styles.heroBadge}>
         <span className={styles.badgeHighlight}>2025 Data</span>
-        <span className={styles.badgeText}>Based on latest 2025 JoSAA cutoffs like none other</span>
+        <span className={styles.badgeText}>Historical JoSAA opening and closing ranks</span>
       </div>
-      <h1>JEE Advanced College Predictor 2026 (JoSAA)</h1>
+      <h1>JEE College Predictor 2026</h1>
       <p className={styles.heroSub}>
-        JEE Advanced College Predictor 2026 tool helps you predict your admission
-        chances into premium IITs, NITs, and IIITs based on your JEE Advanced 2026 rank.
+        Estimate your IIT options with a JEE Advanced rank and your NIT, IIIT and GFTI options with a JEE Main rank. Results use historical cutoffs to help you shortlist programs for JoSAA counselling.
+      </p>
+      <p className={styles.heroSub}>
+        <a href="https://josaa.nic.in/document-category/business-rule/" style={{ textDecoration: "underline" }}>Official JoSAA counselling rules</a>
       </p>
       <div className={styles.featuresList}>
         {[
           "Completely FREE to use",
           "Based on official JoSAA 2025 data — IITs, NITs & IIITs",
-          "Get details like placement ratios, packages, campus videos",
+          "Explore branch cutoffs and available placement figures",
         ].map((feature) => (
           <div className={styles.featureItem} key={feature}>
             <div className={styles.checkIcon}>
