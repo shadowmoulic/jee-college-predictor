@@ -45,7 +45,7 @@ export default function RootLayout({
           "@id": siteUrl() + "#website",
           url: siteUrl(),
           name: SITE_NAME,
-          alternateName: "Nexus Predictor",
+          alternateName: "JEE College Predictor",
           inLanguage: "en-IN",
           creator: { "@id": siteCreatorId() },
           publisher: {

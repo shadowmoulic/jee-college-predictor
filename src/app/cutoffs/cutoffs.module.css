@@ -1,0 +1,52 @@
+.main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3rem 1.25rem 5rem;
+  line-height: 1.65;
+  color: var(--text);
+}
+.main h1 {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 800;
+  line-height: 1.12;
+  margin: .75rem 0 1rem;
+}
+.main h2 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 1.75rem 0 .65rem;
+}
+.main p { margin: .65rem 0; }
+.main a { color: var(--brand); text-decoration: underline; text-underline-offset: .2em; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: .75rem;
+  list-style: none;
+  padding: 0;
+}
+.grid a {
+  display: block;
+  height: 100%;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: .75rem;
+  font-weight: 700;
+}
+.grid small { display: block; color: var(--text-secondary); font-weight: 400; }
+.table {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: .75rem;
+}
+.table table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+}
+.table caption { text-align: left; padding: .75rem; }
+.table th, .table td { padding: .65rem .75rem; border-top: 1px solid var(--border); }
+.table thead { background: var(--brand-soft); }
+.links { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; }

@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "JEE College Predictor 2026 — IITs, NITs, IIITs | Nexus Predictor";
+export const alt = "JEE College Predictor 2027 — IITs, NITs, IIITs";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -57,7 +57,7 @@ export default function OGImage() {
               color: "#ffffff",
             }}
           >
-            N
+            J
           </div>
           <span
             style={{
@@ -67,7 +67,7 @@ export default function OGImage() {
               letterSpacing: "-0.5px",
             }}
           >
-            Nexus Predictor
+            JEE College Predictor
           </span>
         </div>
 
@@ -85,7 +85,7 @@ export default function OGImage() {
         >
           JEE College
           <br />
-          Predictor 2026
+          Predictor 2027
         </div>
 
         {/* Subtitle */}
@@ -99,7 +99,7 @@ export default function OGImage() {
             lineHeight: 1.5,
           }}
         >
-          Free AI-powered predictions for IITs, NITs, IIITs & GFTIs — based on official JoSAA 2025 cutoff data.
+          Free rank-based estimates for IITs, NITs, IIITs & GFTIs — based on official JoSAA 2025 cutoff data.
         </div>
 
         {/* Feature pills */}

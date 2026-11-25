@@ -1,21 +1,22 @@
-# JEE College Predictor
+# JEE College Predictor 2027
 
-> Information, routes, and APIs for the JEE College Predictor (Nexus Predictor) application. This file serves as a guide for LLMs and developer agents to understand and interact with the site's data and structure.
+> Information, routes, and APIs for the JEE College Predictor application. This file serves as a guide for LLMs and developer agents to understand and interact with the site's data and structure.
 
-Nexus Predictor is an advanced, free tool for Indian engineering aspirants to predict their admission chances into IITs, NITs, IIITs, and GFTIs through the JoSAA counseling process.
+JEE College Predictor is an advanced, free tool for Indian engineering aspirants to predict their admission chances into IITs, NITs, IIITs, and GFTIs through the JoSAA counseling process.
 
 ## Core Features
 
 - **Accurate Predictions**: Uses official JoSAA cutoff data to match student ranks (JEE Main & JEE Advanced) with available branches.
-- **AI Counseling**: Features "Nexus AI", an integrated AI counselor powered by LLMs that answers specific questions about JoSAA rounds, college placements, branch preferences, and state/gender quotas.
+- **AI Counseling**: Features "AI Counsellor", an integrated AI counselor powered by LLMs that answers specific questions about JoSAA rounds, college placements, branch preferences, and state/gender quotas.
 - **Deep College Insights**: Provides detailed pages for each participating institute, including average/highest placement packages, annual fees, and complete opening/closing rank matrices.
 - **College Comparison**: Allows side-by-side comparison of any two JoSAA institutes regarding branch-wise cutoffs, fees, and placements.
 
 ## Primary Routes & URLs
 
-All routes are relative to the base URL: `https://jee-college-predicter.vercel.app`
+All routes are relative to the base URL: `https://jee-college-predictor-2027.vercel.appl.app`
 
 - **Home Page** (`/`): The main predictor tool dashboard. Aspirants enter their rank, select exam type (JEE Main/Advanced), category (OPEN, OBC-NCL, SC, ST, EWS), gender, seat pool, and home state.
+- **JoSAA Cutoff Explorer** (`/cutoffs`) compares programs across colleges and shows campus-specific cutoff history.
 - **Colleges Directory** (`/colleges`): Complete searchable list of all IITs, NITs, IIITs, and GFTIs.
 - **College Profile** (`/college/[slug]`): Specific profile for an institute (e.g., `/college/indian-institute-of-technology-bombay`). Contains branch-wise opening/closing ranks, average and highest packages, course fees, and total seat capacities.
 - **Compare Tool** (`/compare`): Interface to select any two colleges for head-to-head comparison.
@@ -28,9 +29,9 @@ Developers and agents can fetch data using the following endpoints:
 
 - **Get College Details**: `GET /api/colleges/[id]`
   - Returns detailed profile, placements, fees, and branch cutoff matrix for the given college ID.
-- **Run Predictor Query**: `POST /api/predict`
-  - Body: `{ rank: number, category: string, seatType: string, gender: string, state: string, examType: 'JEE Main' | 'JEE Advanced' }`
-  - Returns: Array of matching programs with admission probabilities (High, Medium, Low).
+- **Run Predictor Query**: `GET /api/predict`
+  - Query parameters: `rank`, `exam`, `category`, `gender` and `domicileState`.
+  - Returns matching colleges and programs with estimated admission chances.
 - **AI Chat Endpoint**: `POST /api/chat`
   - Session endpoint driving the Vercel AI SDK chat window with context about the user's predicted options.
 

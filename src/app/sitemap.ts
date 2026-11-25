@@ -1,3 +1,4 @@
+import { getCutoffGuides } from "@/lib/cutoff-guides";
 import { siteUrl } from "@/lib/site";
 import { MetadataRoute } from 'next';
 import { getJosaaData, getPopularCompareSlugs } from '@/lib/josaa-data';
@@ -12,6 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: siteUrl("/") },
     { url: siteUrl("/colleges") },
+    { url: siteUrl("/cutoffs") },
     { url: siteUrl("/compare") },
     { url: siteUrl("/terms") },
   ];
@@ -27,6 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: siteUrl(`/compare/${slug}`),
   }));
 
-  return [...staticRoutes, ...collegeRoutes, ...compareRoutes];
+  const cutoffRoutes = [...getCutoffGuides().keys()].map(path => ({ url: siteUrl(path) }));
+  return [...staticRoutes, ...collegeRoutes, ...compareRoutes, ...cutoffRoutes];
 }
 

@@ -10,16 +10,17 @@ export default function Navbar() {
   return (
     <nav className={styles.navbar}>
       <Link href="/" className={styles.navLogo} style={{ textDecoration: "none" }}>
-        <div className={styles.logoMark}>N</div>
-        <span className={styles.logoText}>Nexus Predictor</span>
+        <div className={styles.logoMark}>J</div>
+        <span className={styles.logoText}>JEE College Predictor</span>
       </Link>
       
       {/* Desktop Links */}
       <div className={styles.navLinks}>
         <Link href="/">Tools</Link>
+        <Link href="/cutoffs">Cutoffs</Link>
         <Link href="/colleges">Colleges</Link>
         <Link href="/compare">Compare</Link>
-        <Link href="/ai" style={{ color: "var(--brand)", fontWeight: 700 }}>Nexus AI</Link>
+        <Link href="/ai" style={{ color: "var(--brand)", fontWeight: 700 }}>AI Counsellor</Link>
       </div>
 
       <div className={styles.navActions}>
@@ -45,9 +46,10 @@ export default function Navbar() {
       {/* Mobile Menu */}
       <div className={`${styles.mobileMenu} ${isOpen ? styles.mobileMenuOpen : ""}`}>
         <Link href="/" onClick={() => setIsOpen(false)}>Tools</Link>
+        <Link href="/cutoffs" onClick={() => setIsOpen(false)}>Cutoffs</Link>
         <Link href="/colleges" onClick={() => setIsOpen(false)}>Colleges</Link>
         <Link href="/compare" onClick={() => setIsOpen(false)}>Compare</Link>
-        <Link href="/ai" onClick={() => setIsOpen(false)} style={{ color: "var(--brand)", fontWeight: 700 }}>Nexus AI</Link>
+        <Link href="/ai" onClick={() => setIsOpen(false)} style={{ color: "var(--brand)", fontWeight: 700 }}>AI Counsellor</Link>
         <a 
           href="https://chat.whatsapp.com/JuENcC26gOTDVIgdyMiG6X" 
           target="_blank" 

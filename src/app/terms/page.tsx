@@ -4,8 +4,8 @@ import styles from "@/app/page.module.css"; // Reuse general styles if necessary
 
 export const metadata = {
   alternates: { canonical: siteUrl("/terms") },
-  title: "Terms and Conditions | Nexus Predictor",
-  description: "Terms and conditions for using Nexus Predictor.",
+  title: "Terms and Conditions",
+  description: "Terms and conditions for using JEE College Predictor.",
 };
 
 export default function TermsPage() {
@@ -20,7 +20,7 @@ export default function TermsPage() {
         <section>
           <h2 style={{ fontSize: "1.25rem", fontWeight: 700, marginBottom: "0.5rem" }}>1. Acceptance of Terms</h2>
           <p>
-            By accessing and using Nexus Predictor, you accept and agree to be bound by the terms and provision of this agreement. 
+            By accessing and using JEE College Predictor, you accept and agree to be bound by the terms and provision of this agreement.
           </p>
         </section>
 
@@ -41,7 +41,7 @@ export default function TermsPage() {
         <section>
           <h2 style={{ fontSize: "1.25rem", fontWeight: 700, marginBottom: "0.5rem" }}>4. Limitation of Liability</h2>
           <p>
-            Nexus Predictor and its developers shall not be liable for any special, direct, indirect, consequential, or incidental damages or any damages whatsoever arising out of or in connection with the use of the service.
+            JEE College Predictor and its developers shall not be liable for any special, direct, indirect, consequential, or incidental damages or any damages whatsoever arising out of or in connection with the use of the service.
           </p>
         </section>
       </div>

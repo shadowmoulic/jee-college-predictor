@@ -44,7 +44,7 @@ export default function CollegeFAQs({
     },
     {
       question: `How can I predict my chances of getting into ${shortName}?`,
-      answer: `You can use the Nexus Predictor tool on our homepage. Enter your JEE rank, select your category, gender, and Class 12th domicile state to instantly see the probability (High, Medium, or Low) of securing a seat in any branch at ${shortName}.`,
+      answer: `You can use the JEE College Predictor tool on our homepage. Enter your JEE rank, select your category, gender, and Class 12th domicile state to instantly see the probability (High, Medium, or Low) of securing a seat in any branch at ${shortName}.`,
     },
   ];
 

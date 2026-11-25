@@ -1,11 +1,11 @@
-export const SITE_NAME = "JEE College Predictor";
+export const SITE_NAME = "JEE College Predictor 2027";
 
 export const SITE_CREATOR = {
   name: "Sayak Moulic",
   profile: "https://youtube.com/@sayakmoulic",
 };
 
-const productionOrigin = "https://jee-college-predicter.vercel.app";
+const productionOrigin = "https://jee-college-predictor-2027.vercel.app";
 // This similarly named host belongs to a different site.
 const unrelatedHostname = "jee-college-predictor.vercel.app";
 const configuredUrl = process.env.NEXT_PUBLIC_APP_URL;

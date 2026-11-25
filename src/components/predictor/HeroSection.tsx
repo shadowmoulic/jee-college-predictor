@@ -1,3 +1,4 @@
+import Link from "next/link";
 import styles from "@/app/page.module.css";
 
 export default function HeroSection() {
@@ -7,12 +8,13 @@ export default function HeroSection() {
         <span className={styles.badgeHighlight}>2025 Data</span>
         <span className={styles.badgeText}>Historical JoSAA opening and closing ranks</span>
       </div>
-      <h1>JEE College Predictor 2026</h1>
+      <h1>JEE College Predictor 2027</h1>
       <p className={styles.heroSub}>
         Estimate your IIT options with a JEE Advanced rank and your NIT, IIIT and GFTI options with a JEE Main rank. Results use historical cutoffs to help you shortlist programs for JoSAA counselling.
       </p>
       <p className={styles.heroSub}>
-        <a href="https://josaa.nic.in/document-category/business-rule/" style={{ textDecoration: "underline" }}>Official JoSAA counselling rules</a>
+        <a href="https://josaa.nic.in/document-category/business-rule/" style={{ textDecoration: "underline" }}>Official JoSAA counselling rules</a>{" · "}
+        <Link href="/cutoffs" style={{ textDecoration: "underline" }}>Explore historical cutoffs</Link>
       </p>
       <div className={styles.featuresList}>
         {[

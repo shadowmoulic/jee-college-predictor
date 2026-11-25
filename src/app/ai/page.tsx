@@ -46,7 +46,7 @@ export default function AIPage() {
             Profile Required
           </h2>
           <p style={{ color: "var(--text-secondary)", marginBottom: "30px", lineHeight: 1.6 }}>
-            To give you personalized admission counseling and accurate college recommendations, Nexus AI needs your JEE details first.
+            To give you personalized admission counseling and accurate college recommendations, AI Counsellor needs your JEE details first.
           </p>
           <Link 
             href="/"

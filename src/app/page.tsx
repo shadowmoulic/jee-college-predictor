@@ -3,7 +3,7 @@ import PredictorPage from "@/components/predictor/PredictorPage";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SITE_NAME, siteCreatorId, siteUrl } from "@/lib/site";
 
-const title = "JEE College Predictor 2026 for Main & Advanced";
+const title = `${SITE_NAME} for Main & Advanced`;
 const description = "Estimate IIT, NIT, IIIT and GFTI options from your JEE rank. This free tool uses historical JoSAA cutoffs and accounts for category, seat pool and state.";
 
 export const metadata: Metadata = {

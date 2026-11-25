@@ -95,7 +95,7 @@ export default function Chatbot() {
               </svg>
             </div>
             <div className={styles.headerInfo}>
-              <p className={styles.headerName}>Nexus AI Counsellor</p>
+              <p className={styles.headerName}>AI Counsellor</p>
               <div className={styles.headerStatus}>
                 <span className={styles.statusDot} />
                 <p className={styles.statusText}>JEE &amp; JoSAA expert</p>

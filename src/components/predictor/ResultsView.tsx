@@ -165,10 +165,10 @@ export default function ResultsView({
       {/* ── Results Hero Bar ── */}
       <div className={styles.resultsHero}>
         <div className={styles.resultsHeroLogo}>
-          <div className={styles.logoMark}>N</div>
-          <span className={styles.resultsHeroLogoText}>Nexus Predictor</span>
+          <div className={styles.logoMark}>J</div>
+          <span className={styles.resultsHeroLogoText}>JEE College Predictor</span>
         </div>
-        <h1 className={styles.resultsTitle}>JoSAA 2026 College Predictor</h1>
+        <h1 className={styles.resultsTitle}>JoSAA 2027 College Predictor</h1>
 
         {/* Summary Cards */}
         <div className={styles.summaryGrid}>

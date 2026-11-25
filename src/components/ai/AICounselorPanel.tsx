@@ -377,7 +377,7 @@ export default function AICounselorPanel({
         </div>
 
         <div className={styles.headerInfo}>
-          <h2 className={styles.headerTitle}>Nexus AI</h2>
+          <h2 className={styles.headerTitle}>AI Counsellor</h2>
           {contextCollege ? (
             <div className={styles.contextBadge}>
               <p className={styles.contextBadgeText}>
