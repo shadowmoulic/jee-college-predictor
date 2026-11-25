@@ -61,6 +61,19 @@ export default function BranchModal({ modalData, rank, onClose }: Props) {
   const displayYears: number[] = historyData?.years ?? [];
   const displayRounds: number[] = historyData?.rounds ?? [];
 
+  // Years where all rounds share the same closing rank — only show value in the last round
+  const finalOnlyYears = new Set<number>(
+    displayYears.filter((year) => {
+      const yearCells = displayRounds.map((r) => getCell(year, r)).filter(Boolean) as HistoryEntry[];
+      if (yearCells.length < 2) return false;
+      const first = yearCells[0].closing;
+      return yearCells.every((c) => c.closing === first);
+    })
+  );
+  const lastRound = displayRounds.length > 0 ? Math.max(...displayRounds) : null;
+
+  const probClass = styles[branch.prob.toLowerCase()];
+
   return (
     <div
       className={`${styles.modalOverlay} ${styles.openModal}`}
@@ -71,10 +84,10 @@ export default function BranchModal({ modalData, rank, onClose }: Props) {
         <div className={styles.modalHeader}>
           <div className={styles.modalHeaderInfo}>
             <div style={{ flex: 1, minWidth: 0, textAlign: "center" }}>
-              <div className={styles.modalChancesTitle}>JEE Advance Admission Chances</div>
+              <div className={styles.modalChancesTitle}>JEE ADVANCED ADMISSION CHANCES</div>
               <div className={styles.modalProbPillLargeWrapper}>
-                <span className={`${styles.probPillLarge} ${styles[branch.prob]}`}>
-                  {branch.prob.toUpperCase()}
+                <span className={`${styles.probPillLarge} ${styles.probPill} ${probClass}`}>
+                  {branch.prob.toUpperCase()} CHANCE
                 </span>
               </div>
             </div>
@@ -89,12 +102,12 @@ export default function BranchModal({ modalData, rank, onClose }: Props) {
 
         <div className={styles.modalBody}>
           <div className={styles.modalRankRow}>
-            <div className={styles.modalRankCol}>
+            <div className={styles.modalRankItem}>
               <div className={styles.modalRankLabel}>OPENING RANK</div>
               <div className={styles.modalRankValue}>{branch.opening.toLocaleString()}</div>
             </div>
             <div className={styles.modalRankDivider}></div>
-            <div className={styles.modalRankCol}>
+            <div className={styles.modalRankItem}>
               <div className={styles.modalRankLabel}>CLOSING RANK</div>
               <div className={styles.modalRankValue}>{branch.closing.toLocaleString()}</div>
             </div>
@@ -112,18 +125,10 @@ export default function BranchModal({ modalData, rank, onClose }: Props) {
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className={styles.modalActions}>
-            <button className={styles.placementBtn}>
-              Check Placement Statistics
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
-            </button>
-          </div>
+
 
           {/* Historical rounds table */}
-          <div style={{ fontWeight: 800, fontSize: "1rem", marginBottom: "14px", marginTop: "1rem", color: "var(--text)" }}>
+          <div style={{ fontWeight: 800, fontSize: "1rem", marginBottom: "4px", marginTop: "2px", color: "var(--text)" }}>
             Round-wise Cutoffs
           </div>
           {historyLoading ? (
@@ -152,9 +157,11 @@ export default function BranchModal({ modalData, rank, onClose }: Props) {
                       <td>{round}</td>
                       {displayYears.map((year) => {
                         const cell = getCell(year, round);
+                        const isFinalOnly = finalOnlyYears.has(year);
+                        const showValue = cell && (!isFinalOnly || round === lastRound);
                         return (
-                          <td key={year}>
-                            {cell ? cell.closing.toLocaleString() : "—"}
+                          <td key={year} style={isFinalOnly && round !== lastRound ? { color: "var(--text-muted, #aaa)" } : undefined}>
+                            {showValue ? cell.closing.toLocaleString() : "—"}
                           </td>
                         );
                       })}

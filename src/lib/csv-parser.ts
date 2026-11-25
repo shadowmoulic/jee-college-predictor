@@ -15,11 +15,11 @@ const STATE_FRAGS: [string, string][] = [
   ["Gandhinagar","Gujarat"],["Patna","Bihar"],["Mandi","Himachal Pradesh"],
   ["Bhubaneswar","Odisha"],["Tirupati","Andhra Pradesh"],["Dharwad","Karnataka"],
   ["Jammu","Jammu and Kashmir"],["Bhilai","Chhattisgarh"],["Palakkad","Kerala"],
-  ["Goa","Goa"],["Surat","Gujarat"],["Allahabad","Uttar Pradesh"],
+  ["Goa","Goa"],["Surathkal","Karnataka"],["Surat","Gujarat"],["Allahabad","Uttar Pradesh"],
   ["Calicut","Kerala"],["Durgapur","West Bengal"],["Hamirpur","Himachal Pradesh"],
   ["Jaipur","Rajasthan"],["Kurukshetra","Haryana"],["Nagpur","Maharashtra"],
   ["Raipur","Chhattisgarh"],["Rourkela","Odisha"],["Silchar","Assam"],
-  ["Srinagar","Jammu and Kashmir"],["Surathkal","Karnataka"],
+  ["Srinagar","Jammu and Kashmir"],
   ["Tiruchirappalli","Tamil Nadu"],["Warangal","Telangana"],["Agartala","Tripura"],
   ["Manipur","Manipur"],["Meghalaya","Meghalaya"],["Mizoram","Mizoram"],
   ["Nagaland","Nagaland"],["Puducherry","Puducherry"],["Uttarakhand","Uttarakhand"],
@@ -75,7 +75,7 @@ function normalizeGender(raw: string): JoSAARecord["gender"] {
  * @param csv    Raw CSV text
  * @param round  Round number (extracted from filename, e.g. 6 for "2025_round6.csv")
  */
-export function parse2025RoundCSV(csv: string, round: number): JoSAARecord[] {
+export function parse2025RoundCSV(csv: string, fileRound: number): JoSAARecord[] {
   const lines = csv.split(/\r?\n/).filter(Boolean);
   if (lines.length < 2) return [];
 
@@ -86,8 +86,6 @@ export function parse2025RoundCSV(csv: string, round: number): JoSAARecord[] {
     if (fields.length < 7) continue;
 
     const [institute, programCell, quota, seatType, genderRaw, openStr, closeStr] = fields;
-    // Skip blank rows or repeated header rows (exact match only — do NOT check
-    // for the word 'institute' because IIT/NIT names contain it!)
     if (!institute || institute === "Institute" || institute === "Institute Name") continue;
 
     const openingRank = parseInt(openStr.replace(/,/g, ""), 10);
@@ -111,7 +109,7 @@ export function parse2025RoundCSV(csv: string, round: number): JoSAARecord[] {
       openingRank,
       closingRank,
       year: 2025,
-      round,
+      round: fileRound,
       courseFee: FEE_MAP[instType] ?? "1.5 Lakh",
     });
   }

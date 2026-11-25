@@ -10,6 +10,7 @@
     "scrape": "npx tsx scripts/scrape-josaa.ts",
     "scrape:2025": "JOSAA_YEARS=2025 JOSAA_CURRENT_YEAR=2025 npx tsx scripts/scrape-josaa.ts",
     "scrape:all-rounds": "SCRAPE_ALL_ROUNDS=true npx tsx scripts/scrape-josaa.ts",
+    "scrape:2025rounds": "npx tsx scripts/scrape2025/scrape.ts",
     "fetch-placement": "npx tsx scripts/fetch-placement-fees.ts",
     "fetch-placement:skip-nirf": "SKIP_NIRF=true npx tsx scripts/fetch-placement-fees.ts"
   },

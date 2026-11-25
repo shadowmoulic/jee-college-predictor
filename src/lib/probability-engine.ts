@@ -1,13 +1,16 @@
 /**
  * Probability Engine — calculates admission probability (0–100%)
  *
- * DATA SOURCE: Uses 2025 JoSAA data exclusively (final round).
+ * DATA SOURCE: Uses 2025 JoSAA data exclusively.
  * Falls back to 2024 if 2025 data is not available for a branch.
  *
  * CATEGORY MATCHING: seatType (e.g. OBC-NCL, OPEN, SC, ST, EWS) is
  * strictly matched — we never mix categories when computing probability.
  *
- * Logic for a single year's OR/CR:
+ * Opening Rank = Round 1 of the year (first allotment — who got in first)
+ * Closing Rank = Final round of the year (last cutoff rank)
+ *
+ * Logic:
  *   rank ≤ openingRank                  → 95% (historically always allotted)
  *   openingRank < rank ≤ closingRank    → linear 95% → 20%
  *   rank > closingRank                  → exponential decay below 20%
@@ -41,60 +44,80 @@ function probForRecord(userRank: number, or: number, cr: number): number {
   return 20 * Math.exp(-14 * excess);
 }
 
-/** Get the final-round record for a given year matching the branch key */
-function getFinalRecord(
+/** Filter all records for a key+year */
+function getYearRecords(
   key: BranchKey,
   allRecords: JoSAARecord[],
   year: number
-): JoSAARecord | null {
-  const yearRecords = allRecords.filter(
+): JoSAARecord[] {
+  return allRecords.filter(
     (r) =>
       r.year === year &&
       r.institute === key.institute &&
       r.program === key.program &&
       r.degree === key.degree &&
       r.quota === key.quota &&
-      r.seatType === key.seatType && // strict category match
+      r.seatType === key.seatType &&
       r.gender === key.gender
   );
+}
 
-  if (yearRecords.length === 0) return null;
+/**
+ * Get Opening Rank (Round 1) and Closing Rank (final round) for a year.
+ * - Opening Rank: from the earliest round available for that year
+ * - Closing Rank: from the latest round available for that year
+ */
+function getORCR(
+  key: BranchKey,
+  allRecords: JoSAARecord[],
+  year: number
+): { openingRank: number; closingRank: number } | null {
+  const recs = getYearRecords(key, allRecords, year);
+  if (recs.length === 0) return null;
 
-  // Pick the highest round (final allotment)
-  const maxRound = yearRecords.reduce((m, r) => (r.round > m ? r.round : m), 0);
-  return yearRecords.find((r) => r.round === maxRound) ?? null;
+  const minRound = recs.reduce((m, r) => (r.round < m ? r.round : m), Infinity);
+  const maxRound = recs.reduce((m, r) => (r.round > m ? r.round : m), 0);
+
+  const round1 = recs.find((r) => r.round === minRound);
+  const roundFinal = recs.find((r) => r.round === maxRound);
+
+  if (!round1 || !roundFinal) return null;
+
+  return {
+    openingRank: round1.openingRank,   // Round 1 — first allotment
+    closingRank: roundFinal.closingRank, // Final round — last cutoff
+  };
 }
 
 /**
  * Calculate admission probability (0–100) for a branch.
  *
- * Uses 2025 data exclusively. Falls back to 2024 if 2025 is not present.
+ * Uses 2025 data (Round 1 OR + final-round CR). Falls back to 2024.
  *
- * @param userRank - User's rank
- * @param key      - Branch identifier (includes seatType = category)
+ * @param userRank   - User's rank
+ * @param key        - Branch identifier (includes seatType = category)
  * @param allRecords - All JoSAA records (all years)
- * @returns probability 0–100, or null if no data found for 2025 or 2024
+ * @returns probability 0–100, or null if no data found
  */
 export function calculateProbability(
   userRank: number,
   key: BranchKey,
   allRecords: JoSAARecord[]
 ): number | null {
-  // Try 2025 first (primary source)
-  const record2025 = getFinalRecord(key, allRecords, 2025);
-  if (record2025) {
-    const p = probForRecord(userRank, record2025.openingRank, record2025.closingRank);
+  // Try 2025 first
+  const orcr2025 = getORCR(key, allRecords, 2025);
+  if (orcr2025) {
+    const p = probForRecord(userRank, orcr2025.openingRank, orcr2025.closingRank);
     return Math.round(Math.max(0, Math.min(100, p)));
   }
 
   // Fallback: 2024
-  const record2024 = getFinalRecord(key, allRecords, 2024);
-  if (record2024) {
-    const p = probForRecord(userRank, record2024.openingRank, record2024.closingRank);
+  const orcr2024 = getORCR(key, allRecords, 2024);
+  if (orcr2024) {
+    const p = probForRecord(userRank, orcr2024.openingRank, orcr2024.closingRank);
     return Math.round(Math.max(0, Math.min(100, p)));
   }
 
-  // No data for 2025 or 2024
   return null;
 }
 

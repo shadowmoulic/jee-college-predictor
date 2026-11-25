@@ -90,6 +90,7 @@ export const TOP_10_IITS = new Set([
   'Indian Institute of Technology Indore',
 ]);
 
+
 // Average package estimates by institute type (for display)
 export const PACKAGE_ESTIMATES: Record<string, string> = {
   'IIT Bombay': '25 LPA',

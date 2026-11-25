@@ -14,19 +14,21 @@ export default function AIPage() {
   const [hasContext, setHasContext] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
-    const stored = localStorage.getItem("nexus_ai_context");
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        setContextData(parsed);
-        if (parsed?.filters?.rank && parsed.filters.rank !== "0") {
-          setHasContext(true);
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+      const stored = localStorage.getItem("nexus_ai_context");
+      let parsed = {};
+      if (stored) {
+        try {
+          parsed = JSON.parse(stored);
+        } catch (err) {
+          console.error("Failed to parse stored context", err);
         }
-      } catch (err) {
-        console.error("Failed to parse stored context", err);
       }
-    }
+      setContextData(parsed);
+      setHasContext(true);
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   if (!isMounted) return null;

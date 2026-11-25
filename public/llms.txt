@@ -1,6 +1,6 @@
-# JEE College Predicter
+# JEE College Predictor
 
-> Information, routes, and APIs for the JEE College Predicter (Nexus Predictor) application. This file serves as a guide for LLMs and developer agents to understand and interact with the site's data and structure.
+> Information, routes, and APIs for the JEE College Predictor (Nexus Predictor) application. This file serves as a guide for LLMs and developer agents to understand and interact with the site's data and structure.
 
 Nexus Predictor is an advanced, free tool for Indian engineering aspirants to predict their admission chances into IITs, NITs, IIITs, and GFTIs through the JoSAA counseling process.
 
@@ -13,7 +13,7 @@ Nexus Predictor is an advanced, free tool for Indian engineering aspirants to pr
 
 ## Primary Routes & URLs
 
-All routes are relative to the base URL: `https://jee-college-predictor.vercel.app`
+All routes are relative to the base URL: `https://jee-college-predicter.vercel.app`
 
 - **Home Page** (`/`): The main predictor tool dashboard. Aspirants enter their rank, select exam type (JEE Main/Advanced), category (OPEN, OBC-NCL, SC, ST, EWS), gender, seat pool, and home state.
 - **Colleges Directory** (`/colleges`): Complete searchable list of all IITs, NITs, IIITs, and GFTIs.

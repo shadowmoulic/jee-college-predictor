@@ -10,8 +10,6 @@ export interface CollegeContext {
   name: string;
   shortName?: string;
   instituteType?: string;
-  avgPackage?: string;
-  placementRate?: string;
 }
 
 interface Props {
@@ -27,17 +25,17 @@ interface Props {
 }
 
 const GENERIC_SUGGESTIONS = [
-  "What is the best branch under my rank?",
-  "How does home state quota work?",
-  "Which IIT has the best CS placements?",
-  "How do JoSAA counselling rounds work?",
+  "Show my top options with a full table",
+  "I want CS/ECE — what's the best I can get?",
+  "I'm interested in core engineering, what should I pick?",
+  "How does home state quota change my options?",
 ];
 
 const COLLEGE_SUGGESTIONS = [
-  "Why is this branch a good choice?",
-  "Compare with IIT Madras",
-  "Show placement trends",
-  "What are alternative safer options?",
+  "Why is this the best choice for me?",
+  "What are safer alternatives to this branch?",
+  "What career paths does this branch open?",
+  "Is a dual degree worth it here?",
 ];
 
 // ── Inline markdown helpers ────────────────────────────────────────────────────
@@ -239,10 +237,10 @@ function WelcomeState({
           </div>
           <div className={styles.profileGrid}>
             {[
-              { label: "Rank", value: parseInt(rank).toLocaleString() },
-              { label: "Category", value: category.split(" ")[0] },
+              { label: "Rank", value: rank && rank !== "0" ? parseInt(rank).toLocaleString() : "Not Provided" },
+              { label: "Category", value: category ? category.split(" ")[0] : "General" },
               { label: "Exam", value: examLabel },
-              { label: "State", value: domicileState.length > 12 ? domicileState.slice(0, 11) + "…" : domicileState },
+              { label: "State", value: domicileState && domicileState !== "Unknown" ? (domicileState.length > 12 ? domicileState.slice(0, 11) + "…" : domicileState) : "Not Set" },
             ].map(({ label, value }) => (
               <div key={label} className={styles.profileCell}>
                 <div className={styles.profileCellLabel}>{label}</div>
@@ -309,6 +307,7 @@ export default function AICounselorPanel({
 
   const transport = useMemo(
     () =>
+      /* eslint-disable-next-line react-hooks/refs */
       new TextStreamChatTransport({
         api: "/api/chat",
         prepareSendMessagesRequest: async ({ messages }) => ({

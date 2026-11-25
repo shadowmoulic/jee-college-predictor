@@ -2,15 +2,52 @@
 
 import { useChat } from "@ai-sdk/react";
 import { TextStreamChatTransport } from "ai";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./Chatbot.module.css";
-
-const transport = new TextStreamChatTransport({ api: "/api/chat" });
 
 export default function Chatbot() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
+  const [contextData, setContextData] = useState<any>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (open) {
+      const stored = localStorage.getItem("nexus_ai_context");
+      if (stored) {
+        try {
+          setContextData(JSON.parse(stored));
+        } catch (err) {
+          console.error("Failed to parse stored chatbot context", err);
+        }
+      }
+    }
+  }, [open]);
+
+  const ctx = useMemo(() => {
+    if (!contextData?.filters) return null;
+    return {
+      rank: contextData.filters.rank || "0",
+      category: contextData.filters.category || "General",
+      exam: contextData.filters.exam || "JEE Main",
+      domicileState: contextData.filters.domicileState || "Unknown",
+      gender: contextData.filters.gender || "Male",
+      resultsContext: contextData.resultsContext || null,
+    };
+  }, [contextData]);
+
+  const transport = useMemo(
+    () =>
+      new TextStreamChatTransport({
+        api: "/api/chat",
+        prepareSendMessagesRequest: async ({ messages }) => ({
+          api: "/api/chat",
+          headers: { "Content-Type": "application/json" } as HeadersInit,
+          body: { messages, context: ctx } as object,
+        }),
+      }),
+    [ctx]
+  );
 
   const { messages, sendMessage, status, error } = useChat({ transport });
   const isLoading = status === "streaming" || status === "submitted";

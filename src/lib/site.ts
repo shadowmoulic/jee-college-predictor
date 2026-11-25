@@ -5,13 +5,16 @@ export const SITE_CREATOR = {
   profile: "https://youtube.com/@sayakmoulic",
 };
 
-const productionOrigin = "https://jee-college-predictor.vercel.app";
+const productionOrigin = "https://jee-college-predicter.vercel.app";
+// This similarly named host belongs to a different site.
+const unrelatedHostname = "jee-college-predictor.vercel.app";
 const configuredUrl = process.env.NEXT_PUBLIC_APP_URL;
 const configuredOrigin = configuredUrl ? new URL(configuredUrl) : null;
 const isLocalOrigin = configuredOrigin &&
   ["localhost", "127.0.0.1", "[::1]"].includes(configuredOrigin.hostname);
 
-const origin = configuredOrigin && (!isLocalOrigin || process.env.NODE_ENV === "development")
+const origin = configuredOrigin && configuredOrigin.hostname !== unrelatedHostname &&
+  (!isLocalOrigin || process.env.NODE_ENV === "development")
   ? configuredOrigin.origin
   : productionOrigin;
 

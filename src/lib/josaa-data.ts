@@ -26,9 +26,9 @@ function load2025RoundFiles(): JoSAARecord[] {
     .filter((f) => /^2025_round\d+.*\.csv$/i.test(f))
     .sort(); // sort so round1 < round2 < ... < round6
 
-  const records: JoSAARecord[] = [];
+  const recordsMap = new Map<string, JoSAARecord>();
+
   for (const file of roundFiles) {
-    // Extract round number from filename e.g. "2025_round6.csv" → 6
     const match = file.match(/round(\d+)/i);
     const round = match ? parseInt(match[1], 10) : 0;
     if (isNaN(round) || round === 0) continue;
@@ -36,14 +36,18 @@ function load2025RoundFiles(): JoSAARecord[] {
     try {
       const raw = readFileSync(join(dataDir, file), "utf-8");
       const parsed = parse2025RoundCSV(raw, round);
-      Array.prototype.push.apply(records, parsed); // avoid stack overflow
-      console.log(`[JoSAA] Loaded ${parsed.length} records from ${file} (round ${round})`);
+      
+      for (const r of parsed) {
+        const key = `${r.year}|${r.round}|${r.institute}|${r.program}|${r.degree}|${r.quota}|${r.seatType}|${r.gender}`;
+        recordsMap.set(key, r);
+      }
+      console.log(`[JoSAA] Loaded ${parsed.length} records from ${file}`);
     } catch (err) {
       console.warn(`[JoSAA] Failed to load ${file}:`, err);
     }
   }
 
-  return records;
+  return Array.from(recordsMap.values());
 }
 
 export function getJosaaData(): JoSAARecord[] {
@@ -114,17 +118,70 @@ export function clearDataCache(): void {
 }
 
 /**
+ * Returns one record per branch slot for the prediction engine.
+ *
+ * openingRank = Round 1 opening rank (first seat allotted — most competitive)
+ * closingRank = Round 6 closing rank (last seat filled — the actual cutoff)
+ *
+ * For 2025 data, the round CSVs are cumulative for IITs (each file contains
+ * all rounds up to N) and per-round for NITs/IIITs/GFTIs, so after loading
+ * we have records for all 6 rounds per branch slot.
+ *
+ * Falls back to latest-year final-round data if no 2025 round data is loaded.
+ */
+export function get2025BranchCutoffs(): JoSAARecord[] {
+  const all = getJosaaData();
+  if (all.length === 0) return [];
+
+  const in2025 = all.filter(r => r.year === 2025);
+
+  // No 2025 round data — fall back to whatever year is available
+  if (in2025.length === 0) {
+    const latestYear = all.reduce((max, r) => (r.year > max ? r.year : max), 0);
+    const inYear = all.filter(r => r.year === latestYear);
+    const latestRound = inYear.reduce((max, r) => (r.round > max ? r.round : max), 0);
+    const seen = new Set<string>();
+    const deduped: JoSAARecord[] = [];
+    for (const r of inYear) {
+      if (r.round !== latestRound) continue;
+      const key = `${r.institute}|${r.program}|${r.degree}|${r.quota}|${r.seatType}|${r.gender}`;
+      if (!seen.has(key)) { seen.add(key); deduped.push(r); }
+    }
+    return deduped;
+  }
+
+  // Group all 2025 records by branch slot
+  const slotMap = new Map<string, JoSAARecord[]>();
+  for (const r of in2025) {
+    const key = `${r.institute}|${r.program}|${r.degree}|${r.quota}|${r.seatType}|${r.gender}`;
+    const bucket = slotMap.get(key);
+    if (bucket) bucket.push(r);
+    else slotMap.set(key, [r]);
+  }
+
+  // For each slot: OR from the earliest round, CR from the latest round
+  const result: JoSAARecord[] = [];
+  for (const recs of slotMap.values()) {
+    let round1Rec = recs[0];
+    let roundFinalRec = recs[0];
+    for (const r of recs) {
+      if (r.round < round1Rec.round) round1Rec = r;
+      if (r.round > roundFinalRec.round) roundFinalRec = r;
+    }
+    result.push({
+      ...roundFinalRec,
+      openingRank: round1Rec.openingRank,
+      closingRank: roundFinalRec.closingRank,
+    });
+  }
+
+  return result;
+}
+
+/**
  * Returns deduplicated records for the latest year's final round only.
- *
- * Why deduplication is necessary:
- * Both data/2025_round*.csv files and data/josaa_data.csv can contain the
- * same 2025 data.  Without deduplication, the same (institute, program,
- * degree, quota, seatType, gender) tuple appears twice in the output, causing
- * duplicate branch rows in the UI (e.g. two "Civil Engineering" entries).
- *
- * The 2025_round*.csv files are loaded first in getJosaaData(), so their
- * records win the deduplication race — the scraped CSV records are dropped
- * when they cover the same slot.
+ * Used by the college detail page (/api/colleges/[id]) to show the
+ * current cutoff table. Not used for prediction.
  */
 export function getLatestCutoffData(): JoSAARecord[] {
   const all = getJosaaData();
@@ -134,7 +191,6 @@ export function getLatestCutoffData(): JoSAARecord[] {
   const inYear     = all.filter((r) => r.year === latestYear);
   const latestRound = inYear.reduce((max, r) => (r.round > max ? r.round : max), 0);
 
-  // Deduplicate: one record per (institute, program, degree, quota, seatType, gender)
   const seen    = new Set<string>();
   const deduped: JoSAARecord[] = [];
   for (const r of inYear) {
