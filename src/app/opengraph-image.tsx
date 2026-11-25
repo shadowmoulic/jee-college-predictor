@@ -133,7 +133,7 @@ export default function OGImage() {
             fontWeight: 500,
           }}
         >
-          nexuspredictor.in
+          JEE College Predictor
         </div>
       </div>
     ),

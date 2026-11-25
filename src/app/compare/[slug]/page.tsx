@@ -35,12 +35,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: `${name1} vs ${name2}: Cutoffs, Fees & Placements`,
     description: `Compare historical JoSAA opening and closing ranks and available placement and fee figures for ${name1} and ${name2}.`,
     openGraph: {
-      url: `/compare/${slug}`,
+      url: siteUrl(`/compare/${slug}`),
       title: `${name1} vs ${name2}: Cutoffs, Fees & Placements`,
       description: `Side-by-side analysis of ${name1} and ${name2} for JEE aspirants.`,
     },
     alternates: {
-      canonical: `/compare/${slug}`,
+      canonical: siteUrl(`/compare/${slug}`),
     }
   };
 }

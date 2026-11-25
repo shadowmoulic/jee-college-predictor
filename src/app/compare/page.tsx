@@ -10,12 +10,12 @@ export const metadata: Metadata = {
   title: "Compare JoSAA Colleges by Cutoffs, Fees & Placements",
   description: "Compare historical JoSAA cutoff ranks and available placement and fee figures for two engineering colleges.",
   openGraph: {
-    url: "/compare",
+    url: siteUrl("/compare"),
     title: "Compare JoSAA Colleges by Cutoffs, Fees & Placements",
     description: "Side-by-side comparison of IITs, NITs, and IIITs.",
   },
   alternates: {
-    canonical: "/compare",
+    canonical: siteUrl("/compare"),
   },
 };
 

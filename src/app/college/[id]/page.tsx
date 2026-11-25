@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
   const title = `${data.name} JoSAA ${data.dataYear} Cutoffs, Fees & Placements`;
   const description = `See ${data.name} opening and closing ranks for JoSAA ${data.dataYear} round ${data.dataRound}, plus available fees and placement figures.`;
-  const canonical = `/college/${id}`;
+  const canonical = siteUrl(`/college/${id}`);
   return { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical } };
 }
 

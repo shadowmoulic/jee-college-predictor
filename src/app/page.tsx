@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import PredictorPage from "@/components/predictor/PredictorPage";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { SITE_NAME, siteUrl } from "@/lib/site";
+import { SITE_NAME, siteCreatorId, siteUrl } from "@/lib/site";
 
 const title = "JEE College Predictor 2026 for Main & Advanced";
 const description = "Estimate IIT, NIT, IIIT and GFTI options from your JEE rank. This free tool uses historical JoSAA cutoffs and accounts for category, seat pool and state.";
@@ -9,8 +9,8 @@ const description = "Estimate IIT, NIT, IIIT and GFTI options from your JEE rank
 export const metadata: Metadata = {
   title: { absolute: title },
   description,
-  alternates: { canonical: "/" },
-  openGraph: { title, description, url: "/" },
+  alternates: { canonical: siteUrl() },
+  openGraph: { title, description, url: siteUrl() },
 };
 
 export default function Home() {
@@ -22,6 +22,7 @@ export default function Home() {
         name: SITE_NAME,
         url: siteUrl(),
         description,
+        creator: { "@id": siteCreatorId() },
         applicationCategory: "EducationalApplication",
         operatingSystem: "Any",
         isAccessibleForFree: true,

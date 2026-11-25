@@ -5,8 +5,8 @@ import { getInstituteId } from '@/app/data';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const allRecords = getJosaaData();
-  const institutes = Array.from(new Set(allRecords.map(r => r.institute)));
-  const instituteIds = institutes.map(getInstituteId);
+  const institutes = new Set(allRecords.map(record => record.institute));
+  const instituteIds = new Set([...institutes].map(getInstituteId).filter(Boolean));
 
   // 1. Static routes
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -17,13 +17,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // 2. Dynamic College routes
-  const collegeRoutes: MetadataRoute.Sitemap = instituteIds.map(id => ({
+  const collegeRoutes: MetadataRoute.Sitemap = [...instituteIds].map(id => ({
     url: siteUrl(`/college/${id}`),
   }));
 
   // 3. Top Compare routes (Programmatic SEO)
-  const compareSlugs = getPopularCompareSlugs();
-  const compareRoutes: MetadataRoute.Sitemap = compareSlugs.map(slug => ({
+  const compareSlugs = new Set(getPopularCompareSlugs());
+  const compareRoutes: MetadataRoute.Sitemap = [...compareSlugs].map(slug => ({
     url: siteUrl(`/compare/${slug}`),
   }));
 

@@ -144,7 +144,7 @@ data/placement_fees.json  →  (missing)  →  fields omitted from API response
 |---|---|---|
 | `NVIDIA_NIM_API_KEY` | For AI chat | NVIDIA NIM API key for the `/api/ai-chat` endpoint |
 | `NVIDIA_NIM_MODEL` | Optional | Defaults to `meta/llama-3.3-70b-instruct` |
-| `NEXT_PUBLIC_APP_URL` | Production | Public production origin used for canonical URLs, the sitemap, and structured data |
+| `NEXT_PUBLIC_APP_URL` | Optional | Public origin used by canonical URLs, the sitemap and structured data. Defaults to the live Vercel hostname. Localhost overrides apply in development. |
 
 Create a `.env.local` for local overrides:
 

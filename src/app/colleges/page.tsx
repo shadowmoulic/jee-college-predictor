@@ -11,13 +11,13 @@ export const metadata: Metadata = {
   description:
     "Browse IITs, NITs, IIITs and GFTIs in our JoSAA data. Find historical opening and closing ranks and available fee and placement figures.",
   openGraph: {
-    url: "/colleges",
+    url: siteUrl("/colleges"),
     title: "JoSAA College Directory: Cutoffs & Placements",
     description:
       "Browse historical JoSAA cutoffs and available placement and fee figures.",
   },
   alternates: {
-    canonical: "/colleges",
+    canonical: siteUrl("/colleges"),
   },
 };
 
