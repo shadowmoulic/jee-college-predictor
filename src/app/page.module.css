@@ -7,7 +7,7 @@
 
 /* ============ HERO SECTION & FORM ============ */
 .heroSection {
-  background: linear-gradient(145deg, #060d1f 0%, #0f2b7a 40%, #1a56db 75%, #1d4ed8 100%);
+  background: linear-gradient(145deg, #072319 0%, #104332 40%, #176044 75%, #176044 100%);
   position: relative;
   overflow: hidden;
   padding: clamp(4rem, 10vw, 7rem) clamp(1rem, 5vw, 3rem);
@@ -212,7 +212,7 @@
 .formInput[type="number"]:focus {
   background: #ffffff;
   border-color: var(--brand);
-  box-shadow: 0 0 0 4px var(--brand-glow), 0 4px 16px rgba(26, 86, 219, 0.12);
+  box-shadow: 0 0 0 4px var(--brand-glow), 0 4px 16px rgba(23, 96, 68, 0.12);
 }
 
 .formInput[type="number"]::placeholder {
@@ -1109,7 +1109,7 @@
   font-size: 1.2rem;
   font-weight: 800;
   color: var(--brand);
-  box-shadow: inset 0 2px 4px rgba(26, 86, 219, 0.1);
+  box-shadow: inset 0 2px 4px rgba(23, 96, 68, 0.1);
   border: 2px solid var(--border-light);
 }
 
@@ -1348,7 +1348,7 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  color: #2563eb;
+  color: #1a7350;
   transition: transform 0.2s ease;
   cursor: pointer;
 }
@@ -1875,12 +1875,12 @@
   justify-content: center;
   gap: 8px;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 14px rgba(26, 86, 219, 0.15);
+  box-shadow: 0 4px 14px rgba(23, 96, 68, 0.15);
 }
 
 .placementBtn:hover {
   background: var(--brand-dark);
-  box-shadow: 0 6px 20px rgba(26, 86, 219, 0.25);
+  box-shadow: 0 6px 20px rgba(23, 96, 68, 0.25);
   transform: translateY(-1px);
 }
 
@@ -2042,7 +2042,7 @@
   }
 
   .accordionBody {
-    background: #f8fafc;
+    background: #f6faf7;
     padding: 1rem;
     display: flex;
     flex-direction: column;

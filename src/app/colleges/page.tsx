@@ -1,10 +1,10 @@
+import { getJosaaColleges } from "@/lib/josaa-colleges";
 import Link from "next/link";
 import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
 import { collegeEntity, siteUrl } from "@/lib/site";
 import type { Metadata } from "next";
-import { getJosaaData } from "@/lib/josaa-data";
 import { getPlacementForCollege } from "@/lib/placement-data";
-import { getInstituteId, TOP_5_IITS, TOP_10_IITS } from "../data";
+import { TOP_5_IITS, TOP_10_IITS } from "../data";
 
 export const metadata: Metadata = {
   title: "JoSAA College Directory: Cutoffs, Fees & Placements",
@@ -38,28 +38,18 @@ interface CollegeEntry {
 
 async function getColleges(): Promise<CollegeEntry[]> {
   try {
-    const records = getJosaaData();
-
-    // Build institute → records map once (O(N)) to avoid O(N²) inner filters
-    const instituteMap = new Map<string, typeof records>();
-    for (const r of records) {
-      const bucket = instituteMap.get(r.institute);
-      if (bucket) {
-        bucket.push(r);
-      } else {
-        instituteMap.set(r.institute, [r]);
-      }
-    }
+    const instituteMap = getJosaaColleges();
 
     const colleges: CollegeEntry[] = [];
 
-    for (const [institute, instRecords] of instituteMap) {
+    for (const [id, instRecords] of instituteMap) {
       const r = instRecords[0];
+      const institute = r.institute;
       const programs = [...new Set(instRecords.map((rec) => rec.program))];
       const placement = getPlacementForCollege(institute);
 
       colleges.push({
-        id: getInstituteId(r.institute),
+        id,
         name: r.institute,
         shortName: r.instituteShort,
         state: r.state,
@@ -142,7 +132,7 @@ export default async function CollegesPage() {
       `}</style>
       {/* Page hero */}
       <div style={{
-        background: "linear-gradient(135deg, #0f2b7a 0%, #1a56db 50%, #2563eb 100%)",
+        background: "linear-gradient(135deg, #104332 0%, #176044 50%, #1a7350 100%)",
         padding: "clamp(2.5rem, 6vw, 4rem) clamp(1rem, 5vw, 2.5rem)",
         color: "#fff",
         textAlign: "center",

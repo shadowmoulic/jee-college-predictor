@@ -1,3 +1,4 @@
+import { getJosaa2026Data } from "@/lib/josaa-2026";
 import { getInstituteId, type JoSAARecord } from "@/app/data";
 import { getJosaaData } from "@/lib/josaa-data";
 
@@ -28,12 +29,15 @@ export type CutoffGuide = {
   title: string;
   branch: string;
   group: string;
-  kind: "comparison" | "history";
+  kind: "comparison" | "history" | "rounds";
+  year?: 2026;
+  groupType?: JoSAARecord["instituteType"];
   quota: "AI" | "OS";
   rows: CutoffRow[];
 };
 
 let cached: Map<string, CutoffGuide> | undefined;
+let historicalCampusIds: Set<string> | undefined;
 
 function normalize(text: string) {
   return text.toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -44,14 +48,13 @@ function baselineQuota(type: JoSAARecord["instituteType"]) {
   if (type === "IIT" || type === "IIIT" || type === "GFTI") return "AI";
 }
 
-export function getCutoffGuides() {
-  if (cached) return cached;
+function buildCutoffGuides(records: JoSAARecord[], year?: 2026) {
+  const base = year ? "/cutoffs/2026" : "/cutoffs";
 
   const comparisons = new Map<string, CutoffGuide>();
   const histories = new Map<string, CutoffGuide>();
   const latestByCollege = new Map<string, number>();
   const latestByGroup = new Map<string, { year: number; round: number }>();
-  const records = getJosaaData();
 
   for (const record of records) {
     const quota = baselineQuota(record.instituteType);
@@ -78,21 +81,21 @@ export function getCutoffGuides() {
     const college = record.instituteShort || record.institute;
     const row = { collegeId, college, year: record.year, round: record.round, openingRank: record.openingRank, closingRank: record.closingRank };
 
-    if (record.round === latestByCollege.get(`${record.institute}|${record.year}`)) {
-      const path = `/cutoffs/${collegeId}/${slug}`;
+    if (year || record.round === latestByCollege.get(`${record.institute}|${record.year}`)) {
+      const path = `${base}/${collegeId}/${slug}`;
       const history = histories.get(path) ?? {
-        path, title: `${college} ${branch} Cutoff History`, branch, group: college, kind: "history", quota, rows: [],
+        path, title: year ? `${college} ${branch} JoSAA 2026 Cutoff by Round` : `${college} ${branch} Cutoff History`, branch, group: college, groupType: record.instituteType, year, kind: year ? "rounds" : "history", quota, rows: [],
       };
-      if (!history.rows.some(previous => previous.year === row.year)) history.rows.push(row);
+      if (!history.rows.some(previous => previous.year === row.year && previous.round === row.round)) history.rows.push(row);
       histories.set(path, history);
     }
 
     const group = latestByGroup.get(record.instituteType);
     if (record.year === group?.year && record.round === group.round) {
       const groupName = `${record.instituteType}s`;
-      const path = `/cutoffs/${record.instituteType.toLowerCase()}/${slug}`;
+      const path = `${base}/${record.instituteType.toLowerCase()}/${slug}`;
       const comparison = comparisons.get(path) ?? {
-        path, title: `${branch} Cutoffs Across ${groupName}`, branch, group: groupName, kind: "comparison", quota, rows: [],
+        path, title: `${branch} ${year ? "2026 " : ""}Cutoffs Across ${groupName}`, branch, group: groupName, groupType: record.instituteType, year, kind: "comparison", quota, rows: [],
       };
       if (!comparison.rows.some(previous => previous.collegeId === collegeId)) comparison.rows.push(row);
       comparisons.set(path, comparison);
@@ -106,14 +109,36 @@ export function getCutoffGuides() {
     guides.set(guide.path, guide);
   }
   const comparisonColleges = new Set([...guides.values()].flatMap(guide =>
-    guide.rows.map(row => `/cutoffs/${row.collegeId}/${guide.path.split("/").at(-1)}`),
+    guide.rows.map(row => `${base}/${row.collegeId}/${guide.path.split("/").at(-1)}`),
   ));
   for (const guide of histories.values()) {
     if (guide.rows.length < 2 || !comparisonColleges.has(guide.path)) continue;
-    guide.rows.sort((a, b) => b.year - a.year);
+    guide.rows.sort((a, b) => b.year - a.year || b.round - a.round);
     guides.set(guide.path, guide);
   }
 
-  if (guides.size) cached = guides;
   return guides;
+}
+
+export function getCutoffGuides() {
+  if (!cached) {
+    const historical = buildCutoffGuides(getJosaaData());
+    const current = buildCutoffGuides(getJosaa2026Data(), 2026);
+    cached = new Map([...historical, ...current]);
+  }
+  return cached;
+}
+
+export function hasHistoricalCollege(id: string) {
+  if (!historicalCampusIds) {
+    const names = new Set(getJosaaData().map(record => record.institute));
+    historicalCampusIds = new Set([...names].map(getInstituteId));
+  }
+  return historicalCampusIds.has(id);
+}
+
+export function getCampusCutoffLinks(id: string) {
+  return [...getCutoffGuides().values()].filter(guide =>
+    guide.kind !== "comparison" && guide.rows[0].collegeId === id
+  );
 }

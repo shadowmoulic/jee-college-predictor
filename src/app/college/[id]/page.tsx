@@ -1,3 +1,5 @@
+import { AdmissionGuide } from "@/components/seo/AdmissionGuide";
+import { getCampusCutoffLinks } from "@/lib/cutoff-guides";
 import Link from "next/link";
 import type { Metadata } from "next";
 import CollegeCutoffTable from "@/components/college/CollegeCutoffTable";
@@ -43,6 +45,8 @@ export default async function CollegeDetailPage({ params }: { params: Promise<{ 
 
   const { placement } = data;
   const path = `/college/${id}`;
+  const previous = data.dataYear === 2026 ? getCollegeDetail(id, 2025) : null;
+  const campusGuides = getCampusCutoffLinks(id);
   const typeColor = TYPE_COLOR[data.instituteType] ?? "var(--brand)";
 
   return (
@@ -59,7 +63,7 @@ export default async function CollegeDetailPage({ params }: { params: Promise<{ 
 
       {/* Hero */}
       <div style={{
-        background: "linear-gradient(135deg, #0f2b7a 0%, #1a56db 50%, #2563eb 100%)",
+        background: "linear-gradient(135deg, #104332 0%, #176044 50%, #1a7350 100%)",
         padding: "clamp(2rem, 5vw, 3.5rem) clamp(1rem, 5vw, 2.5rem)",
         color: "#fff",
       }}>
@@ -148,6 +152,17 @@ export default async function CollegeDetailPage({ params }: { params: Promise<{ 
             Predict My College →
           </Link>
         </div>
+        <p style={{ marginTop: "1.5rem", color: "var(--brand)", textDecoration: "underline" }}><Link href={`/shortlist?college=${id}`}>Save {data.shortName} to your private shortlist</Link></p>
+        {previous && <details style={{ marginTop: "1.75rem", padding: "1rem", background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "1rem" }}>
+          <summary style={{ cursor: "pointer", fontWeight: 750 }}>JoSAA 2025 Round {previous.dataRound} cutoffs at {data.shortName}</summary>
+          <p style={{ margin: "1rem 0" }}>Use the category, quota and gender filters to find your 2025 seat pool. For a same-round comparison, use the 2025 vs 2026 guide.</p>
+          <CollegeCutoffTable cutoffs={previous.cutoffs} typeColor={typeColor} />
+        </details>}
+        <AdmissionGuide name={data.name} type={data.instituteType} mode="college"
+          links={[...campusGuides.filter(guide => guide.year).slice(0, 4),
+            ...campusGuides.filter(guide => !guide.year).slice(0, 2),
+            { path: "/cutoffs/2026", title: "JoSAA 2026 opening and closing ranks" },
+            { path: "/cutoffs/2025-vs-2026", title: "Compare the same round in 2025 and 2026" }]} />
       </main>
     </div>
   );

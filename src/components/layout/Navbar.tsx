@@ -20,6 +20,7 @@ export default function Navbar() {
         <Link href="/cutoffs">Cutoffs</Link>
         <Link href="/colleges">Colleges</Link>
         <Link href="/compare">Compare</Link>
+        <Link href="/mentorship">1:1 Counselling</Link>
         <Link href="/ai" style={{ color: "var(--brand)", fontWeight: 700 }}>AI Counsellor</Link>
       </div>
 
@@ -49,6 +50,7 @@ export default function Navbar() {
         <Link href="/cutoffs" onClick={() => setIsOpen(false)}>Cutoffs</Link>
         <Link href="/colleges" onClick={() => setIsOpen(false)}>Colleges</Link>
         <Link href="/compare" onClick={() => setIsOpen(false)}>Compare</Link>
+        <Link href="/mentorship" onClick={() => setIsOpen(false)}>1:1 Counselling</Link>
         <Link href="/ai" onClick={() => setIsOpen(false)} style={{ color: "var(--brand)", fontWeight: 700 }}>AI Counsellor</Link>
         <a 
           href="https://chat.whatsapp.com/JuENcC26gOTDVIgdyMiG6X" 

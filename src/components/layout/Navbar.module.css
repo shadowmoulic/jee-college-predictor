@@ -117,12 +117,12 @@
   letter-spacing: 0.01em;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
-  box-shadow: 0 4px 14px rgba(26, 86, 219, 0.15);
+  box-shadow: 0 4px 14px rgba(23, 96, 68, 0.15);
 }
 
 .joinBtn:hover {
   transform: translateY(-1.5px);
-  box-shadow: 0 6px 20px rgba(26, 86, 219, 0.3);
+  box-shadow: 0 6px 20px rgba(23, 96, 68, 0.3);
 }
 
 .joinBtn:active {

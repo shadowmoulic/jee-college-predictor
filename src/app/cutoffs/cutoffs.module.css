@@ -50,3 +50,9 @@
 .table th, .table td { padding: .65rem .75rem; border-top: 1px solid var(--border); }
 .table thead { background: var(--brand-soft); }
 .links { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; }
+
+.reviewGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); gap: 1rem; }
+.review { margin: 0; padding: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: .75rem; }
+.review > div { color: var(--brand); letter-spacing: .1em; }
+.review blockquote { margin: .65rem 0; }
+.review figcaption { color: var(--text-secondary); font-size: .875rem; }

@@ -1,0 +1,40 @@
+{
+  "topIit": [
+    "For the five IIT campuses highlighted in our college directory, start by spelling out the branch trade-off. If your two best options are different programs, open both course plans and read the required courses from semesters three to six. An elective, a minor or an informal coding club does not replace the core work you will spend those semesters doing. Treat a possible branch change as a bonus, and confirm that the institute and batch actually allow one before giving it any weight.",
+    "When two branches are both plausible at your rank, use the extra research time to compare what you would do in year two: the lab sequence, project access, and how much freedom you have to explore another area. A campus tour is good for getting a feel for the place. A current course handbook is better for settling what you are signing up to study."
+  ],
+  "otherIit": [
+    "If you are weighing this IIT against a different branch at an older campus, compare the actual degree at both places. Find the current list of faculty and labs for the department and check when undergraduates can join projects. Look for recent student project examples in the area you want to explore. One department can be a good fit for your interests even when the campus has a shorter placement history or fewer electives in another area.",
+    "Check where the department actually teaches, especially if the institute has moved campuses or is still expanding. Look up travel between the campus and your hometown, current hostel availability, and the fee schedule for your entry batch. These details can change what would otherwise look like a small difference on a rank chart."
+  ],
+  "selectiveNit": [
+    "For a more selective NIT in the comparison set, first put the Home State and Other State rows side by side for the branch you want. State Code of Eligibility determines which row applies to you. Compare within your own category and seat pool, and keep both rows clearly labelled if you share your shortlist with someone from another state.",
+    "When a familiar NIT name and a preferred branch pull you in opposite directions, check the department's published outcomes and elective list. Prefer placement figures with a reporting year, number eligible, number placed, and a branch name. A highest offer without that context gives you very little to compare against the likely cost and coursework."
+  ],
+  "otherNit": [
+    "For the other NIT options in the shortlist, the state quota can change which campus and branch are realistic offers. A numerically larger closing rank in the Other State table gives you a lead to investigate. Look up your actual eligibility and compare the same category, round and pool before adding the option to your list.",
+    "Compare department fit, travel time, hostel availability and total out-of-pocket costs together. If you plan to commute or go home during breaks, look up the full route from campus. When fee collection differs between semesters, write down the first-semester amount separately from the ongoing costs so that both options are compared on the same basis."
+  ],
+  "other": [
+    "Check which JEE rank list and quota the institute uses for the program. B.Tech and dual-degree programs with similar names can differ in duration and compulsory coursework. Keep them as separate choices on your shortlist, and read the degree name on the official seat matrix before locking it.",
+    "Look for recent department-level placement information and an official fee schedule. Some campuses publish a combined report for more than one degree or department. If a number cannot be attributed to the exact program, mark it as an institute-wide figure and compare it with the same type of number elsewhere."
+  ],
+  "core": [
+    "Write down the exam, seat category, quota, gender pool and degree next to each rank you copy. An OPEN closing rank uses the applicable Common Rank List, while a reserved-seat row may use a category rank. Even if the numbers look close, those ranks describe different pools. The closing rank tells you the last rank allotted in that row for the round shown. The opening rank gives the other end of the observed range and is less useful on its own for gauging your options.",
+    "Make a shortlist with options on both sides of your rank. Include programs you would be happy to accept even if the most competitive choices do not work out. Order the choices by where you actually want to study, and check the current JoSAA choice filling and seat acceptance rules before locking anything. The shortlist is a planning tool. Your final order should make sense even if several options become available at once.",
+    "For each serious option, keep the cutoff source beside the rank and add three practical details: compulsory courses, the total fee for your expected duration, and one comparable placement measure. If you cannot find a figure in a current official report, leave that field open and ask the institute. This makes disagreements easier to resolve when a brochure, a YouTube video, and a rank table each highlight a different part of the decision."
+  ],
+  "comparison": [
+    "Read across the row only after checking that the programs use the same exam, degree type and seat pool. If the two colleges show different latest rounds, open the historical cutoff links and find a common round before comparing numbers. For each branch you would actually accept, pick one academic difference and one living or financial difference that could change your choice.",
+    "Then put the options in the order you would choose them if both offers came through today. If the answer changes when you remove a possible branch change, an unusually high placement offer, or a single year's cutoff movement, check the current policy or original report before letting that assumption decide your preference."
+  ],
+  "rounds": [
+    "Read the available rounds in order for the same seat pool. An increase in numerical closing rank means the displayed boundary moved to a larger rank between those observations. A decrease means it moved the other way. A missing row means the combination is unavailable in the supplied files. Movement between rounds can help you plan a range of choices, and later rounds or another cycle can behave differently."
+  ],
+  "history": [
+    "If two years have different round numbers, check what those rounds represented in each counselling cycle. The latest available observation is useful for seeing the rough range, while matching rounds are better for answering when a rank became competitive. A flat trend can still shift after a change in seats or applicant preferences, so keep more than one acceptable option on the list."
+  ],
+  "branch": [
+    "Open the curriculum for this branch at every campus that makes the shortlist. Compare the required first and second year courses, then pick two advanced electives you would actually take. Look up when they last ran and whether the department lists prerequisites. The program title tells you what to start researching, and the way the course is taught tells you much more about everyday life in the degree."
+  ]
+}

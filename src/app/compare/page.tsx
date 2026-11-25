@@ -1,9 +1,9 @@
+import { getJosaaColleges } from "@/lib/josaa-colleges";
 import { Metadata } from "next";
 import Link from "next/link";
 import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
 import { siteUrl } from "@/lib/site";
 import CompareSelector from "@/components/compare/CompareSelector";
-import { getJosaaData } from "@/lib/josaa-data";
 import { getInstituteId, TOP_10_IITS } from "@/app/data";
 
 export const metadata: Metadata = {
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 export default function ComparePage() {
-  const records = getJosaaData();
+  const records = [...getJosaaColleges().values()].map(entries => entries[0]);
   const uniqueCollegesMap = new Map<string, string>();
   
   records.forEach(r => {
@@ -62,7 +62,7 @@ export default function ComparePage() {
       `}</style>
       
       <div style={{
-        background: "linear-gradient(135deg, #0f2b7a 0%, #1a56db 50%, #2563eb 100%)",
+        background: "linear-gradient(135deg, #104332 0%, #176044 50%, #1a7350 100%)",
         padding: "clamp(3rem, 6vw, 5rem) clamp(1rem, 5vw, 2.5rem)",
         color: "#fff",
         textAlign: "center",
@@ -117,6 +117,7 @@ export default function ComparePage() {
             ))}
           </div>
         </div>
+        <p style={{ marginTop: "2rem" }}><Link href="/predictor-comparisons">Compare JEE predictor tools, including Shiksha and Careers360</Link></p>
       </main>
     </div>
   );

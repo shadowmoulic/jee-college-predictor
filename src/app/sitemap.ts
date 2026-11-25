@@ -1,19 +1,24 @@
 import { getCutoffGuides } from "@/lib/cutoff-guides";
 import { siteUrl } from "@/lib/site";
 import { MetadataRoute } from 'next';
-import { getJosaaData, getPopularCompareSlugs } from '@/lib/josaa-data';
-import { getInstituteId } from '@/app/data';
+import { getPopularCompareSlugs } from '@/lib/josaa-data';
+import { getJosaaColleges } from '@/lib/josaa-colleges';
+import { getYearComparisons } from '@/lib/cutoff-year-comparisons';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const allRecords = getJosaaData();
-  const institutes = new Set(allRecords.map(record => record.institute));
-  const instituteIds = new Set([...institutes].map(getInstituteId).filter(Boolean));
+  const instituteIds = getJosaaColleges().keys();
 
   // 1. Static routes
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: siteUrl("/") },
     { url: siteUrl("/colleges") },
     { url: siteUrl("/cutoffs") },
+    { url: siteUrl("/cutoffs/2026") },
+    { url: siteUrl("/cutoffs/2025-vs-2026") },
+    { url: siteUrl("/predictor-comparisons") },
+    { url: siteUrl("/predictor-comparisons/shiksha") },
+    { url: siteUrl("/predictor-comparisons/careers360") },
+    { url: siteUrl("/mentorship") },
     { url: siteUrl("/compare") },
     { url: siteUrl("/terms") },
   ];
@@ -29,7 +34,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: siteUrl(`/compare/${slug}`),
   }));
 
-  const cutoffRoutes = [...getCutoffGuides().keys()].map(path => ({ url: siteUrl(path) }));
+  const cutoffRoutes = [...getCutoffGuides().keys(), ...getYearComparisons().keys()].map(path => ({ url: siteUrl(path) }));
   return [...staticRoutes, ...collegeRoutes, ...compareRoutes, ...cutoffRoutes];
 }
 

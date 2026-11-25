@@ -249,3 +249,32 @@ function q(val: string): string {
   }
   return val;
 }
+
+export function parse2026RoundCSV(csv: string, expectedRound: number): JoSAARecord[] {
+  const [header, ...lines] = csv.split(/\r?\n/);
+  if (header.replace(/^\uFEFF/, "") !== "year,round,type,institute,program,quota,category,gender,orank,crank") {
+    throw new Error("Unexpected 2026 JoSAA CSV header");
+  }
+  return lines.flatMap(line => {
+    const [year, round, code, institute, cell, quota, category, gender, start, end] = parseCSVRow(line);
+    const type = code === "3IT" ? "IIIT" : code === "CFI" ? "GFTI" : code;
+    if (year !== "2026" || Number(round) !== expectedRound || !institute || !cell ||
+        !["IIT", "NIT", "IIIT", "GFTI", "SPA"].includes(type) ||
+        !/^\d+$/.test(start) || !/^\d+$/.test(end)) return [];
+    const openingRank = Number(start);
+    const closingRank = Number(end);
+    if (openingRank < 1 || closingRank < openingRank) return [];
+    const { program, degree } = splitProgramCell(cell);
+    const instituteType = /school of planning and architecture/i.test(institute) ? "SPA" : type as JoSAARecord["instituteType"];
+    return [{
+      year: 2026, round: expectedRound, institute, program, degree, openingRank, closingRank,
+      instituteType,
+      instituteShort: inferShortName(institute),
+      state: inferState(institute),
+      quota: quota as JoSAARecord["quota"],
+      seatType: category as JoSAARecord["seatType"],
+      gender: normalizeGender(gender),
+      courseFee: FEE_MAP[type] ?? "",
+    }];
+  });
+}

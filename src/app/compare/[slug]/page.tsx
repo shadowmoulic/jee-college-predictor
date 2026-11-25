@@ -1,9 +1,11 @@
+import { getJosaaColleges } from "@/lib/josaa-colleges";
+import { AdmissionGuide } from "@/components/seo/AdmissionGuide";
+import { getCampusCutoffLinks } from "@/lib/cutoff-guides";
 import Link from "next/link";
 import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
 import { collegeEntity, siteUrl } from "@/lib/site";
 import { Metadata } from "next";
-import { getJosaaData, getPopularCompareSlugs } from "@/lib/josaa-data";
-import { getInstituteId } from "@/app/data";
+import { getPopularCompareSlugs } from "@/lib/josaa-data";
 import { getLatestCutoffs } from "@/lib/college-detail";
 import { getPlacementForCollege } from "@/lib/placement-data";
 import { notFound } from "next/navigation";
@@ -21,10 +23,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (parts.length !== 2) return { title: "College Comparison" };
 
   const [id1, id2] = parts;
-  const all = getJosaaData();
+  const all = getJosaaColleges();
   
-  const c1Record = all.find(r => getInstituteId(r.institute) === id1);
-  const c2Record = all.find(r => getInstituteId(r.institute) === id2);
+  const c1Record = all.get(id1)?.[0];
+  const c2Record = all.get(id2)?.[0];
 
   if (!c1Record || !c2Record) return { title: "College Comparison" };
 
@@ -54,10 +56,10 @@ export default async function CompareSlugPage({ params }: { params: Promise<{ sl
   }
 
   const [id1, id2] = parts;
-  const all = getJosaaData();
+  const all = getJosaaColleges();
 
-  const records1 = all.filter(r => getInstituteId(r.institute) === id1);
-  const records2 = all.filter(r => getInstituteId(r.institute) === id2);
+  const records1 = all.get(id1) ?? [];
+  const records2 = all.get(id2) ?? [];
 
   if (records1.length === 0 || records2.length === 0) {
     notFound();
@@ -88,7 +90,7 @@ export default async function CompareSlugPage({ params }: { params: Promise<{ sl
       }} />
 
       <div style={{
-        background: "linear-gradient(135deg, #0f2b7a 0%, #1a56db 50%, #2563eb 100%)",
+        background: "linear-gradient(135deg, #104332 0%, #176044 50%, #1a7350 100%)",
         padding: "clamp(2rem, 5vw, 4rem) clamp(1rem, 5vw, 2.5rem)",
         color: "#fff",
       }}>
@@ -99,7 +101,7 @@ export default async function CompareSlugPage({ params }: { params: Promise<{ sl
             </Link>
           </div>
           <h1 style={{ fontSize: "clamp(1.5rem, 4vw, 2.5rem)", fontWeight: 800, lineHeight: 1.2, margin: "0" }}>
-            <span style={{ color: "#93c5fd" }}>{c1Short}</span> <span style={{ opacity: 0.6 }}>vs</span> <span style={{ color: "#fca5a5" }}>{c2Short}</span>
+            <span style={{ color: "#a7f3d0" }}>{c1Short}</span> <span style={{ opacity: 0.6 }}>vs</span> <span style={{ color: "#fca5a5" }}>{c2Short}</span>
           </h1>
           <p style={{ color: "rgba(255,255,255,0.8)", fontSize: "1rem", margin: "1rem 0 0" }}>
             In-depth analysis of placements, JoSAA cutoffs, and fees.
@@ -174,7 +176,7 @@ export default async function CompareSlugPage({ params }: { params: Promise<{ sl
         {/* Detailed Cutoffs */}
         <h2 style={{ fontSize: "1.25rem", fontWeight: 800, marginBottom: "1rem", color: "var(--text)" }}>{c1Short} JoSAA {year1} Cutoffs (Round {round1})</h2>
         <div style={{ marginBottom: "3rem" }}>
-          <CollegeCutoffTable cutoffs={cutoffs1} typeColor="#2563eb" />
+          <CollegeCutoffTable cutoffs={cutoffs1} typeColor="#1a7350" />
         </div>
 
         <h2 style={{ fontSize: "1.25rem", fontWeight: 800, marginBottom: "1rem", color: "var(--text)" }}>{c2Short} JoSAA {year2} Cutoffs (Round {round2})</h2>
@@ -196,6 +198,14 @@ export default async function CompareSlugPage({ params }: { params: Promise<{ sl
           placementRate1={placement1?.placementRate}
           placementRate2={placement2?.placementRate}
         />
+        <AdmissionGuide name={c1Name} type={c1Info.instituteType} mode="comparison"
+          other={{ name: c2Name, type: c2Info.instituteType }}
+          links={[
+            { path: `/college/${id1}`, title: `All programs and fees at ${c1Short}` },
+            { path: `/college/${id2}`, title: `All programs and fees at ${c2Short}` },
+            ...getCampusCutoffLinks(id1).filter(guide => guide.year).slice(0, 3),
+            ...getCampusCutoffLinks(id2).filter(guide => guide.year).slice(0, 3),
+          ].filter((link, index, all) => all.findIndex(candidate => candidate.path === link.path) === index)} />
       </main>
     </div>
   );

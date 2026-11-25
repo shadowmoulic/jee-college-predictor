@@ -1,18 +1,13 @@
-import { getJosaaData } from "@/lib/josaa-data";
-import { getInstituteId } from "@/app/data";
+import { getJosaaColleges } from "./josaa-colleges";
+import type { JoSAARecord } from "@/app/data";
 import { getPlacementForCollege } from "@/lib/placement-data";
 
-export function getCollegeDetail(id: string) {
-  const all = getJosaaData();
-
-  const matchedRecord = all.find((r) => getInstituteId(r.institute) === id);
-  if (!matchedRecord) {
-    return null;
-  }
-
+export function getCollegeDetail(id: string, year?: number) {
+  const campus = getJosaaColleges().get(id);
+  const records = year ? campus?.filter(row => row.year === year) : campus;
+  if (!records?.length) return null;
+  const matchedRecord = records[0];
   const instituteName = matchedRecord.institute;
-  const records = all.filter((r) => r.institute === instituteName);
-
   const { cutoffs, dataYear, dataRound } = getLatestCutoffs(records);
 
   const placement = getPlacementForCollege(instituteName);
@@ -32,7 +27,7 @@ export function getCollegeDetail(id: string) {
   };
 }
 
-export function getLatestCutoffs(records: ReturnType<typeof getJosaaData>) {
+export function getLatestCutoffs(records: JoSAARecord[]) {
   const latestYear = records.reduce((max, r) => (r.year > max ? r.year : max), 0);
   const inYear = records.filter((r) => r.year === latestYear);
   const latestRound = inYear.reduce((max, r) => (r.round > max ? r.round : max), 0);

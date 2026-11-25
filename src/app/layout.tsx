@@ -3,6 +3,7 @@ import { SITE_CREATOR, SITE_NAME, siteCreatorId, siteUrl } from "@/lib/site";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import ChapterwiseBanner from "@/components/layout/ChapterwiseBanner";
 import Navbar from "@/components/layout/Navbar";
 import WhatsAppPod from "@/components/layout/WhatsAppPod";
 import Footer from "@/components/layout/Footer";
@@ -56,6 +57,7 @@ export default function RootLayout({
           },
         }} />
         <Navbar />
+        <ChapterwiseBanner />
         {children}
         <Footer />
         <WhatsAppPod />

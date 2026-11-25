@@ -16,7 +16,7 @@ JEE College Predictor is an advanced, free tool for Indian engineering aspirants
 All routes are relative to the base URL: `https://jee-college-predictor-2027.vercel.appl.app`
 
 - **Home Page** (`/`): The main predictor tool dashboard. Aspirants enter their rank, select exam type (JEE Main/Advanced), category (OPEN, OBC-NCL, SC, ST, EWS), gender, seat pool, and home state.
-- **JoSAA Cutoff Explorer** (`/cutoffs`) compares programs across colleges and shows campus-specific cutoff history.
+- **JoSAA Cutoff Explorer** (`/cutoffs`) compares programs across colleges and shows campus-specific cutoff history. See `/cutoffs/2026` for 2026 rounds and `/cutoffs/2025-vs-2026` for matched-round changes.
 - **Colleges Directory** (`/colleges`): Complete searchable list of all IITs, NITs, IIITs, and GFTIs.
 - **College Profile** (`/college/[slug]`): Specific profile for an institute (e.g., `/college/indian-institute-of-technology-bombay`). Contains branch-wise opening/closing ranks, average and highest packages, course fees, and total seat capacities.
 - **Compare Tool** (`/compare`): Interface to select any two colleges for head-to-head comparison.
@@ -37,5 +37,5 @@ Developers and agents can fetch data using the following endpoints:
 
 ## Data Sources & Accuracy
 
-- **Cutoff Data**: Official JoSAA round-by-round statistics for the years 2024 and 2025.
+- **Cutoff Data**: Official JoSAA round-by-round statistics through the available 2026 rounds.
 - **Placements & Fees**: Verified stats compiled from official institute placement reports and Senate fee brochures.

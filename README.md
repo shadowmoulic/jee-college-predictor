@@ -402,3 +402,7 @@ No external UI libraries are used — add new styles to the CSS module file and 
 ## License
 
 Private repository — not licensed for redistribution.
+
+### Optional private shortlists
+
+Apply `supabase/migrations/202611250001_saved_colleges.sql` to the Supabase project. Enable email/password auth and configure the project's Site URL and confirmation email for the deployed domain. Set `SUPABASE_URL` and `SUPABASE_ANON_KEY` on the server in `.env.local` and in Vercel when ready. The public predictor and cutoff pages are independent of these settings. Private shortlist sessions expire with the Supabase access token.
